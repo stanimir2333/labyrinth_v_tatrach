@@ -321,6 +321,52 @@
     #inv{ gap:4px; max-width:calc(100vw - 130px); }
     #inv .slot.xs{ width:30px; height:30px; font-size:14px; }
   }
+  /* ---------- SDR TERMINÁL (KiwiSDR ladenie, hra pauznutá) ---------- */
+  #sdrPanel{
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(960px,94vw); max-height:92vh; z-index:27; display:none;
+    background:rgba(4,9,11,0.96); border:1px solid rgba(56,217,192,.45); border-radius:12px;
+    box-shadow:0 0 60px rgba(0,0,0,.92), 0 0 26px rgba(56,217,192,.14), inset 0 0 46px rgba(56,217,192,.03);
+    padding:10px 12px 12px; font-family:"Courier New",Courier,monospace; color:#9fdccf;
+    pointer-events:auto; touch-action:none;
+  }
+  #sdrPanel.open{ display:flex; flex-direction:column; gap:8px; animation:sdrIn .2s ease; }
+  @keyframes sdrIn{ from{ opacity:0; transform:translate(-50%,-48.5%) scale(.97);} to{ opacity:1; transform:translate(-50%,-50%) scale(1);} }
+  #sdrHead{ display:flex; align-items:center; gap:10px; }
+  #sdrTitle{ font-weight:700; letter-spacing:.1em; font-size:12.5px; color:#7ce8d4; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #sdrSmeter{ margin-left:auto; font-size:11px; color:#8ce8d4; letter-spacing:.08em; white-space:nowrap; }
+  #sdrClose{ pointer-events:auto; cursor:pointer; background:rgba(230,25,46,.16); color:#ff8a95; border:1px solid rgba(230,25,46,.5); border-radius:7px; font-size:12px; padding:6px 11px; font-weight:700; font-family:inherit; white-space:nowrap; }
+  #sdrFreqRow{ display:flex; gap:8px; align-items:stretch; flex-wrap:wrap; }
+  #sdrFreq{ background:rgba(0,10,8,.85); border:1px solid rgba(56,217,192,.5); border-radius:8px; padding:5px 14px; font-size:clamp(15px,2.6vw,23px); font-weight:700; color:#d9fff6; letter-spacing:.06em; text-align:center; box-shadow:inset 0 0 14px rgba(56,217,192,.08); white-space:nowrap; }
+  #sdrFreq small{ font-size:.5em; color:#5e8a84; }
+  #sdrFreq.ok{ color:#8dffc9; border-color:rgba(70,230,120,.75); text-shadow:0 0 14px rgba(70,230,120,.45); }
+  #sdrModeRow{ display:flex; gap:4px; flex:1; min-width:220px; flex-wrap:wrap; align-items:center; }
+  #sdrModeRow button{ pointer-events:auto; cursor:pointer; background:rgba(6,14,16,.9); border:1px solid rgba(56,217,192,.3); color:#79c9bb; border-radius:7px; padding:6px 9px; font-size:11.5px; font-weight:700; font-family:inherit; }
+  #sdrModeRow button.on{ background:rgba(56,217,192,.16); color:#eafffa; border-color:rgba(56,217,192,.85); box-shadow:0 0 10px rgba(56,217,192,.25); }
+  #sdrScaleWrap{ border:1px solid rgba(56,217,192,.3); border-radius:8px; overflow:hidden; background:#01040a; }
+  #sdrScale,#sdrSpec,#sdrWF{ display:block; width:100%; cursor:crosshair; touch-action:none; }
+  #sdrScale{ height:36px; }
+  #sdrSpec{ height:46px; }
+  #sdrWF{ height:min(23vh,168px); }
+  #sdrCtlRow{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  #sdrCtlRow button{ pointer-events:auto; cursor:pointer; background:rgba(6,14,16,.9); border:1px solid rgba(56,217,192,.35); color:#8ce8d4; border-radius:7px; padding:7px 10px; font-size:12px; font-weight:700; font-family:inherit; white-space:nowrap; }
+  #sdrCtlRow button:hover{ border-color:rgba(56,217,192,.8); color:#eafffa; }
+  #sdrIn{ background:#020808; border:1px solid rgba(56,217,192,.45); color:#d9fff6; border-radius:7px; padding:7px 9px; font-family:inherit; font-size:13px; width:112px; }
+  #sdrSpan{ font-size:11px; color:#5e8a84; letter-spacing:.06em; min-width:104px; text-align:center; }
+  #sdrTx{ margin-left:auto; background:linear-gradient(135deg,#0a5f50,#19b393) !important; border-color:rgba(56,217,192,.75) !important; color:#eafffa !important; padding:10px 16px !important; font-size:13px !important; box-shadow:0 0 18px rgba(56,217,192,.3); }
+  #sdrTx.dim{ filter:grayscale(.75) brightness(.55); }
+  #sdrStatus{ font-size:11.5px; line-height:1.5; color:#9fdccf; background:rgba(2,8,8,.7); border:1px solid rgba(56,217,192,.2); border-radius:7px; padding:7px 10px; }
+  #sdrStatus.ok{ color:#8dffc9; border-color:rgba(70,230,120,.45); }
+  #sdrStatus.err{ color:#ff8a95; border-color:rgba(230,25,46,.45); }
+  #sdrStatus b{ color:#fff; }
+  @media (max-width:520px){
+    #sdrWF{ height:18vh; }
+    #sdrFreq{ min-width:150px; }
+    #sdrIn{ width:88px; }
+    #sdrTitle{ font-size:10.5px; }
+    #sdrTx{ width:100%; margin-left:0; }
+  }
+
   /* ---------- KRVAVÝ FONT (Nosifer – vložený, funguje aj offline) ---------- */
   @font-face{
     font-family:'Nosifer'; font-style:normal; font-weight:400; font-display:block;
@@ -372,6 +418,45 @@
 
 <div id="joy"><div id="joyknob"></div></div>
 
+<!-- ---------- SDR TERMINÁL (KiwiSDR ladenie, hra pauznutá) ---------- -->
+<div id="sdrPanel">
+  <div id="sdrHead">
+    <span id="sdrTitle">📡 SDR Terminál · Kiwi-Tatry-1 · 0–30 MHz</span>
+    <span id="sdrSmeter">S1 ░░░░░░░░░░ AMN</span>
+    <button id="sdrClose" title="Zavrieť (ESC / E)">✕ ESC</button>
+  </div>
+  <div id="sdrFreqRow">
+    <div id="sdrFreq">10 000.000 <small>kHz</small></div>
+    <div id="sdrModeRow">
+      <button data-m="AMN" class="on">AMN</button>
+      <button data-m="SAM">SAM</button>
+      <button data-m="DRM">DRM</button>
+      <button data-m="LSB">LSB</button>
+      <button data-m="USB">USB</button>
+      <button data-m="CW">CW</button>
+      <button data-m="NBFM">NBFM</button>
+      <button data-m="IQ">IQ</button>
+    </div>
+  </div>
+  <div id="sdrScaleWrap">
+    <canvas id="sdrScale"></canvas>
+    <canvas id="sdrSpec"></canvas>
+    <canvas id="sdrWF"></canvas>
+  </div>
+  <div id="sdrCtlRow">
+    <button id="sdrZin" title="Priblížiť (+)">＋</button>
+    <button id="sdrZout" title="Oddialiť (−)">－</button>
+    <button id="sdrReset" title="Celé pásmo 0–30 MHz">0–30</button>
+    <span id="sdrSpan">span 30 MHz</span>
+    <button id="sdrTuneL" title="−1 kHz (←)">◀</button>
+    <button id="sdrTuneR" title="+1 kHz (→)">▶</button>
+    <input id="sdrIn" inputmode="decimal" placeholder="kHz, napr. 1000" autocomplete="off" />
+    <button id="sdrGo" title="Naladiť zadanú frekvenciu (Enter)">NALAD</button>
+    <button id="sdrTx" title="Odoslať packet – funguje len na 1 000.000 kHz AM">📡 VYSLAŤ PACKET → CN</button>
+  </div>
+  <div id="sdrStatus"></div>
+</div>
+
 <!-- ---------- START ---------- -->
 <div id="menu" class="screen">
   <h1 class="title">Labyrint v Tatrách</h1>
@@ -380,7 +465,7 @@
   <div class="card">
     Si uväznený v <b>podzemnom Tátovom labyrinte</b> bez napájania. Stano ruší Bluetooth
     aj WiFi a loví ťa po chodbách. Zozbieraj všetkých <b>8 spomienok</b>, oprav <b>istič</b>
-    a dáta pošli cez <b>SDR do Číny</b> — kým ti nedôjde <b>RAM</b>.
+    a dáta pošli cez <b>SDR do Číny</b> — <b>nalad sa na 1 MHz AM</b> a vyšli packet, kým ti nedôjde <b>RAM</b>.
     <ul>
       <li>🥤 Kofola · 🔧 WD-40 · 📦 Packet Tracer · 🍝 Lasagne</li>
       <li>🔌 Cyky J · 🎓 PhD · 🧑 Peter · 🐖 Prasiatko</li>
@@ -405,9 +490,11 @@
       <b>SDR vysielač</b>… a Stano to počuje.
     </div>
     <div style="margin-top:9px; color:#7ce8d4">
-      🇨🇳 <b>SDR uplink</b> – miesto, kam posielaš dáta. S 8 spomienkami pri vysielači
-      stlač [E]: traceroute letí až do Číny a vyhrávaš. Počas prenosu ťa Stano
-      <b>počuje cez po celý labyrint</b>.
+      🇨🇳 <b>SDR terminál</b> – pri vysielači stlač [E]: hra sa pauzne (Stano aj Twilight zastavení)
+      a otvorí sa rádiový terminál. Nalad sa klikom/ťahaním po pásme, šípkami alebo zadaním frekvencie
+      na <b>1 000.000 kHz (1 MHz)</b> v režime <b>AMN</b> a stlač <b>📡 VYSLAŤ PACKET</b> → traceroute
+      letí do Číny a vyhrávaš. Ostatné frekvencie tiež niečo hrá – časové stanice, FT8, SSTV, fax,
+      číselné stanice, morse majáky… počuj ich všetky. Počas prenosu ťa Stano <b>počuje po celý labyrint</b>.
     </div>
     <div style="margin-top:9px; color:#ffb7cf">
       🦇 <b>Fursona</b> – keď ťa Stano zaháňa, prevleje sa do svojej fursony
@@ -528,6 +615,7 @@ const FLAVORS_OVER = [
   'V susedstve quiet zone sú samé vajcia a mlieko. A 🐖🥚.',
   'Twilight ťa dohonil krídlami. Fialové vankúšiky, tvoja RAM.',
   'Istič ostal hrdzavý. SDR mlčí. Čína čaká.',
+  '1 000.000 kHz, režim AMN, VYSLAŤ. Jednoduché… keby Stano nekrúžil okolo.',
   'Uhlie som nechal v prírode, lebo železo zarábalo viacej. Ty si ostal tu.',
 ];
 const FLAVORS_HINT = [
@@ -2421,7 +2509,9 @@ function fixPower(how) {
   announce('⚡ NAPÁJANIE OBNOVENÉ', '#ffd23a');
   showHint(how === 'wd40'
     ? '🔧 WD-40 na hrdzu · istič je hore · svetlá + SDR aktívne'
-    : '🔋 12V zdroj pripojený · istič je hore · svetlá + SDR aktívne', 4.5);
+    : how === 'cheat'
+      ? '🧪 CHEAT · istič je hore · svetlá + SDR aktívne'
+      : '🔋 12V zdroj pripojený · istič je hore · svetlá + SDR aktívne', 4.5);
   // Stano počul clunk – ide preskúmať istič
   stano.target = [power.breaker.cell[0], power.breaker.cell[1]];
   stano.repathT = 0;
@@ -2443,8 +2533,7 @@ function interactAction() {
   }
   if (ds < 2.8) {
     if (!power.on) { sfx.unreach(); showHint('📡 SDR nemá napájanie · najprv oprav istič', 3); return; }
-    if (state.collected >= ITEM_DEFS.length) { startTransmission(); }
-    else { sfx.unreach(); showHint('📡 Najprv nájdi 8 spomienok · máš ' + state.collected + '/8', 3); }
+    openSDRPanel(); // SDR terminál: ladenie frekvencie – packet odletí až z 1 000.000 kHz AM
     return;
   }
   sfx.click();
@@ -2520,7 +2609,7 @@ function updatePrompt() {
       : '⚡ Istič je hrdzavý · nájdi 🔧 WD-40 alebo 🔋 12V zdroj';
   } else if (ds < 2.8) {
     if (!power.on) txt = '📡 SDR bez napájania · oprav istič';
-    else if (state.collected >= ITEM_DEFS.length) txt = '🇨🇳 [E] odoslať dáta do Číny cez SDR';
+    else if (state.collected >= ITEM_DEFS.length) txt = '🇨🇳 [E] SDR terminál · nalad 1.000 MHz AM a vyslať packet';
     else txt = '📡 SDR aktívny · spomienky ' + state.collected + '/8';
   }
   if (txt !== promptCache) {
@@ -3391,7 +3480,7 @@ pingBtnEl.addEventListener('click', (e) => { e.stopPropagation(); sendPacket(); 
 // Pointer Lock pre PC first-person rozhliadanie
 document.addEventListener('pointerlockchange', () => {
   const locked = document.pointerLockElement === dom;
-  if (state.mode === 'playing' && !isMobile) {
+  if (state.mode === 'playing' && !isMobile && !sdrPanel.open) {
     lockTipEl.style.display = locked ? 'none' : 'block';
   } else {
     lockTipEl.style.display = 'none';
@@ -3399,7 +3488,7 @@ document.addEventListener('pointerlockchange', () => {
 });
 
 document.addEventListener('mousemove', (e) => {
-  if (document.pointerLockElement === dom && state.mode === 'playing') {
+  if (document.pointerLockElement === dom && state.mode === 'playing' && !sdrPanel.open) {
     camYaw -= e.movementX * 0.0024;
     camPitch -= e.movementY * 0.0022;
     camPitch = Math.max(-1.15, Math.min(1.15, camPitch));
@@ -3408,7 +3497,7 @@ document.addEventListener('mousemove', (e) => {
 
 dom.addEventListener('pointerdown', (e) => {
   initAudio();
-  if (state.mode !== 'playing') return;
+  if (state.mode !== 'playing' || sdrPanel.open) return;
   const isTouch = e.pointerType !== 'mouse' && e.pointerType !== 'pen';
 
   if (!isTouch && dom.requestPointerLock && document.pointerLockElement !== dom) {
@@ -3468,6 +3557,8 @@ dom.addEventListener('contextmenu', (e) => e.preventDefault());
 window.addEventListener('keydown', (e) => {
   initAudio();
   const k = e.key.toLowerCase();
+  if (sdrPanel.open) { sdrPanelKey(e, k); return; } // SDR terminál má vlastné klávesy, hra je pauznutá
+  if (state.mode === 'playing' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') cheatFeed(k); // cheat kódy (TATRY / KIWI)
   if (k === 'f' && state.mode === 'playing') toggleTorch();
   if (k === 'p' && state.mode === 'playing') sendPacket();
   if (k === 'e' && state.mode === 'playing') interactAction();
@@ -3959,6 +4050,7 @@ function startGame() {
   document.getElementById('over').classList.add('hidden');
   document.getElementById('win').classList.add('hidden');
   resetGame();
+  sdrPanelClose(true);
   state.mode = 'playing';
   try { renderer.compile(scene, camera); } catch (e) {} // prewarm shaderov – plynulý prvý frame
 
@@ -4053,6 +4145,7 @@ function animate(now) {
   if (rawDt > 0) perfTick(rawDt);
 
   if (state.mode === 'playing') {
+    if (sdrPanel.open) { sdrPanelTick(rawDt); renderer.render(scene, camera); return; } // SDR pauza: Stano, Twilight, RAM aj čas stoja
     state.time += dt;
     updatePlayer(dt);
     const distToStano = updateStano(dt);
@@ -4181,8 +4274,696 @@ Promise.all([TEX_READY, FONTS_READY]).then(bootWorld).catch(() => bootWorld());
   });
 }
 
+/* =========================================================
+   SDR TERMINÁL – ladenie frekvencie (inšpirované KiwiSDR)
+   Cieľ: 1 000.000 kHz · režim AM → 📡 VYSLAŤ PACKET → Čína.
+   Kým je terminál otvorený, hra je pauznutá (Stano, Twilight,
+   RAM aj herný čas stoja), takže si na ladenie máš pokoj.
+   Každá frekvencia niečo hrá – stanice sú syntetizované cez
+   Web Audio podľa typu (morse, časová stanica, FT8, SSTV,
+   fax, číselná stanica, NBFM, DRM, uplink nosič).
+   ========================================================= */
+const SDR_TARGET_KHZ = 1000;
+const SDR_MAX_KHZ = 30000;
+
+/* Stanice v éteri (level of detail – každá znie inak) */
+const SDR_STATIONS = [
+  { f:162,   name:'LW 162',     type:'morse',   pat:'L',   bw:0.4,  str:0.38, col:'#b06cff' },
+  { f:518,   name:'NAVTEX',     type:'data',               bw:0.6,  str:0.45, col:'#ffb347' },
+  { f:981,   name:'MW MUZIKA',  type:'music',              bw:9,    str:0.55, col:'#ffd23a' },
+  { f:1449,  name:'MW ČÍSELNA', type:'numbers',            bw:9,    str:0.42, col:'#ff3bbd' },
+  { f:2500,  name:'WWV USA',    type:'time',               bw:2.5,  str:0.50, col:'#54f0d8' },
+  { f:3330,  name:'CHU CAN',    type:'time',               bw:2.5,  str:0.44, col:'#54f0d8' },
+  { f:3573,  name:'FT8 80m',    type:'data',               bw:2.8,  str:0.50, col:'#4d8cff' },
+  { f:3855,  name:'FAX METEO',  type:'fax',                bw:3,    str:0.45, col:'#ff5263' },
+  { f:4996,  name:'RWM RUS',    type:'morse',   pat:'RWM', bw:0.6,  str:0.45, col:'#b06cff' },
+  { f:5348,  name:'STANAG',     type:'data',               bw:3,    str:0.40, col:'#ff5263' },
+  { f:6220,  name:'HM01',       type:'numbers',            bw:5,    str:0.52, col:'#ff3bbd' },
+  { f:7074,  name:'FT8 40m',    type:'data',               bw:2.8,  str:0.48, col:'#4d8cff' },
+  { f:7850,  name:'CHU CAN',    type:'time',               bw:2.5,  str:0.44, col:'#54f0d8' },
+  { f:7880,  name:'FAX DE',     type:'fax',                bw:3,    str:0.40, col:'#ff5263' },
+  { f:9450,  name:'DRM',        type:'drm',                bw:10,   str:0.45, col:'#e6192e' },
+  { f:10027, name:'HFDL',       type:'data',               bw:3,    str:0.40, col:'#ff5263' },
+  { f:14074, name:'FT8 20m',    type:'data',               bw:2.8,  str:0.58, col:'#4d8cff' },
+  { f:14230, name:'SSTV',       type:'sstv',               bw:3.5,  str:0.50, col:'#3bbdff' },
+  { f:14670, name:'CHU CAN',    type:'time',               bw:2.5,  str:0.42, col:'#54f0d8' },
+  { f:15000, name:'WWV USA',    type:'time',               bw:2.5,  str:0.50, col:'#54f0d8' },
+  { f:18110, name:'RTTY',       type:'data',               bw:1.4,  str:0.36, col:'#ffb347' },
+  { f:21074, name:'FT8 15m',    type:'data',               bw:2.8,  str:0.42, col:'#4d8cff' },
+  { f:24960, name:'RTTY',       type:'data',               bw:1.4,  str:0.32, col:'#ffb347' },
+  { f:27070, name:'CB 27 MHz',  type:'fm',                 bw:10,   str:0.55, col:'#6bff9d' },
+  { f:28200, name:'BEACON 10m', type:'morse',   pat:'V',   bw:0.5,  str:0.40, col:'#b06cff' },
+];
+/* Náš uplink nosič – existuje len keď je istič hore (má napájanie) */
+const SDR_UPLINK = { f:SDR_TARGET_KHZ, name:'📡 UPLINK → CN', type:'uplink', bw:2.4, str:0.95, col:'#7ce8d4', up:true };
+
+const SDR_BANDS = [
+  [530,1700,'MW'],[2300,2495,'120m'],[3200,3400,'90m'],[3900,4000,'75m'],
+  [4750,5060,'60m'],[5900,6200,'49m'],[7200,7450,'41m'],[9400,9900,'31m'],
+  [11600,12100,'25m'],[13570,13870,'22m'],[15100,15800,'19m'],[17480,17900,'16m'],
+  [18900,19600,'15m'],[21450,21850,'13m'],[25600,26100,'11m'],[28000,29700,'10m'],
+];
+
+const sdrPanel = {
+  open:false, freq:10000, mode:'AMN',
+  center:15000, span:SDR_MAX_KHZ,
+  drag:false, wfAcc:0, jam:0, lastSig:0, lastSec:-1,
+  nextFsk:0, fskF:1200, burstOn:true, sstvI:0, melI:0, melT:0,
+  numT:0, faxP:0, pingT:0, pingNow:false,
+  morse:{ i:0, until:0, on:false, pat:null, name:'' },
+};
+
+/* ---- DOM prvky terminálu ---- */
+const sdrEl      = document.getElementById('sdrPanel');
+const sdrFreqEl  = document.getElementById('sdrFreq');
+const sdrScaleC  = document.getElementById('sdrScale');
+const sdrSpecC   = document.getElementById('sdrSpec');
+const sdrWfC     = document.getElementById('sdrWF');
+const sdrStatusEl= document.getElementById('sdrStatus');
+const sdrInEl    = document.getElementById('sdrIn');
+const sdrSmEl    = document.getElementById('sdrSmeter');
+const sdrTxEl    = document.getElementById('sdrTx');
+const sdrSpanEl  = document.getElementById('sdrSpan');
+const sdrScaleX  = sdrScaleC.getContext('2d');
+const sdrSpecX   = sdrSpecC.getContext('2d');
+const sdrWfX     = sdrWfC.getContext('2d');
+const sdrModeBtns= Array.from(sdrEl.querySelectorAll('#sdrModeRow button'));
+let sdrDpr = 1;
+let sdrLastFreqTxt = '';
+let sdrLastStatus = '';
+
+/* ---- Morse ---- */
+const SDR_MORSE = { A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.' };
+function sdrMorseUnits(str){
+  const seq = [];
+  const chars = [...String(str).replace(/[^A-Z0-9]/gi,'').toUpperCase()];
+  chars.forEach((ch, ci) => {
+    const code = SDR_MORSE[ch] || '';
+    for (let i = 0; i < code.length; i++) {
+      seq.push({ on:true, u: code[i] === '-' ? 3 : 1 });
+      if (i < code.length - 1) seq.push({ on:false, u:1 });
+    }
+    if (ci < chars.length - 1) seq.push({ on:false, u:3 });
+  });
+  return seq.length ? seq : [{ on:true, u:1 }];
+}
+
+/* ---- Paleta waterfallu (tmavá modrá → cyan → zelená → žltá → červená) ---- */
+const SDR_PAL = (() => {
+  const stops = [[0,4,8,26],[0.20,16,40,120],[0.38,18,96,200],[0.52,0,180,224],[0.66,34,214,140],[0.78,242,227,76],[0.88,255,138,43],[1,255,64,64]];
+  const arr = new Array(256);
+  for (let i = 0; i < 256; i++) {
+    const v = i / 255;
+    let a = stops[0], b = stops[stops.length - 1];
+    for (let s = 0; s < stops.length - 1; s++) if (v >= stops[s][0] && v <= stops[s + 1][0]) { a = stops[s]; b = stops[s + 1]; break; }
+    const t = b[0] === a[0] ? 0 : (v - a[0]) / (b[0] - a[0]);
+    arr[i] = `rgb(${Math.round(a[1] + (b[1] - a[1]) * t)},${Math.round(a[2] + (b[2] - a[2]) * t)},${Math.round(a[3] + (b[3] - a[3]) * t)})`;
+  }
+  return arr;
+})();
+function sdrPal(v){ return SDR_PAL[Math.max(0, Math.min(255, Math.round(v * 255)))]; }
+
+/* ---- RF model: šumové pozadie + signál staníc na danej frekvencii ---- */
+function sdrStationList(){ return power.on ? SDR_STATIONS.concat([SDR_UPLINK]) : SDR_STATIONS; }
+function sdrNoiseFloor(f){
+  return 0.10 + 0.15 * Math.exp(-f / 8000) + 0.03 * Math.sin(f / 1700);
+}
+function sdrSignalAt(f){
+  let sig = 0, best = null;
+  const list = sdrStationList();
+  for (const st of list) {
+    const d = Math.abs(f - st.f);
+    if (d > st.bw * 1.8) continue;
+    const s2 = 2 * Math.pow(st.bw * 0.55 + 0.08, 2);
+    const v = st.str * Math.exp(-(d * d) / s2);
+    if (v > sig) { sig = v; best = st; }
+  }
+  return { sig: Math.min(1, sig), best };
+}
+function sdrRowAmps(w, f0, df, now){
+  const amps = new Float32Array(w);
+  const list = sdrStationList();
+  for (const st of list) {
+    if (st.f + st.bw * 3 < f0 || st.f - st.bw * 3 > f0 + w * df) continue;
+    const flick = 0.72 + 0.28 * Math.sin(now / 1000 * (0.7 + (st.f % 7) / 7) + st.f);
+    const s2 = 2 * Math.pow(st.bw * 0.55 + 0.08, 2);
+    const x1 = Math.max(0, Math.floor((st.f - st.bw * 3 - f0) / df));
+    const x2 = Math.min(w - 1, Math.ceil((st.f + st.bw * 3 - f0) / df));
+    for (let x = x1; x <= x2; x++) {
+      const d = f0 + x * df - st.f;
+      amps[x] += st.str * flick * Math.exp(-(d * d) / s2);
+    }
+  }
+  return amps;
+}
+
+/* ---- Web Audio engine terminálu ---- */
+const sdrA = { on:false, master:null, noiseF:null, noiseG:null, tone:null, toneG:null, hum:null, humG:null, stepT:null };
+function sdrAudioInit(){
+  if (sdrA.master || !actx) return;
+  const a = actx;
+  const master = a.createGain(); master.gain.value = 0.5; master.connect(a.destination);
+  const buf = a.createBuffer(1, a.sampleRate * 2, a.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = a.createBufferSource(); src.buffer = buf; src.loop = true;
+  const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 750; bp.Q.value = 0.55;
+  const ng = a.createGain(); ng.gain.value = 0.0001;
+  src.connect(bp).connect(ng).connect(master); src.start();
+  const tone = a.createOscillator(); tone.type = 'sine'; tone.frequency.value = 600;
+  const tg = a.createGain(); tg.gain.value = 0.0001;
+  tone.connect(tg).connect(master); tone.start();
+  const hum = a.createOscillator(); hum.type = 'sine'; hum.frequency.value = 440;
+  const hg = a.createGain(); hg.gain.value = 0.0001;
+  hum.connect(hg).connect(master); hum.start();
+  sdrA.master = master; sdrA.noiseF = bp; sdrA.noiseG = ng;
+  sdrA.tone = tone; sdrA.toneG = tg; sdrA.hum = hum; sdrA.humG = hg;
+}
+function sdrAudioStart(){
+  sdrAudioInit(); if (!actx) return;
+  if (actx.state === 'suspended') actx.resume();
+  if (!sdrA.stepT) sdrA.stepT = setInterval(sdrAudioStep, 55);
+  sdrA.on = true;
+}
+function sdrAudioStop(){
+  sdrA.on = false;
+  if (sdrA.stepT) { clearInterval(sdrA.stepT); sdrA.stepT = null; }
+  if (actx && sdrA.noiseG) {
+    const t = actx.currentTime;
+    sdrA.noiseG.gain.setTargetAtTime(0.0001, t, 0.03);
+    sdrA.toneG.gain.setTargetAtTime(0.0001, t, 0.03);
+    sdrA.humG.gain.setTargetAtTime(0.0001, t, 0.03);
+  }
+}
+/* Srdce rádia: podľa naladenej frekvencie, módu a typu stanice moduluje šum / tón / nosný hum */
+function sdrAudioStep(){
+  if (!sdrA.on || !actx || !sdrA.master) return;
+  const now = performance.now();
+  const t = actx.currentTime;
+  const { sig, best } = sdrSignalAt(sdrPanel.freq);
+  const mode = sdrPanel.mode;
+  const isAM = (mode === 'AMN' || mode === 'SAM');
+  const garble = (mode === 'LSB') ? 0.62 : (mode === 'USB') ? 1.5 : 1;
+  const garbleV = (mode === 'LSB' || mode === 'USB') ? 0.75 : 1;
+
+  let ng = 0.035 + 0.14 * (1 - sig);
+  if (mode === 'IQ') ng *= 1.8;
+  if (mode === 'DRM') ng *= 1.5;
+  if (sdrPanel.jam > 0.15 && Math.random() < 0.1) ng += sdrPanel.jam * 0.12; // Stano ruší aj éter
+  sdrA.noiseG.gain.setTargetAtTime(Math.min(0.3, ng), t, 0.05);
+  sdrA.tone.type = 'sine';
+  if (!best || best.type !== 'drm') sdrA.noiseF.frequency.setTargetAtTime(750 + (1 - sig) * 320, t, 0.1);
+
+  let toneOn = false, toneF = 600, toneV = 0, humF = 440, humV = 0;
+  if (!best) {
+    if (Math.random() < 0.05) { toneOn = true; toneF = 300 + Math.random() * 1400; toneV = 0.012; } // duchovia v šume
+  } else switch (best.type) {
+    case 'morse': {
+      const mp = sdrPanel.morse;
+      if (!mp.pat || mp.name !== best.name) { mp.pat = sdrMorseUnits(best.pat || best.name); mp.i = 0; mp.until = now; mp.on = false; mp.name = best.name; }
+      if (now >= mp.until) {
+        const u = mp.pat[mp.i];
+        mp.on = u.on; mp.until = now + u.u * 72;
+        mp.i = (mp.i + 1) % mp.pat.length;
+      }
+      toneOn = mp.on;
+      toneF = (mode === 'CW') ? 620 : 520 * garble;
+      toneV = (mode === 'CW') ? 0.07 : 0.05 * garbleV;
+      if (isAM) { humF = 380; humV = 0.02; }
+      break;
+    }
+    case 'time': {
+      const sec = Math.floor(now / 1000);
+      if (sec !== sdrPanel.lastSec) { sdrPanel.lastSec = sec; toneOn = true; toneF = 1000; toneV = 0.085; } // tik každej sekundy
+      humF = 440; humV = 0.022 * garbleV;
+      break;
+    }
+    case 'data': {
+      if (now >= sdrPanel.nextFsk) {
+        sdrPanel.nextFsk = now + 55 + Math.random() * 70;
+        sdrPanel.fskF = [850, 1100, 1350, 1600, 1850, 2100][(Math.random() * 6) | 0];
+        sdrPanel.burstOn = Math.sin(now / 2400 + Math.random()) > -0.55;
+      }
+      toneOn = sdrPanel.burstOn; toneF = sdrPanel.fskF * garble; toneV = 0.06 * garbleV;
+      break;
+    }
+    case 'fax': {
+      sdrPanel.faxP = (sdrPanel.faxP + 0.055) % 1;
+      toneOn = true;
+      toneF = (1500 + sdrPanel.faxP * 800) * garble; toneV = 0.05 * garbleV;
+      if (sdrPanel.faxP < 0.02) { toneF = 2900; toneV = 0.07; } // synchronizačná línia
+      break;
+    }
+    case 'sstv': {
+      sdrPanel.sstvI = (sdrPanel.sstvI + 1) % 40;
+      const i = sdrPanel.sstvI;
+      toneOn = true;
+      if (i === 0) { toneF = 1200; toneV = 0.075; } // VIS sync
+      else { toneF = (1500 + i * 22) * garble; toneV = 0.05 * garbleV; }
+      break;
+    }
+    case 'music': {
+      if (now >= sdrPanel.melT) {
+        sdrPanel.melT = now + 260 + (Math.random() < 0.18 ? 420 : 0);
+        sdrPanel.melI = (sdrPanel.melI + 1) % 8;
+        sdrPanel.fskF = [392, 440, 494, 523, 587, 659, 587, 523][sdrPanel.melI];
+      }
+      sdrA.tone.type = 'triangle';
+      toneOn = true; toneF = sdrPanel.fskF * garble; toneV = 0.05 * garbleV;
+      humF = 196; humV = 0.02 * garbleV;
+      break;
+    }
+    case 'numbers': {
+      if (now >= sdrPanel.numT) { sdrPanel.numT = now + 700 + Math.random() * 900; sdrPanel.fskF = 300 + Math.random() * 450; }
+      toneOn = true; toneF = sdrPanel.fskF * (0.9 + Math.sin(now / 300) * 0.1) * garble; toneV = 0.045 * garbleV;
+      humF = 230 + Math.sin(now / 900) * 90; humV = 0.03 * garbleV;
+      break;
+    }
+    case 'fm': {
+      if (now >= sdrPanel.numT) { sdrPanel.numT = now + 500 + Math.random() * 700; sdrPanel.fskF = 350 + Math.random() * 500; sdrPanel.burstOn = Math.random() < 0.75; }
+      toneOn = sdrPanel.burstOn; toneF = sdrPanel.fskF * garble; toneV = 0.05;
+      break;
+    }
+    case 'drm': {
+      if (now >= sdrPanel.nextFsk) { sdrPanel.nextFsk = now + 90; sdrA.noiseF.frequency.setTargetAtTime(500 + Math.random() * 2600, t, 0.04); }
+      toneOn = Math.random() < 0.4; toneF = 800 + Math.random() * 1500; toneV = 0.02;
+      break;
+    }
+    case 'uplink': {
+      if (now >= sdrPanel.nextFsk) {
+        sdrPanel.nextFsk = now + 45 + Math.random() * 40;
+        sdrPanel.fskF = [700, 950, 1200, 1500, 1800, 2150, 2400][(Math.random() * 7) | 0];
+      }
+      toneOn = true; toneF = sdrPanel.fskF; toneV = 0.065;
+      humF = 440; humV = 0.028;
+      if (now - sdrPanel.pingT > 1900) { sdrPanel.pingT = now; sdrPanel.pingNow = true; } else sdrPanel.pingNow = false;
+      if (sdrPanel.pingNow) { toneF = 1250; toneV = 0.1; humV = 0.05; }
+      break;
+    }
+  }
+
+  /* Vplyv módu na príjem */
+  if (mode === 'CW' && best && best.type !== 'morse') { toneOn = true; toneF = 600; toneV = 0.03 + sig * 0.03; humV = 0; }
+  if (mode === 'DRM' && (!best || best.type !== 'drm')) { toneOn = false; humV = 0; }
+  if (mode === 'IQ') { toneOn = false; humV = 0; }
+  if (mode === 'NBFM' && best && best.type !== 'fm') { toneV *= 0.8; ng *= 0.7; }
+
+  sdrA.tone.frequency.setTargetAtTime(toneF, t, 0.02);
+  sdrA.toneG.gain.setTargetAtTime(toneOn ? toneV : 0.0001, t, 0.025);
+  sdrA.hum.frequency.setTargetAtTime(humF, t, 0.03);
+  sdrA.humG.gain.setTargetAtTime(humV, t, 0.05);
+}
+function sdrClick(f = 880){ if (actx) tone(f, 0.05, 'square', 0.03); }
+
+/* ---- Čo musí splniť packet, aby odletel do Číny ---- */
+function sdrTargetCheck(){
+  const onF = Math.abs(sdrPanel.freq - SDR_TARGET_KHZ) < 0.05;
+  const onM = (sdrPanel.mode === 'AMN' || sdrPanel.mode === 'SAM');
+  return { onF, onM, ok: onF && onM };
+}
+function sdrStatusMsg(kind){
+  const c = sdrTargetCheck();
+  const mem = state.collected, need = ITEM_DEFS.length;
+  let cls = '', txt = '';
+  switch (kind) {
+    case 'tutor': txt = '🎯 Cieľ: <b>1 000.000 kHz (1 MHz) · AMN</b> · klik/ťahanie po pásme = ladenie · ←/→ dolaď (Shift jemne) · koliesko = zoom · frekvenciu zadej aj ručne v kHz.'; break;
+    case 'badInput': txt = '❌ Neplatná frekvencia – zadaj číslo v kHz (napr. 1000).'; cls = 'err'; break;
+    case 'tx-noCarrier': txt = '❌ Na ' + sdrPanel.freq.toFixed(3) + ' kHz nie je náš nosič – uplink Číny je na <b>1 000.000 kHz</b>.'; cls = 'err'; break;
+    case 'tx-badMode': txt = '⚠ 1 MHz nosič je AM – režim <b>' + sdrPanel.mode + '</b> ho nedemoduluje. Stlač <b>AMN</b>.'; cls = 'err'; break;
+    case 'tx-nodata': txt = '❌ Nosič uzamknutý, ale chýbajú dáta: spomienky ' + mem + '/' + need + '. Najprv zozbieraj všetkých 8.'; cls = 'err'; break;
+    case 'tx-go': txt = '🇨🇳 Nosič 1 MHz AM uzamknutý · odosielam packet do Číny…'; cls = 'ok'; break;
+    default:
+      if (c.ok && mem >= need) { txt = '✓ Nosič 1 MHz AM uzamknutý · dáta pripravené · stlač <b>📡 VYSLAŤ PACKET</b>.'; cls = 'ok'; }
+      else if (c.ok) { txt = '✓ Frekvencia aj režim sedí (1 MHz AM) · chýbajú spomienky: ' + mem + '/' + need + '.'; cls = 'ok'; }
+      else if (c.onF && !c.onM) { txt = '⚠ Si na 1 MHz, ale <b>' + sdrPanel.mode + '</b> nevie AM nosič – prepol na <b>AMN</b>.'; cls = 'err'; }
+      else { txt = 'Naladené: <b>' + sdrLastFreqTxt.replace(' ', '') + '</b> kHz · ' + sdrPanel.mode + ' · cieľ: 1 000.000 kHz AM'; }
+  }
+  if (txt !== sdrLastStatus) { sdrLastStatus = txt; sdrStatusEl.innerHTML = txt; sdrStatusEl.className = cls; }
+}
+function sdrSyncUI(force){
+  const f = sdrPanel.freq;
+  const txt = f.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  if (txt !== sdrLastFreqTxt || force) {
+    sdrLastFreqTxt = txt;
+    sdrFreqEl.innerHTML = txt + ' <small>kHz</small>';
+  }
+  const sp = sdrPanel.span;
+  sdrSpanEl.textContent = 'span ' + (sp >= 1000 ? (sp / 1000).toFixed(sp > 10000 ? 0 : 1) + ' MHz' : sp.toFixed(0) + ' kHz');
+  for (const b of sdrModeBtns) b.classList.toggle('on', b.dataset.m === sdrPanel.mode);
+  sdrFreqEl.classList.toggle('ok', sdrTargetCheck().onF);
+  sdrTxEl.classList.toggle('dim', !(sdrTargetCheck().ok && state.collected >= ITEM_DEFS.length));
+  sdrStatusMsg('auto');
+}
+function sdrUpdateMeter(){
+  const { sig } = sdrSignalAt(sdrPanel.freq);
+  sdrPanel.lastSig = sig;
+  const s = Math.max(1, Math.min(9, 1 + Math.round(sig * 8)));
+  const filled = Math.max(1, Math.round(sig * 10));
+  sdrSmEl.textContent = 'S' + s + ' ' + '█'.repeat(filled) + '░'.repeat(10 - filled) + ' ' + sdrPanel.mode;
+}
+
+/* ---- Ladenie a pohľad (zoom/pan ako KiwiSDR) ---- */
+function sdrSetFreq(f, quiet){
+  f = Math.max(0.1, Math.min(SDR_MAX_KHZ - 0.1, f));
+  sdrPanel.freq = Math.round(f * 1000) / 1000;
+  sdrSyncUI();
+  if (!quiet) sdrClick(760);
+}
+function sdrClampCenter(){
+  const half = sdrPanel.span / 2;
+  sdrPanel.center = Math.max(half, Math.min(SDR_MAX_KHZ - half, sdrPanel.center));
+}
+function sdrZoomAt(f, span){
+  span = Math.max(1.5, Math.min(SDR_MAX_KHZ, span));
+  const o = sdrPanel.span;
+  sdrPanel.center = f + (sdrPanel.center - f) * (span / o);
+  sdrPanel.span = span;
+  sdrClampCenter();
+  sdrSyncUI();
+}
+function sdrApplyInput(){
+  const raw = sdrInEl.value.replace(/[^\d.,]/g, '').replace(',', '.');
+  const v = parseFloat(raw);
+  if (!isFinite(v) || v <= 0) { sdrStatusMsg('badInput'); sdrClick(220); return; }
+  sdrSetFreq(v, true);
+  sdrInEl.value = '';
+  sdrClick(980);
+}
+
+/* ---- Kreslenie: waterfall, spektrum, mierka so štítkami staníc ---- */
+function sdrResize(){
+  sdrDpr = Math.min(2, window.devicePixelRatio || 1);
+  const setup = (cv, hCss) => {
+    const w = Math.max(200, cv.clientWidth | 0);
+    cv.width = Math.round(w * sdrDpr);
+    cv.height = Math.round(hCss * sdrDpr);
+  };
+  setup(sdrScaleC, 36); setup(sdrSpecC, 46);
+  setup(sdrWfC, Math.max(80, sdrWfC.clientHeight | 0));
+  const ctx = sdrWfX;
+  ctx.setTransform(sdrDpr, 0, 0, sdrDpr, 0, 0);
+  ctx.fillStyle = '#01040a';
+  ctx.fillRect(0, 0, sdrWfC.clientWidth, sdrWfC.clientHeight);
+}
+function sdrDrawRow(){
+  const c = sdrWfC;
+  if (!c.clientWidth || !sdrPanel.open) return;
+  const ctx = sdrWfX;
+  const W = c.width, H = c.height;
+  const dy = Math.max(1, Math.round(2 * sdrDpr));
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (H > dy) ctx.drawImage(c, 0, 0, W, H - dy, 0, dy, W, H - dy); // posun waterfallu o 2 px dole
+  ctx.setTransform(sdrDpr, 0, 0, sdrDpr, 0, 0);
+  const w = c.clientWidth;
+  ctx.clearRect(0, 0, w, 2);
+  const f0 = sdrPanel.center - sdrPanel.span / 2, df = sdrPanel.span / w;
+  const amps = sdrRowAmps(w, f0, df, performance.now());
+  const jam = sdrPanel.jam;
+  for (let x = 0; x < w; x++) {
+    let v = sdrNoiseFloor(f0 + x * df) * (0.8 + 0.35 * Math.random());
+    v += amps[x];
+    if (jam > 0.15 && Math.random() < jam * 0.25) v += jam * 0.25 * Math.random();
+    ctx.fillStyle = sdrPal(Math.min(1, v));
+    ctx.fillRect(x, 0, 1, 2);
+  }
+  const xf = (sdrPanel.freq - f0) / df;
+  if (xf >= 0 && xf <= w) { ctx.fillStyle = 'rgba(255,138,43,0.55)'; ctx.fillRect(Math.round(xf), 0, 1, 2); }
+}
+function sdrDrawSpec(){
+  const c = sdrSpecC;
+  if (!c.clientWidth || !sdrPanel.open) return;
+  const ctx = sdrSpecX;
+  const w = c.clientWidth, h = c.clientHeight;
+  ctx.setTransform(sdrDpr, 0, 0, sdrDpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const f0 = sdrPanel.center - sdrPanel.span / 2, df = sdrPanel.span / w;
+  const amps = sdrRowAmps(w, f0, df, performance.now());
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += 2) {
+    const xi = Math.min(w - 1, x);
+    let v = sdrNoiseFloor(f0 + xi * df) * (0.85 + 0.3 * Math.random()) + amps[xi];
+    v = Math.min(1, v);
+    const y = h - 2 - v * (h - 6);
+    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'rgba(84,240,216,.85)'; ctx.lineWidth = 1.1; ctx.stroke();
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  const gr = ctx.createLinearGradient(0, 0, 0, h);
+  gr.addColorStop(0, 'rgba(56,217,192,.30)'); gr.addColorStop(1, 'rgba(56,217,192,.02)');
+  ctx.fillStyle = gr; ctx.fill();
+  const xf = (sdrPanel.freq - f0) / df;
+  if (xf >= 0 && xf <= w) { ctx.fillStyle = '#ff8a2b'; ctx.fillRect(xf - 1, 0, 2, h); }
+}
+function sdrNiceStep(span){
+  const target = span / 8;
+  const ladder = [0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+  for (const s of ladder) if (s >= target) return s;
+  return 10000;
+}
+function sdrTickLabel(f){
+  const v = Math.round(f * 100) / 100;
+  if (sdrPanel.span > 6000) return String(Math.round(v / 1000));
+  if (sdrPanel.span > 1200) return (v / 1000).toFixed(1);
+  return String(Math.round(v * 10) / 10);
+}
+function sdrDrawScale(){
+  const c = sdrScaleC;
+  if (!c.clientWidth || !sdrPanel.open) return;
+  const ctx = sdrScaleX;
+  const w = c.clientWidth, h = 36;
+  ctx.setTransform(sdrDpr, 0, 0, sdrDpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  const f0 = sdrPanel.center - sdrPanel.span / 2, df = sdrPanel.span / w;
+  let bi = 0;
+  for (const [a, b, name] of SDR_BANDS) {
+    const x1 = (a - f0) / df, x2 = (b - f0) / df;
+    if (x2 < 0 || x1 > w) continue;
+    ctx.fillStyle = (bi++ % 2) ? 'rgba(56,140,170,.14)' : 'rgba(56,140,170,.24)';
+    ctx.fillRect(x1, 0, x2 - x1, h);
+    if (x2 - x1 > 40) { ctx.fillStyle = 'rgba(150,235,220,.5)'; ctx.font = '9px monospace'; ctx.fillText(name, Math.max(2, x1 + 3), 33); }
+  }
+  const step = sdrNiceStep(sdrPanel.span);
+  ctx.font = '10px monospace';
+  for (let f = Math.ceil(f0 / step) * step; f <= f0 + sdrPanel.span + step * 0.01; f += step) {
+    const x = (f - f0) / df;
+    if (x < -50 || x > w + 50) continue;
+    ctx.strokeStyle = 'rgba(140,230,215,.45)';
+    ctx.beginPath(); ctx.moveTo(x, 22); ctx.lineTo(x, 30); ctx.stroke();
+    ctx.fillStyle = 'rgba(185,240,230,.85)';
+    ctx.fillText(sdrTickLabel(f), x + 3, 20);
+  }
+  ctx.strokeStyle = 'rgba(140,230,215,.28)';
+  ctx.beginPath(); ctx.moveTo(0, 22.5); ctx.lineTo(w, 22.5); ctx.stroke();
+  // štítky staníc v dvoch riadkoch (ako KiwiSDR)
+  const rows = [[], []];
+  const list = sdrStationList().slice().sort((a, b) => a.f - b.f);
+  const now = performance.now();
+  ctx.font = '9px monospace';
+  for (const st of list) {
+    const x = (st.f - f0) / df;
+    if (x < -80 || x > w + 30) continue;
+    const tw = ctx.measureText(st.name).width + 7;
+    let row = -1;
+    for (let r = 0; r < 2; r++) if (rows[r].every(iv => x + tw < iv[0] - 4 || x > iv[1] + 4)) { row = r; break; }
+    const isUp = !!st.up;
+    if (row < 0) { if (!isUp) continue; row = 0; }
+    rows[row].push([x, x + tw]);
+    const y = row === 0 ? 8 : 17;
+    const pu = isUp ? (0.35 + 0.3 * Math.sin(now / 280)) : 0.22;
+    ctx.fillStyle = st.col;
+    ctx.globalAlpha = pu;
+    ctx.fillRect(x - 2, y - 7, tw, 9);
+    ctx.globalAlpha = 1;
+    if (isUp) { ctx.shadowColor = '#7ce8d4'; ctx.shadowBlur = 6; }
+    ctx.fillStyle = isUp ? '#eafffa' : st.col;
+    ctx.fillText(st.name, x + 1.5, y);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = st.col;
+    ctx.fillRect(x, 21, 1.5, 7);
+  }
+  const xf = (sdrPanel.freq - f0) / df;
+  if (xf >= 0 && xf <= w) {
+    ctx.fillStyle = '#ff8a2b';
+    ctx.beginPath();
+    ctx.moveTo(xf, 6); ctx.lineTo(xf - 4, 0); ctx.lineTo(xf + 4, 0); ctx.closePath(); ctx.fill();
+    ctx.fillRect(xf - 0.75, 6, 1.5, 30);
+  }
+}
+
+/* ---- Otvorenie / zatvorenie terminálu (hra sa pauzne) ---- */
+function openSDRPanel(){
+  if (sdrPanel.open || state.mode !== 'playing') return;
+  sdrPanel.open = true;
+  sdrPanel.jam = Math.max(0, 1 - Math.hypot(stano.pos.x - player.pos.x, stano.pos.z - player.pos.z) / 9);
+  sdrEl.classList.add('open');
+  exitPointerLockSafe();
+  keys.clear(); input.move.x = 0; input.move.y = 0;
+  hintTimer = 0; hintEl.style.opacity = '0.35';
+  promptTipEl.style.display = 'none';
+  if (bgMusic) bgMusic.volume = Math.max(0.03, bgMusic.volume * 0.25);      // hudba dozvuku, nech je počuť éter
+  if (horrorAudio.droneGain && actx) horrorAudio.droneGain.gain.setTargetAtTime(0.016, actx.currentTime, 0.2);
+  sdrResize();
+  sdrAudioStart();
+  sdrSyncUI(true);
+  sdrStatusMsg('tutor');
+  sdrClick(880);
+}
+function sdrPanelClose(silent){
+  if (!sdrPanel.open) return;
+  sdrPanel.open = false;
+  sdrEl.classList.remove('open');
+  sdrAudioStop();
+  keys.clear();
+  if (bgMusic) bgMusic.volume = Math.min(1, Math.max(MUSIC_QUIET, bgMusic.volume * 4));
+  if (horrorAudio.droneGain && actx) horrorAudio.droneGain.gain.setTargetAtTime(0.045, actx.currentTime, 0.2);
+  if (!silent && state.mode === 'playing' && !isMobile && dom.requestPointerLock) {
+    try { dom.requestPointerLock(); } catch (_) {}
+  }
+}
+function sdrTxClick(){
+  const c = sdrTargetCheck();
+  if (!c.onF) { sdrClick(220); sdrStatusMsg('tx-noCarrier'); return; }
+  if (!c.onM) { sdrClick(220); sdrStatusMsg('tx-badMode'); return; }
+  if (state.collected < ITEM_DEFS.length) { sdrClick(240); sdrStatusMsg('tx-nodata'); return; }
+  sdrStatusMsg('tx-go');
+  sdrClick(1320);
+  setTimeout(() => { sdrPanelClose(true); startTransmission(); }, 380);
+}
+/* Klávesy terminálu (hra je pauznutá – herné klávesy sú zablokované) */
+function sdrPanelKey(e, k){
+  if (e.target === sdrInEl) {
+    if (k === 'enter') { e.preventDefault(); sdrApplyInput(); }
+    else if (k === 'escape') sdrPanelClose();
+    return; // písanie do poľa frekvencie
+  }
+  if (k === 'escape' || k === 'e') { sdrPanelClose(); return; }
+  if (k === 'arrowleft')  { e.preventDefault(); sdrSetFreq(sdrPanel.freq - (e.shiftKey ? 0.1 : 1)); return; }
+  if (k === 'arrowright') { e.preventDefault(); sdrSetFreq(sdrPanel.freq + (e.shiftKey ? 0.1 : 1)); return; }
+  if (k === 'arrowup')    { e.preventDefault(); sdrSetFreq(sdrPanel.freq + (e.shiftKey ? 1 : 10)); return; }
+  if (k === 'arrowdown')  { e.preventDefault(); sdrSetFreq(sdrPanel.freq - (e.shiftKey ? 1 : 10)); return; }
+  if (k === 'pageup')     { e.preventDefault(); sdrSetFreq(sdrPanel.freq + 100); return; }
+  if (k === 'pagedown')   { e.preventDefault(); sdrSetFreq(sdrPanel.freq - 100); return; }
+  if (k === '+' || k === '=') { sdrZoomAt(sdrPanel.freq, sdrPanel.span / 1.5); return; }
+  if (k === '-')              { sdrZoomAt(sdrPanel.freq, sdrPanel.span * 1.5); return; }
+  if (k === 'enter') { e.preventDefault(); sdrTxClick(); return; }
+  if (k === ' ') { e.preventDefault(); }
+  // ostatné klávesy sa ignorujú – hra stojí
+}
+/* Tick terminálu – beží namiesto hernej logiky počas pauzy */
+function sdrPanelTick(rawDt){
+  sdrPanel.wfAcc += Math.min(rawDt, 0.12);
+  if (sdrPanel.wfAcc >= 0.066) {
+    sdrPanel.wfAcc = 0;
+    sdrDrawRow();
+    sdrDrawSpec();
+    sdrDrawScale();
+    sdrUpdateMeter();
+  }
+}
+
+/* ---- Klik/ťah na pásme = ladenie, koliesko = zoom, dvoj-klik = vycentrovanie ---- */
+function sdrCanvasFreq(e){
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width;
+  return sdrPanel.center - sdrPanel.span / 2 + x * sdrPanel.span;
+}
+for (const cv of [sdrScaleC, sdrSpecC, sdrWfC]) {
+  cv.addEventListener('pointerdown', (e) => {
+    sdrPanel.drag = true;
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    sdrSetFreq(sdrCanvasFreq(e), true);
+    e.preventDefault();
+  });
+  cv.addEventListener('pointermove', (e) => { if (sdrPanel.drag) sdrSetFreq(sdrCanvasFreq(e), true); });
+  cv.addEventListener('pointerup', () => { sdrPanel.drag = false; });
+  cv.addEventListener('pointercancel', () => { sdrPanel.drag = false; });
+  cv.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const f = sdrCanvasFreq(e);
+    sdrZoomAt(f, sdrPanel.span * (e.deltaY < 0 ? 1 / 1.4 : 1.4));
+  }, { passive:false });
+  cv.addEventListener('dblclick', (e) => {
+    sdrPanel.center = sdrCanvasFreq(e);
+    sdrClampCenter();
+    sdrSyncUI();
+    sdrClick(1040);
+  });
+}
+document.getElementById('sdrZin').addEventListener('click', () => { sdrZoomAt(sdrPanel.freq, sdrPanel.span / 1.6); sdrClick(900); });
+document.getElementById('sdrZout').addEventListener('click', () => { sdrZoomAt(sdrPanel.freq, sdrPanel.span * 1.6); sdrClick(700); });
+document.getElementById('sdrReset').addEventListener('click', () => { sdrPanel.span = SDR_MAX_KHZ; sdrPanel.center = SDR_MAX_KHZ / 2; sdrSyncUI(); sdrClick(600); });
+document.getElementById('sdrTuneL').addEventListener('click', () => sdrSetFreq(sdrPanel.freq - 1));
+document.getElementById('sdrTuneR').addEventListener('click', () => sdrSetFreq(sdrPanel.freq + 1));
+document.getElementById('sdrGo').addEventListener('click', sdrApplyInput);
+document.getElementById('sdrTx').addEventListener('click', sdrTxClick);
+document.getElementById('sdrClose').addEventListener('click', () => sdrPanelClose());
+for (const b of sdrModeBtns) {
+  b.addEventListener('click', () => { sdrPanel.mode = b.dataset.m; sdrSyncUI(true); sdrClick(820); });
+}
+sdrInEl.addEventListener('keydown', (e) => e.stopPropagation());
+window.addEventListener('resize', () => { if (sdrPanel.open) sdrResize(); });
+
+/* =========================================================
+   CHEAT KÓDY (dev skratky – píš počas hry, bez úhlových zátvoriek)
+   TATRY = teleport k SDR vysielaču + opraví istič + otvorí terminál
+   KIWI  = okamžite nazbiera všetkých 8 spomienok (pre test packetu)
+   V konzole: __LABY.cheat.sdr() / __LABY.cheat.items()
+   ========================================================= */
+const CHEAT_CODES = { tatry: cheatTeleportSDR, kiwi: cheatCollectAll };
+let cheatBuf = '';
+function cheatFeed(k) {
+  if (k.length !== 1 || !/[a-z]/.test(k)) { cheatBuf = ''; return; }
+  cheatBuf = (cheatBuf + k).slice(-12);
+  for (const code in CHEAT_CODES) {
+    if (cheatBuf.endsWith(code)) {
+      cheatBuf = '';
+      if (CHEAT_CODES[code]()) showHint('🧪 CHEAT „' + code.toUpperCase() + '“', 2.2);
+      return;
+    }
+  }
+}
+
+/* TATRY – presunie hráč k SDR, má k nemu chrbtom voľnú cestu, pozrie sa naň a otvorí terminál */
+function cheatTeleportSDR() {
+  if (state.mode !== 'playing' || !power.sdr) return false;
+  if (!power.on) fixPower('cheat');                      // SDR bez prúdu by bol mrtvy – istič nahor
+  const s = power.sdr;
+  const cand = [];                                        // smery: k hráčovi, potom voľní susedia bunky
+  const toP = new THREE.Vector3(player.pos.x - s.pos.x, 0, player.pos.z - s.pos.z);
+  if (toP.lengthSq() > 0.01) cand.push(toP.clone().normalize());
+  for (const [dx, dz] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+    const nx = s.cell[0] + dx, nz = s.cell[1] + dz;
+    if (nx >= 0 && nz >= 0 && nx < COLS && nz < ROWS && grid[nz][nx] === 0)
+      cand.push(new THREE.Vector3(dx, 0, dz).normalize());
+  }
+  let spot = null;
+  for (const d of cand) {                                 // 1.7 m od SDR = v dosahu [E], mimo modelu
+    const w = new THREE.Vector3(s.pos.x + d.x * 1.7, 0, s.pos.z + d.z * 1.7);
+    if (canMove(w.x, w.z, 0.32)) { spot = w; break; }
+  }
+  if (spot) {
+    player.pos.set(spot.x, player.pos.y, spot.z);
+    const sdx = s.pos.x - player.pos.x, sdz = s.pos.z - player.pos.z;
+    if (sdx || sdz) { camYaw = Math.atan2(-sdx, -sdz); camPitch = 0; }  // pohni sa na anténu
+  }
+  keys.clear(); input.move.x = 0; input.move.y = 0;
+  openSDRPanel();
+  return true;
+}
+
+/* KIWI – nazbiera všetky hlavné spomienky cez normálny collectItem (RAM, HUD, announce) */
+function cheatCollectAll() {
+  if (state.mode !== 'playing') return false;
+  let n = 0;
+  for (const it of items) {
+    if (it.counts && !it.collected) { collectItem(it); n++; }
+  }
+  if (!n) showHint('🧪 Spomienky už máš všetky (' + Math.min(state.collected, ITEM_DEFS.length) + '/8)', 2.6);
+  return true;
+}
+
 // Debug handle (testovanie v konzole)
-window.__LABY = { state, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic, renderer, quality };
+window.__LABY = { state, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic, renderer, quality, sdrPanel, cheat: { sdr: () => cheatTeleportSDR(), items: () => cheatCollectAll() }, sdrDebug: { open: () => openSDRPanel(), close: () => sdrPanelClose(true), setFreq: (f) => sdrSetFreq(f, true), tx: () => sdrTxClick(), stations: () => sdrStationList() } };
 
 /* Výber kvality v menu – uloží sa do localStorage a stránka sa načíta znova */
 const qualitySel = document.getElementById('qualitySel');
