@@ -29,23 +29,28 @@
     background:radial-gradient(circle at center, rgba(0,0,0,0) 42%, rgba(0,0,0,0.88) 100%);
   }
   #grain{
-    position:fixed; inset:-50%; width:200%; height:200%; pointer-events:none; z-index:8;
-    opacity:0.055;
+    position:fixed; inset:-20%; width:140%; height:140%; pointer-events:none; z-index:8;
+    opacity:0.055; will-change:transform;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     animation:grainMove 0.35s steps(3) infinite;
   }
   @keyframes grainMove{
     0%{ transform:translate(0,0); }
-    33%{ transform:translate(-3%,2%); }
-    66%{ transform:translate(2%,-3%); }
-    100%{ transform:translate(-1%,-1%); }
+    33%{ transform:translate(-1.4%,1.0%); }
+    66%{ transform:translate(1.1%,-1.3%); }
+    100%{ transform:translate(-0.6%,-0.6%); }
+  }
+  /* Na nízkej kvalite a pri reduced-motion je grain statický (žiadna animácia) */
+  body.q-low #grain{ animation:none; }
+  @media (prefers-reduced-motion: reduce){
+    #grain{ animation:none; }
   }
 
   /* ---------- DANGER & INTERFERENCE ---------- */
   #danger{
     position:fixed; inset:0; pointer-events:none; z-index:9; opacity:0;
     background:radial-gradient(ellipse at center, rgba(120,0,15,0.05) 30%, rgba(210,10,25,.72) 100%);
-    transition:opacity .1s linear;
+    transition:opacity .1s linear; will-change:opacity;
   }
   #dangerText{
     position:absolute; top:22%; left:50%; transform:translate(-50%,-50%);
@@ -84,9 +89,9 @@
   }
 
   #ramwrap{
-    flex:1; max-width:300px; background:rgba(6,8,12,.78);
+    flex:1; max-width:300px; background:rgba(6,8,12,.9);
     border:1px solid rgba(56,217,192,.32); border-radius:8px;
-    padding:7px 10px 8px; backdrop-filter:blur(6px);
+    padding:7px 10px 8px; 
     box-shadow:0 4px 20px rgba(0,0,0,0.8);
   }
   #ramlabel{
@@ -109,10 +114,10 @@
 
   #torchBtn, #pingBtn{
     pointer-events:auto; cursor:pointer;
-    background:rgba(6,8,12,.78); border:1px solid rgba(255,190,80,.4);
+    background:rgba(6,8,12,.9); border:1px solid rgba(255,190,80,.4);
     color:#ffd073; border-radius:8px; padding:8px 11px;
     font-size:12px; font-weight:700; letter-spacing:.05em;
-    backdrop-filter:blur(6px);
+    
   }
   #torchBtn.off, #pingBtn.off{ border-color:rgba(120,130,140,.3); color:#66707a; }
   #pingBtn{ border-color:rgba(56,217,192,.45); color:#7ce8d4; }
@@ -121,9 +126,9 @@
   /* ---------- PACKET TRACER TERMINÁL ---------- */
   #trace{
     position:absolute; top:calc(96px + env(safe-area-inset-top)); left:12px;
-    max-width:320px; background:rgba(3,10,10,.86); border:1px solid rgba(56,217,192,.4);
+    max-width:320px; background:rgba(3,10,10,.93); border:1px solid rgba(56,217,192,.4);
     border-radius:8px; padding:8px 11px; font-size:11.5px; line-height:1.55;
-    color:#8ce8d4; display:none; pointer-events:none; backdrop-filter:blur(6px);
+    color:#8ce8d4; display:none; pointer-events:none; 
     box-shadow:0 0 18px rgba(0,0,0,.7), inset 0 0 12px rgba(56,217,192,.05);
     text-align:left;
   }
@@ -139,9 +144,9 @@
   }
   #inv .slot{
     position:relative; width:44px; height:44px; border-radius:8px;
-    background:rgba(6,8,12,.78); border:1px solid rgba(56,217,192,.22);
+    background:rgba(6,8,12,.9); border:1px solid rgba(56,217,192,.22);
     font-size:20px; line-height:1; cursor:pointer; padding:0;
-    backdrop-filter:blur(6px); opacity:.45;
+     opacity:.45;
     transition:opacity .2s, border-color .2s, box-shadow .2s;
   }
   #inv .slot .e{ position:absolute; left:50%; top:50%; transform:translate(-50%,-54%); filter:grayscale(1) brightness(0.75); }
@@ -157,8 +162,8 @@
   #inv .slot.has .c{ display:block; }
 
   #scorebox{
-    background:rgba(6,8,12,.78); border:1px solid rgba(230,25,46,.45);
-    border-radius:8px; padding:8px 12px; backdrop-filter:blur(6px);
+    background:rgba(6,8,12,.9); border:1px solid rgba(230,25,46,.45);
+    border-radius:8px; padding:8px 12px; 
     font-size:13px; font-weight:700; letter-spacing:.04em; white-space:nowrap;
   }
   #scorebox b{ color:var(--orange); font-size:16px; }
@@ -174,14 +179,14 @@
     position:absolute; left:50%; bottom:calc(16px + env(safe-area-inset-bottom));
     transform:translateX(-50%);
     font-size:12px; color:#9bb5b0; letter-spacing:.04em; text-align:center;
-    padding:7px 16px; border-radius:6px; background:rgba(4,6,10,.82);
+    padding:7px 16px; border-radius:6px; background:rgba(4,6,10,.9);
     border:1px solid rgba(56,217,192,.22); white-space:nowrap;
     transition:opacity .5s; max-width:64vw; overflow:hidden; text-overflow:ellipsis;
   }
 
   #lockTip{
     position:absolute; top:56%; left:50%; transform:translate(-50%,-50%);
-    font-size:11px; color:rgba(200,230,225,0.65); background:rgba(0,0,0,0.65);
+    font-size:11px; color:rgba(200,230,225,0.65); background:rgba(0,0,0,0.78);
     padding:5px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.12);
     pointer-events:none; display:none;
   }
@@ -189,18 +194,18 @@
   /* ---------- NAPÁJANIE / AKCIA / ANNOUNCE / PROMPT ---------- */
   #powerChip{
     pointer-events:none;
-    background:rgba(6,8,12,.78); border:1px solid rgba(255,120,40,.5);
+    background:rgba(6,8,12,.9); border:1px solid rgba(255,120,40,.5);
     color:#ffb26b; border-radius:8px; padding:8px 11px;
     font-size:12px; font-weight:800; letter-spacing:.06em;
-    backdrop-filter:blur(6px); white-space:nowrap;
+     white-space:nowrap;
   }
   #powerChip.on{ border-color:rgba(70,230,120,.55); color:#6bff9d; box-shadow:0 0 12px rgba(60,230,110,.25); }
   #actBtn{
     pointer-events:auto; cursor:pointer;
-    background:rgba(6,8,12,.78); border:1px solid rgba(255,210,58,.5);
+    background:rgba(6,8,12,.9); border:1px solid rgba(255,210,58,.5);
     color:#ffd23a; border-radius:8px; padding:8px 11px;
     font-size:12px; font-weight:800; letter-spacing:.05em;
-    backdrop-filter:blur(6px);
+    
   }
   #actBtn.off{ border-color:rgba(120,130,140,.3); color:#66707a; }
   #announce{
@@ -220,7 +225,7 @@
   }
   #promptTip{
     position:absolute; top:62%; left:50%; transform:translate(-50%,-50%);
-    font-size:12.5px; font-weight:700; color:#ffe9b8; background:rgba(6,8,10,.8);
+    font-size:12.5px; font-weight:700; color:#ffe9b8; background:rgba(6,8,10,.9);
     padding:7px 14px; border-radius:7px; border:1px solid rgba(255,210,58,.45);
     pointer-events:none; display:none; white-space:nowrap;
     box-shadow:0 0 16px rgba(0,0,0,.7);
@@ -243,15 +248,15 @@
   .screen{
     position:fixed; inset:0; z-index:30; display:flex; flex-direction:column;
     align-items:center; justify-content:center; padding:24px; text-align:center;
-    background:radial-gradient(ellipse at 50% 25%, rgba(45,6,12,.92), rgba(2,2,4,.98) 72%);
-    backdrop-filter:blur(8px);
+    background:radial-gradient(ellipse at 50% 25%, rgba(45,6,12,.96), rgba(2,2,4,1) 72%);
+    
   }
   .screen.hidden{ display:none; }
 
   /* Menu je priesvitné – v pozadí sa ukazuje Twilight (fursona showcase) */
   #menu{
-    background:radial-gradient(ellipse at 50% 28%, rgba(45,6,12,.42), rgba(2,2,4,.88) 82%);
-    backdrop-filter:blur(2px);
+    background:radial-gradient(ellipse at 50% 28%, rgba(45,6,12,.52), rgba(2,2,4,.93) 82%);
+    
   }
   body.menu-mode #hud{ visibility:hidden; }
   #menu .card{ max-height:46vh; overflow-y:auto; scrollbar-width:thin; }
@@ -419,6 +424,16 @@
       🎵 <b>Hudba</b> – „125 Battle – White Queen Node“ hrá potichu v pozadí.
       Keď sa priblížiš k <b>Stanovi</b> (alebo Twilightovi) na <b>10 metrov</b>, rozbehne sa naplno.
     </div>
+    <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(56,217,192,.18); display:flex; align-items:center; gap:10px; flex-wrap:wrap">
+      <span style="color:#8fb5ae; font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700">Výkon</span>
+      <select id="qualitySel" style="background:#0a1416; color:#8ce8d4; border:1px solid rgba(56,217,192,.45); border-radius:6px; padding:5px 9px; font-family:inherit; font-size:12px; cursor:pointer">
+        <option value="auto">Auto – podľa PC</option>
+        <option value="low">Nízka – slabé PC</option>
+        <option value="med">Stredná</option>
+        <option value="high">Vysoká</option>
+      </select>
+      <span style="color:#5e8a84; font-size:11px">detekované: <b id="qualityDetected" style="color:#7ce8d4">–</b></span>
+    </div>
   </div>
 
   <button class="btn" id="startBtn">Vstúpiť do tmy</button>
@@ -534,9 +549,53 @@ const FLAVORS_HINT = [
    RENDERER / SCÉNA / KAMERA
    ========================================================= */
 const container = document.getElementById('game');
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+
+/* =========================================================
+   VÝKONOVÉ TIERY – optimalizácia pre slabšie PC
+   low: bez AA, PR max 1, málo svetiel, statický grain
+   med: AA, PR max 1.5, menej svetiel
+   high: plná kvalita
+   auto: detekcia podľa GPU/CPU + adaptívne rozlíšenie v runtime
+   ========================================================= */
 const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-const BASE_PR = Math.min(window.devicePixelRatio || 1, isMobile ? 1.6 : 2);
+const QUALITY_KEY = 'laby_quality';
+const Q_PRESETS = {
+  high: { aa: true,  prCap: 2.0, itemLights: 8, lampLights: 8, aniso: 8, poofs: 18, decals: 14, pools: 9 },
+  med:  { aa: true,  prCap: 1.5, itemLights: 4, lampLights: 6, aniso: 4, poofs: 12, decals: 10, pools: 7 },
+  low:  { aa: false, prCap: 1.0, itemLights: 0, lampLights: 4, aniso: 1, poofs: 8,  decals: 7,  pools: 5 },
+};
+function detectQuality() {
+  if (isMobile) return 'low';
+  const cores = navigator.hardwareConcurrency || 4;
+  let gpu = '';
+  try {
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl2') || c.getContext('webgl');
+    if (gl) {
+      const ext = gl.getExtension('WEBGL_debug_renderer_info');
+      gpu = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER));
+    }
+  } catch (e) { gpu = ''; }
+  if (/Apple M[1-9]/i.test(gpu)) return 'high';
+  if (/NVIDIA|RTX|GTX|Radeon RX|Arc/i.test(gpu)) return 'high';
+  if (/Intel/i.test(gpu) && !/Arc/i.test(gpu)) return cores <= 4 ? 'low' : 'med';
+  if (/Mali|Adreno|PowerVR|SwiftShader|llvmpipe|Software/i.test(gpu)) return 'low';
+  if (/Radeon/i.test(gpu)) return cores <= 4 ? 'med' : 'high';
+  return cores <= 4 ? 'med' : 'high';
+}
+function loadQualitySetting() {
+  try { const v = localStorage.getItem(QUALITY_KEY); if (v && Q_PRESETS[v]) return v; } catch (e) {}
+  return 'auto';
+}
+const qualitySetting = loadQualitySetting();
+const quality = qualitySetting === 'auto' ? detectQuality() : qualitySetting;
+const Q = Q_PRESETS[quality];
+document.body.classList.add('q-' + quality);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: Q.aa, powerPreference: 'high-performance', stencil: false, alpha: false,
+});
+const BASE_PR = Math.min(window.devicePixelRatio || 1, Q.prCap);
 renderer.setPixelRatio(BASE_PR);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -545,8 +604,13 @@ renderer.toneMappingExposure = 1.15;
 container.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020204);
-// Žiadna hmla – labyrint je pekne viditeľný, napätie drží tma, baterka a Stanove oči
+/* ---- HMLA (ďaleko od hráča) ----
+   Okolo hráča (0–16 m) je výhľad úplne čistý – baterka a svetlá fungujú normálne.
+   Až vzdialené chodby (16–55 m) sa postupne strácajú do tmavej opary,
+   takže labyrint pôsobí hlbšie a nevedno, čo sa v ňom mihne ďaleko. */
+const FOG_COLOR = 0x10141c;
+scene.background = new THREE.Color(FOG_COLOR);
+scene.fog = new THREE.Fog(FOG_COLOR, 16, 60);
 
 const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.08, 90);
 scene.add(camera);
@@ -685,6 +749,7 @@ const MUSIC_FULL  = 1.0;    // naplno
 const MUSIC_NEAR_M = 10;    // meter od Stana/Twilighta
 let bgMusic = null;
 let bgMusicVol = MUSIC_QUIET;
+let _musVolT = 0;
 
 function musicStart() {
   if (bgMusic) {
@@ -707,7 +772,8 @@ function musicSetProximity(distM, dt) {
   // rychlo nahlas (nebezpecenstvo), pomaly zasa utlm
   const k = target > bgMusicVol ? 9.0 : 1.4;
   bgMusicVol += (target - bgMusicVol) * (1 - Math.exp(-k * Math.max(dt || 0.016, 0.004)));
-  bgMusic.volume = Math.max(0, Math.min(1, bgMusicVol));
+  _musVolT -= (dt || 0.016);
+  if (_musVolT <= 0) { _musVolT = 0.12; bgMusic.volume = Math.max(0, Math.min(1, bgMusicVol)); }
 }
 
 
@@ -955,7 +1021,7 @@ const keys = new Set();
 /* =========================================================
    FOTOTEXTÚRY OD HRÁČA (STENA / ZEM / STROP) + KRV Z KEČUPU
    ========================================================= */
-const MAX_ANISO = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+const MAX_ANISO = Math.min(Q.aniso, renderer.capabilities.getMaxAnisotropy());
 
 function imgTex(kind, rx, ry) {
   const t = new THREE.Texture(TEX_IMG[kind]);
@@ -1015,10 +1081,11 @@ function drawGraffiti(g, W, H, text) {
 function makeWallTexture(graffitiText = null) {
   const img = TEX_IMG.wall;
   const c = document.createElement('canvas');
-  c.width = img.naturalWidth;
-  c.height = img.naturalHeight;
+  const texScale = quality === 'low' ? 0.5 : 1; // na slabých PC polovičné graffiti textúry
+  c.width = Math.max(64, Math.round(img.naturalWidth * texScale));
+  c.height = Math.max(64, Math.round(img.naturalHeight * texScale));
   const g = c.getContext('2d');
-  g.drawImage(img, 0, 0);
+  g.drawImage(img, 0, 0, c.width, c.height);
   if (graffitiText) drawGraffiti(g, c.width, c.height, graffitiText);
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.MirroredRepeatWrapping;
@@ -1042,7 +1109,7 @@ function addBloodDecals() {
 
   // Šmuhy a stekajúce stopy na stenách (vrchná časť textúry = kvapky dole)
   let placed = 0, guard = 0;
-  while (placed < 14 && guard++ < 500) {
+  while (placed < Q.decals && guard++ < 500) {
     const x = 1 + Math.floor(Math.random() * (COLS - 2));
     const y = 1 + Math.floor(Math.random() * (ROWS - 2));
     if (grid[y][x] !== 1) continue;
@@ -1065,7 +1132,7 @@ function addBloodDecals() {
 
   // Kaluže krvi na zemi
   let pools = 0; guard = 0;
-  while (pools < 9 && guard++ < 500) {
+  while (pools < Q.pools && guard++ < 500) {
     const x = 1 + Math.floor(Math.random() * (COLS - 2));
     const y = 1 + Math.floor(Math.random() * (ROWS - 2));
     if (!grid[y] || grid[y][x] !== 0) continue;
@@ -1211,7 +1278,8 @@ function buildStano() {
   const cableMat = new THREE.MeshStandardMaterial({
     color: 0x111111, emissive: 0x330508, emissiveIntensity: 0.6, roughness: 0.4,
   });
-  const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff1122 });
+  // Stanove oči svietia CEZ hmlu (fog:false) – aj z ďalekej opary sa zjaví červený zár
+  const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff1122, fog: false });
 
   // Zhrbený vychudnutý trup
   const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.16, 1.15, 8), fleshMat);
@@ -1511,11 +1579,7 @@ function makeItem(def, c, counts) {
   glow.position.y = 0.85;
   group.add(glow);
 
-  if (counts) {
-    const itemLight = new THREE.PointLight(0x38d9c0, 1.6, 3.8, 2);
-    itemLight.position.y = 0.9;
-    group.add(itemLight);
-  }
+  // Svetlá vzpomienok rieši pooling itemLightPool (stály počet svetiel = žiadne rekompilácie shaderov)
 
   scene.add(group);
 
@@ -1626,7 +1690,7 @@ const twilight = {
 
 const menuShow = { camPos: { x: 0, z: 0 }, twPos: { x: 0, z: 0 }, baseYaw: 0, spot: null, rim: null };
 
-const poofs = [];
+/* poof častice sú odteraz pooled – pozri buildPoofPool() */
 
 function planObjectives() {
   const open = [];
@@ -2201,39 +2265,47 @@ function buildTwilight() {
 }
 
 /* ---- Transformácia Stana <-> Twilight + poof efekt ---- */
-function spawnPoof(pos, baseColor) {
-  for (let i = 0; i < 18; i++) {
-    const col = [baseColor, 0xffd9a6, 0xffffff, 0xf97f28][i % 4];
+/* Pool poof častíc – žiadne alokácie/dealokácie počas transformácie (plynulejšie FPS) */
+const poofPool = [];
+function buildPoofPool() {
+  for (let i = 0; i < Q.poofs; i++) {
     const spr = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: GLOW_TEX, color: col, transparent: true, depthWrite: false,
-      blending: THREE.AdditiveBlending, opacity: 0.9,
+      map: GLOW_TEX, color: 0xffffff, transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending, opacity: 0,
     }));
+    spr.visible = false;
+    scene.add(spr);
+    poofPool.push({ spr, vel: new THREE.Vector3(), t: 0, life: 1, active: false });
+  }
+}
+
+function spawnPoof(pos, baseColor) {
+  const cols = [baseColor, 0xffd9a6, 0xffffff, 0xf97f28];
+  let spawned = 0;
+  for (const p of poofPool) {
+    if (p.active) continue;
+    p.spr.material.color.setHex(cols[spawned % 4]);
     const s = 0.25 + Math.random() * 0.35;
-    spr.scale.set(s, s, 1);
-    spr.position.set(
+    p.spr.scale.set(s, s, 1);
+    p.spr.position.set(
       pos.x + (Math.random() - 0.5) * 0.8,
       0.4 + Math.random() * 1.8,
       pos.z + (Math.random() - 0.5) * 0.8
     );
-    scene.add(spr);
-    poofs.push({
-      spr, t: 0,
-      life: 0.55 + Math.random() * 0.35,
-      vel: new THREE.Vector3((Math.random() - 0.5) * 2.4, 1.2 + Math.random() * 1.8, (Math.random() - 0.5) * 2.4),
-    });
+    p.spr.visible = true;
+    p.vel.set((Math.random() - 0.5) * 2.4, 1.2 + Math.random() * 1.8, (Math.random() - 0.5) * 2.4);
+    p.t = 0;
+    p.life = 0.55 + Math.random() * 0.35;
+    p.active = true;
+    if (++spawned >= Q.poofs) break;
   }
 }
 
 function updatePoofs(dt) {
-  for (let i = poofs.length - 1; i >= 0; i--) {
-    const p = poofs[i];
+  for (const p of poofPool) {
+    if (!p.active) continue;
     p.t += dt;
-    if (p.t >= p.life) {
-      scene.remove(p.spr);
-      p.spr.material.dispose();
-      poofs.splice(i, 1);
-      continue;
-    }
+    if (p.t >= p.life) { p.active = false; p.spr.visible = false; continue; }
     p.spr.position.addScaledVector(p.vel, dt);
     p.vel.y -= dt * 1.2;
     const k = 1 - p.t / p.life;
@@ -2334,12 +2406,14 @@ function fixPower(how) {
   const b = power.breaker;
   b.leverTarget = -0.95;
   b.ledMat.color.setHex(0x36ff70);
+  let lampIdx = 0;
   for (const lamp of power.lamps) {
+    lamp.bulbMat.color.setHex(0xfff2cf);
+    if (lampIdx++ >= Q.lampLights) continue; // slabšie PC: menej svietiacich lámp = rýchlejší render
     const light = new THREE.PointLight(0xffd9a3, 2.5, 9.5, 2);
     light.position.y = WALL_H - 0.62;
     lamp.group.add(light);
     lamp.light = light;
-    lamp.bulbMat.color.setHex(0xfff2cf);
   }
   ambient.intensity = 9.6;
   sfx.powerOn();
@@ -2472,7 +2546,8 @@ function updateWorldFx(dt) {
   if (s) {
     if (power.on) {
       s.antenna.rotation.y += dt * 1.4;
-      s.leds.forEach((lm, i) => { lm.visible = Math.sin(t * 6 + i * 1.1) > -0.2; });
+      s._ledT = (s._ledT || 0) - dt;
+      if (s._ledT <= 0) { s._ledT = 0.12; s.leds.forEach((lm, i) => { lm.visible = Math.sin(t * 6 + i * 1.1) > -0.2; }); }
     }
     s.flag.rotation.y = Math.sin(t * 2.1) * 0.12;
     const wantBeacon = state.mode === 'playing' && state.collected >= ITEM_DEFS.length;
@@ -2617,9 +2692,12 @@ function buildCellLUT() {
     }
   }
 }
+const _lutTmp = { x: 0, z: 0 };
 function cellLUTv(cx, cz) {
   const i = (cz * COLS + cx) * 2;
-  return { x: CELL_LUT[i], z: CELL_LUT[i + 1] };
+  _lutTmp.x = CELL_LUT[i];
+  _lutTmp.z = CELL_LUT[i + 1];
+  return _lutTmp;
 }
 
 const tracer = {
@@ -2647,7 +2725,7 @@ function buildTracerVisuals() {
     new THREE.RingGeometry(0.5, 0.62, 28),
     new THREE.MeshBasicMaterial({
       color: 0xff2036, transparent: true, opacity: 0.85, side: THREE.DoubleSide,
-      depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending,
+      depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
     })
   );
   marker.rotation.x = -Math.PI / 2;
@@ -2658,7 +2736,7 @@ function buildTracerVisuals() {
 
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({
     map: GLOW_TEX, color: 0xff2036, transparent: true, depthTest: false,
-    depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.7,
+    depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.7, fog: false,
   }));
   glow.scale.set(2.4, 2.4, 1);
   glow.renderOrder = 5;
@@ -3732,6 +3810,43 @@ function pickStanoTarget(scx, scz) {
   stano.target = [1, 1];
 }
 
+/* =========================================================
+   POOL BODOVÝCH SVETIEL VZPOMIENOK
+   Stály počet svetiel v scéne (podľa tieru) – žiadne rekompilácie
+   shaderov počas hry. Svietia len najbližšie nezbierané vzpomienky.
+   ========================================================= */
+const itemLightPool = [];
+let itemPoolT = 0;
+function buildItemLightPool() {
+  for (const l of itemLightPool) scene.remove(l);
+  itemLightPool.length = 0;
+  for (let i = 0; i < Q.itemLights; i++) {
+    const l = new THREE.PointLight(0x38d9c0, 0, 4.4, 2);
+    l.position.y = 0.9;
+    scene.add(l);
+    itemLightPool.push(l);
+  }
+}
+function updateItemLights(dt) {
+  if (!itemLightPool.length) return;
+  itemPoolT -= dt;
+  if (itemPoolT > 0) return;
+  itemPoolT = 0.15;
+  const cands = [];
+  for (const it of items) {
+    if (it.collected) continue;
+    const dx = it.pos.x - player.pos.x, dz = it.pos.z - player.pos.z;
+    cands.push([dx * dx + dz * dz, it]);
+  }
+  cands.sort((a, b) => a[0] - b[0]);
+  for (let i = 0; i < itemLightPool.length; i++) {
+    const l = itemLightPool[i];
+    const c = cands[i];
+    if (c && c[0] < 900) { l.position.x = c[1].pos.x; l.position.z = c[1].pos.z; l.intensity = 1.6; }
+    else l.intensity = 0;
+  }
+}
+
 function updateItemsVisual(dt) {
   const t = performance.now() * 0.001;
   for (const it of items) {
@@ -3845,6 +3960,7 @@ function startGame() {
   document.getElementById('win').classList.add('hidden');
   resetGame();
   state.mode = 'playing';
+  try { renderer.compile(scene, camera); } catch (e) {} // prewarm shaderov – plynulý prvý frame
 
   if (!isMobile && dom.requestPointerLock) {
     try { dom.requestPointerLock(); } catch (_) {}
@@ -3908,19 +4024,22 @@ function winGame() {
 let lastT = performance.now();
 let mmTick = 0;
 let flavorTick = 0;
+let skipRenderFrozen = false;
 
 /* Adaptívne rozlíšenie – udržiava stabilný FPS na slabších zariadeniach */
 let perfFrames = 0, perfTime = 0, resScale = 1;
+let perfPrime = true; // prvé meranie dlhšie (nahrievanie a kompilácia shaderov)
 function perfTick(rawDt) {
   perfFrames++;
   perfTime += rawDt;
-  if (perfTime < 2) return;
+  if (perfTime < (perfPrime ? 3 : 1.25)) return;
   const fps = perfFrames / perfTime;
   perfFrames = 0;
   perfTime = 0;
+  perfPrime = false;
   let s = resScale;
-  if (fps < 42) s = Math.max(0.55, s - 0.15);
-  else if (fps > 57 && s < 1) s = Math.min(1, s + 0.1);
+  if (fps < 38) s = Math.max(0.5, s - 0.12);
+  else if (fps > 55 && s < 1) s = Math.min(1, s + 0.08);
   if (s !== resScale) { resScale = s; renderer.setPixelRatio(BASE_PR * s); }
 }
 
@@ -3940,6 +4059,7 @@ function animate(now) {
     musicSetProximity(distToStano, dt);
     updateTwilight(dt);
     updateItemsVisual(dt);
+    updateItemLights(dt);
     updateTracer(dt);
     updateTransmission(dt);
     updateWorldFx(dt);
@@ -3962,7 +4082,7 @@ function animate(now) {
     }
 
     mmTick -= dt;
-    if (mmTick <= 0) { mmTick = 0.08; drawMinimap(distToStano); }
+    if (mmTick <= 0) { mmTick = (quality === 'low') ? 0.12 : 0.08; drawMinimap(distToStano); }
   } else if (state.mode === 'menu') {
     // Menu showcase – Twilight stojí v chodbe a ukazuje sa
     updateMenuShowcase(now);
@@ -3970,7 +4090,13 @@ function animate(now) {
     updateWorldFx(dt);
   }
 
-  renderer.render(scene, camera);
+  // Koncové obrazovky (Game Over / Výhra) sú takmer nepriehľadné – render pod nimi zamrzne (úspora GPU)
+  if (state.mode === 'over' || state.mode === 'win') {
+    if (!skipRenderFrozen) { renderer.render(scene, camera); skipRenderFrozen = true; }
+  } else {
+    skipRenderFrozen = false;
+    renderer.render(scene, camera);
+  }
 }
 
 /* =========================================================
@@ -3987,11 +4113,16 @@ window.addEventListener('orientationchange', () => setTimeout(onResize, 120));
 /* =========================================================
    INICIALIZÁCIA – počká na fototextúry a krvavý font Nosifer
    ========================================================= */
+let _booted = false;
 function bootWorld() {
+  if (_booted) return; // guard proti dvojitému spusteniu (then + catch)
+  _booted = true;
   buildCellLUT();
   buildStano();
   buildTwilight();
   buildTracerVisuals();
+  buildPoofPool();
+  buildItemLightPool();
   generateMaze();
   planObjectives();
   buildWorld();
@@ -4011,6 +4142,8 @@ function bootWorld() {
     updatePowerChip();
     setupMenuShowcase();
   }
+
+  try { renderer.compile(scene, camera); } catch (e) {} // prewarm menu shaderov
 
   document.getElementById('startBtn').addEventListener('click', startGame);
   document.getElementById('retryBtn').addEventListener('click', startGame);
@@ -4049,9 +4182,24 @@ Promise.all([TEX_READY, FONTS_READY]).then(bootWorld).catch(() => bootWorld());
 }
 
 // Debug handle (testovanie v konzole)
-window.__LABY = { state, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic };
+window.__LABY = { state, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic, renderer, quality };
 
-requestAnimationFrame(animate);
+/* Výber kvality v menu – uloží sa do localStorage a stránka sa načíta znova */
+const qualitySel = document.getElementById('qualitySel');
+if (qualitySel) {
+  qualitySel.value = qualitySetting;
+  qualitySel.addEventListener('change', () => {
+    try { localStorage.setItem(QUALITY_KEY, qualitySel.value); } catch (e) {}
+    location.reload();
+  });
+}
+const qualityDetected = document.getElementById('qualityDetected');
+if (qualityDetected) {
+  const names = { low: 'nízka', med: 'stredná', high: 'vysoká' };
+  qualityDetected.textContent = qualitySetting === 'auto'
+    ? ('auto → ' + names[quality])
+    : names[quality];
+}
 </script>
 </body>
 </html>
