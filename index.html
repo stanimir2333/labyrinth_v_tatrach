@@ -72,6 +72,30 @@
     50%{ opacity:0.65; transform:translateX(-2px); }
   }
 
+  /* ---------- BROKOVNICA – ULTRA BANG ---------- */
+  #bangFlash{
+    position:fixed; inset:0; pointer-events:none; z-index:9; opacity:0;
+    background:radial-gradient(circle at 36% 58%,
+      rgba(255,246,220,0.98) 0%, rgba(255,198,110,0.8) 13%,
+      rgba(255,140,40,0.4) 33%, rgba(255,110,20,0.14) 54%, rgba(0,0,0,0) 72%);
+    will-change:opacity;
+  }
+  #stunBadge{
+    position:absolute; top:112px; left:14px;
+    background:rgba(6,16,24,0.86); border:1px solid rgba(90,180,255,0.55);
+    color:#9fd0ff; font-size:11px; font-weight:700; letter-spacing:.12em;
+    padding:5px 10px; border-radius:6px; display:none;
+    box-shadow:0 0 15px rgba(60,140,255,0.35);
+    white-space:nowrap;
+  }
+  #shootBtn{
+    pointer-events:auto; cursor:pointer;
+    background:rgba(16,9,4,.92); border:1px solid rgba(255,140,60,.6);
+    color:#ffcf9e; border-radius:8px; padding:8px 11px;
+    font-size:12px; font-weight:800; letter-spacing:.05em;
+  }
+  #shootBtn.cd{ opacity:.45; border-color:rgba(120,130,140,.3); color:#66707a; }
+
   /* ---------- HUD ---------- */
   #hud{ position:fixed; inset:0; pointer-events:none; z-index:10; }
 
@@ -387,6 +411,7 @@
 <div id="grain"></div>
 
 <div id="danger"><div id="dangerText">STANO ŤA VIDÍ</div></div>
+<div id="bangFlash"></div>
 
 <div id="hud">
   <div id="crosshair"></div>
@@ -395,6 +420,7 @@
   <div id="announce"></div>
   <div id="trace"></div>
   <div id="jammerBadge">⚠ RUŠENIE BT / WIFI</div>
+  <div id="stunBadge">💤 OMRÁČENÝ · 30 s</div>
 
   <div id="topbar">
     <div id="ramwrap">
@@ -406,6 +432,7 @@
       <div id="powerChip" class="off">⚡ VYP</div>
       <button id="actBtn" title="Akcia – istič / SDR [E]">⚡ E</button>
       <button id="pingBtn" title="Packet Tracer [P]">📡 TRACE</button>
+      <button id="shootBtn" title="Brokovnica – klik / medzerník">💥 STREL</button>
       <button id="torchBtn" title="Baterka [F]">🔦 ZAP</button>
       <div id="scorebox">🐖 <b><span id="got">0</span></b> / <span id="gotNeed">8</span></div>
     </div>
@@ -413,7 +440,7 @@
 
   <canvas id="minimap" width="128" height="128"></canvas>
   <div id="inv"></div>
-  <div id="hint">Nájdi 8 spomienok · [E] istič / SDR · 1–8 inventár · 📡 P traceroute</div>
+  <div id="hint">Nájdi 8 spomienok · 💥 Klik / medzerník = brokovnica (omráči Stana na 30 s) · [E] istič / SDR · 1–8 inventár · 📡 P traceroute</div>
 </div>
 
 <div id="joy"><div id="joyknob"></div></div>
@@ -477,7 +504,8 @@
       <span class="k">F</span> baterka ·
       <span class="k">P</span> traceroute ·
       <span class="k">Myš</span> (klik uzamkne) / <span class="k">dotyk</span> rozhliadanie ·
-      <span class="k">E</span> / <span class="k">⚡</span> akcia (istič, SDR)
+      <span class="k">E</span> / <span class="k">⚡</span> akcia (istič, SDR) ·
+      <span class="k">Klik</span> / <span class="k">Medzerník</span> / <span class="k">💥 STREL</span> brokovnica
     </div>
     <div style="margin-top:9px; color:#8fb5ae">
       📡 <b>Packet Tracer</b> – pošle packet chodbami priamo <b>ku Stanovi</b>, vypíše
@@ -500,6 +528,12 @@
       🦇 <b>Fursona</b> – keď ťa Stano zaháňa, prevleje sa do svojej fursony
       <b>Twilight</b>: oranzový netopier s ružovými krídlami a fialovými vankúšikmi.
       Je rýchlejší. Počuješ krídla.
+    </div>
+    <div style="margin-top:9px; color:#ffcf9e">
+      💥 <b>Brokovnica</b> – máš ju hneď od štartu (nekonečné náboje). Jedna ranica s
+      <b>ultra bangom</b>, zábleskom a dymom <b>omráči Stana na 30 sekúnd</b> – stačí ho
+      vidieť do ~16 m a netrafiť medzi seba stenu.
+      Na <b>Twilighta</b> brokovnica proste <b>nedokáže</b> strieľať – len kľakne. 🦇
     </div>
     <div style="margin-top:9px; color:#8fb5ae">
       🎒 <b>Inventár</b> – každú vzpomienku použiješ klávesou <span class="k">1</span>–<span class="k">8</span> alebo tapnutím:
@@ -666,6 +700,7 @@ const FLAVORS_HINT = [
   'Stanova fursona? Twilight. Oranzový netopier s ružovými krídlami.',
   'V prírode je 400 ton uhlia. Tu nájdeš pár kusov – zbieraj.',
   'Počuješ krídla? To nie je vietor. To je Twilight.',
+  'Brokovnica omráči Stana na 30 sekúnd. Twilighta ne. Proste nemôže.',
 ];
 
 /* =========================================================
@@ -812,6 +847,441 @@ function buildFlashlightViewModel() {
   camera.add(viewModel);
 }
 buildFlashlightViewModel();
+
+/* =========================================================
+   BROKOVNICA – ULTRA BANG
+   Pump-action brokovnica v ľavej ruke. Jedna ranica omráči
+   Stana na 30 sekúnd. Na Twilighta brokovnica proste nedokáže
+   strieľať (len kľakne). Hollywoodská kulisa: ultra bang,
+   muzzle flash osvetlenie, dym, iskry, recoil, ozvena.
+   ========================================================= */
+const gun = {
+  cd: 0, PUMP: 1.05,       // cooldown medzi výstrelmi (pump-action)
+  kick: 0,                 // recoil 0..1
+  flashT: 0,               // muzzle flash decay 1..0
+  domFlash: 0,             // DOM overlay opacity
+  pumpAt: -1, pumpT: -1,   // oneskorené prebíjanie + animácia pumpy
+  noiseBuf: null,
+};
+let recoilPitch = 0, recoilRoll = 0;
+const gunParts = {};
+let gunGroup = null;
+
+function buildShotgunViewModel() {
+  gunGroup = new THREE.Group();
+
+  const metalDark = new THREE.MeshStandardMaterial({ color: 0x262a30, roughness: 0.38, metalness: 0.82 });
+  const metalBlue = new THREE.MeshStandardMaterial({ color: 0x39414b, roughness: 0.3, metalness: 0.9 });
+  const woodMat   = new THREE.MeshStandardMaterial({ color: 0x6b4426, roughness: 0.62 });
+  const woodDark  = new THREE.MeshStandardMaterial({ color: 0x4a2e18, roughness: 0.7 });
+
+  // Hlaveň (mieri do -Z)
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.031, 0.033, 0.74, 16), metalBlue);
+  barrel.rotation.x = Math.PI / 2;
+  barrel.position.set(0, 0.012, -0.30);
+  gunGroup.add(barrel);
+
+  // Ústie hlavne
+  const muzzleRing = new THREE.Mesh(new THREE.TorusGeometry(0.033, 0.008, 8, 16), metalDark);
+  muzzleRing.position.set(0, 0.012, -0.672);
+  gunGroup.add(muzzleRing);
+
+  // Rúrkový zásobník pod hlavňou
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.023, 0.56, 12), metalDark);
+  tube.rotation.x = Math.PI / 2;
+  tube.position.set(0, -0.038, -0.24);
+  gunGroup.add(tube);
+
+  // Pumpa (predný grip) – animuje sa pri prebíjaní
+  const pumpG = new THREE.Group();
+  pumpG.position.set(0, -0.045, -0.34);
+  const pumpBody = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.17, 14), woodDark);
+  pumpBody.rotation.x = Math.PI / 2;
+  pumpG.add(pumpBody);
+  for (let i = 0; i < 3; i++) {
+    const groove = new THREE.Mesh(new THREE.TorusGeometry(0.043, 0.006, 6, 14), woodMat);
+    groove.position.z = -0.05 + i * 0.05;
+    pumpG.add(groove);
+  }
+  gunGroup.add(pumpG);
+  gunParts.pump = pumpG;
+
+  // Prijímač
+  const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.095, 0.26), metalDark);
+  receiver.position.set(0, 0.005, 0.02);
+  gunGroup.add(receiver);
+
+  // Spúšť + ochranný oblúk
+  const guard = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.008, 6, 14, Math.PI), metalDark);
+  guard.rotation.x = Math.PI / 2;
+  guard.rotation.z = Math.PI;
+  guard.position.set(0, -0.06, 0.07);
+  gunGroup.add(guard);
+  const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.045, 0.014), metalBlue);
+  trigger.position.set(0, -0.045, 0.07);
+  gunGroup.add(trigger);
+
+  // Pažba (drevo) smerom k ramenu
+  const stock = new THREE.Mesh(new THREE.BoxGeometry(0.072, 0.1, 0.3), woodMat);
+  stock.position.set(0, -0.03, 0.28);
+  stock.rotation.x = -0.14;
+  gunGroup.add(stock);
+  const buttPad = new THREE.Mesh(
+    new THREE.BoxGeometry(0.08, 0.11, 0.025),
+    new THREE.MeshStandardMaterial({ color: 0x151210, roughness: 0.9 })
+  );
+  buttPad.position.set(0, -0.052, 0.425);
+  buttPad.rotation.x = -0.14;
+  gunGroup.add(buttPad);
+
+  // Muška – svietiaca guľôčka na konci hlavne
+  const bead = new THREE.Mesh(new THREE.SphereGeometry(0.007, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffa23a }));
+  bead.position.set(0, 0.05, -0.655);
+  gunGroup.add(bead);
+
+  // Prípojný bod muzzle FX (záblesk, dym, iskry)
+  const muzzle = new THREE.Object3D();
+  muzzle.position.set(0, 0.012, -0.70);
+  gunGroup.add(muzzle);
+  gunParts.muzzle = muzzle;
+
+  // ULTRA BANG – svetelný záblesk osvetľujúci celú chodbu
+  const flashLight = new THREE.PointLight(0xffb469, 0, 22, 1.35);
+  muzzle.add(flashLight);
+  gunParts.flashLight = flashLight;
+
+  // Plamene z ústia (dvojvrstvový glow)
+  const flashSpr = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: GLOW_TEX, color: 0xffb469, transparent: true, opacity: 0, depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  }));
+  flashSpr.scale.set(0.001, 0.001, 1);
+  muzzle.add(flashSpr);
+  gunParts.flashSpr = flashSpr;
+
+  const coreSpr = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: GLOW_TEX, color: 0xfff3d0, transparent: true, opacity: 0, depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  }));
+  coreSpr.scale.set(0.001, 0.001, 1);
+  muzzle.add(coreSpr);
+  gunParts.coreSpr = coreSpr;
+
+  gunGroup.position.set(-0.30, -0.27, -0.46);
+  gunGroup.rotation.set(0.03, 0.14, -0.02);
+  gunGroup.visible = false; // v menu sa neukazuje
+  camera.add(gunGroup);
+}
+
+/* ---- Pooly dymu a iskier pre brokovnicu ---- */
+const smokePool = [];
+const sparkPool = [];
+function buildGunPools() {
+  const nSmoke = quality === 'low' ? 14 : (quality === 'med' ? 22 : 36);
+  for (let i = 0; i < nSmoke; i++) {
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: GLOW_TEX, color: 0xb9bcbf, transparent: true, opacity: 0,
+      depthWrite: false, blending: THREE.NormalBlending,
+    }));
+    spr.visible = false;
+    scene.add(spr);
+    smokePool.push({ spr, vel: new THREE.Vector3(), t: 0, life: 1, s0: 0.3, active: false });
+  }
+  const nSpark = quality === 'low' ? 8 : 18;
+  for (let i = 0; i < nSpark; i++) {
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: GLOW_TEX, color: 0xffb060, transparent: true, opacity: 0,
+      depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    spr.visible = false;
+    scene.add(spr);
+    sparkPool.push({ spr, vel: new THREE.Vector3(), t: 0, life: 1, active: false });
+  }
+}
+
+const _gunV1 = new THREE.Vector3();
+const _aimHitV = new THREE.Vector3();
+
+function gunNoise() {
+  if (!gun.noiseBuf && actx) {
+    const len = (actx.sampleRate * 0.6) | 0;
+    gun.noiseBuf = actx.createBuffer(1, len, actx.sampleRate);
+    const d = gun.noiseBuf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  }
+  return gun.noiseBuf;
+}
+
+function spawnGunSmoke(pos, vel, life, s0) {
+  for (const p of smokePool) {
+    if (p.active) continue;
+    p.spr.position.copy(pos);
+    p.vel.copy(vel);
+    p.t = 0; p.life = life; p.s0 = s0;
+    p.spr.material.opacity = 0.52;
+    p.spr.material.color.setHex(Math.random() < 0.4 ? 0xd8d3c9 : 0x9fa3a6);
+    p.spr.visible = true;
+    p.active = true;
+    return;
+  }
+}
+
+function spawnGunSpark(pos, vel, life) {
+  for (const p of sparkPool) {
+    if (p.active) continue;
+    p.spr.position.copy(pos);
+    p.vel.copy(vel);
+    p.t = 0; p.life = life;
+    p.spr.material.opacity = 1;
+    p.spr.visible = true;
+    p.active = true;
+    return;
+  }
+}
+
+/* Muzzle FX – ULTRA BANG: svetlo, plamene, dym, iskry */
+function spawnMuzzleBlast() {
+  gunParts.muzzle.getWorldPosition(_gunV1);
+  camera.getWorldDirection(_aimHitV);
+  const fwd = _aimHitV;
+
+  // Svetlo + plamene z ústia
+  const lightPower = quality === 'low' ? 60 : 110;
+  gunParts.flashLight.intensity = lightPower;
+  const fs = 1.7 + Math.random() * 0.5;
+  gunParts.flashSpr.scale.set(fs, fs, 1);
+  gunParts.flashSpr.material.opacity = 1;
+  gunParts.flashSpr.material.rotation = Math.random() * Math.PI * 2;
+  const cs = 0.8 + Math.random() * 0.2;
+  gunParts.coreSpr.scale.set(cs, cs, 1);
+  gunParts.coreSpr.material.opacity = 1;
+  gun.flashT = 1;
+  gun.domFlash = 1;
+
+  // Dym z ústia – letí dopredu, stúpa a rozpína sa
+  for (let i = 0; i < 10; i++) {
+    spawnGunSmoke(
+      _gunV1,
+      new THREE.Vector3(
+        fwd.x * (0.8 + Math.random() * 1.3) + (Math.random() - 0.5) * 0.9,
+        fwd.y * (0.8 + Math.random() * 1.3) + 0.5 + Math.random() * 1.0,
+        fwd.z * (0.8 + Math.random() * 1.3) + (Math.random() - 0.5) * 0.9
+      ),
+      1.3 + Math.random() * 0.9,
+      0.3 + Math.random() * 0.28
+    );
+  }
+  // Iskry – rýchle, s gravitáciou
+  for (let i = 0; i < 10; i++) {
+    spawnGunSpark(
+      _gunV1,
+      new THREE.Vector3(
+        fwd.x * (4.5 + Math.random() * 4.5) + (Math.random() - 0.5) * 2.2,
+        fwd.y * (4.5 + Math.random() * 4.5) + (Math.random() - 0.3) * 1.6,
+        fwd.z * (4.5 + Math.random() * 4.5) + (Math.random() - 0.5) * 2.2
+      ),
+      0.22 + Math.random() * 0.22
+    );
+  }
+}
+
+/* Dopad ranice – dym + iskry v mieste zásahu */
+function spawnImpactBlast(pos) {
+  for (let i = 0; i < 5; i++) {
+    spawnGunSmoke(
+      pos,
+      new THREE.Vector3((Math.random() - 0.5) * 2.2, 0.6 + Math.random() * 1.4, (Math.random() - 0.5) * 2.2),
+      0.8 + Math.random() * 0.7,
+      0.3 + Math.random() * 0.25
+    );
+  }
+  for (let i = 0; i < 7; i++) {
+    spawnGunSpark(
+      pos,
+      new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 4, (Math.random() - 0.5) * 6),
+      0.2 + Math.random() * 0.2
+    );
+  }
+}
+
+/* ---- Zamierenie: Stano sa dá omráčiť, Twilight NIE (proste) ---- */
+const _aimDir = new THREE.Vector3();
+function shotgunAim() {
+  const active = (twilight.transformed && twilight.mesh.visible) ? 'twilight'
+               : (stano.mesh.visible ? 'stano' : null);
+  if (!active) return { kind: null };
+  const ox = camera.position.x, oy = camera.position.y, oz = camera.position.z;
+  const dx = stano.pos.x - ox, dy = 1.45 - oy, dz = stano.pos.z - oz;
+  const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+  if (dist > 17) return { kind: null, dist };
+  camera.getWorldDirection(_aimDir);
+  const inv = 1 / dist;
+  const dot = (_aimDir.x * dx + _aimDir.y * dy + _aimDir.z * dz) * inv;
+  if (dot < 0.966) return { kind: null, dist };   // rozptyl brokovnice ~15°
+  // Medzi hráčom a cieľom nesmie stáť stena (ranica sa zabije do nej)
+  const steps = Math.max(2, Math.ceil(dist / 0.3));
+  for (let i = 1; i < steps; i++) {
+    const f = i / steps;
+    const px = ox + dx * f, pz = oz + dz * f;
+    if (isWallAt(px, pz)) {
+      return { kind: active, dist, blocked: true, hx: px, hz: pz, hy: oy + dy * f };
+    }
+  }
+  return { kind: active, dist };
+}
+
+const REFUSALS = [
+  '💥 *kľak* … Brokovnica proste nedokáže strieľať na Twilighta.',
+  '💥 TriggeR kľakol. Twilight je mimo dosahu akéhokoľvek náboja.',
+  '💥 Brokovnica sa rozhodla, že na Twilighta strieľať NEMÔŽE. Proste.',
+];
+let refuseIdx = 0;
+
+function fireShotgun() {
+  if (state.mode !== 'playing' || sdrPanel.open) return;
+  if (gun.cd > 0) return;
+  initAudio();
+
+  const aim = shotgunAim();
+
+  // TWILIGHT – brokovnica proste nemôže. Žiadny bang, len kľaknutie a dymik.
+  if (aim.kind === 'twilight') {
+    gun.cd = 0.55;
+    gun.kick = 0.3;
+    sfx.refuse();
+    gunParts.muzzle.getWorldPosition(_gunV1);
+    spawnGunSmoke(_gunV1, new THREE.Vector3((Math.random() - 0.5) * 0.4, 0.5, (Math.random() - 0.5) * 0.4), 0.6, 0.12);
+    showHint(REFUSALS[(refuseIdx++) % REFUSALS.length], 3.2);
+    return;
+  }
+
+  // ULTRA BANG – efekty sa spustia vždy
+  gun.cd = gun.PUMP;
+  gun.kick = 1;
+  gun.pumpAt = 0.34;
+  gun.pumpT = -1;
+  recoilPitch = 0.045 + Math.random() * 0.012;
+  recoilRoll = (Math.random() - 0.5) * 0.024;
+  sfx.bang();
+  spawnMuzzleBlast();
+  updateShootBtn(true);
+
+  if (aim.kind === 'stano') {
+    // ZÁSAH! Stano omráčený na 30 sekúnd
+    fx.stunT = 30;
+    sfx.hit();
+    _aimHitV.set(stano.pos.x, 1.45, stano.pos.z);
+    spawnImpactBlast(_aimHitV);
+    announce('💥 STANO OMRÁČENÝ · 30 SEKÚND', '#ff8a2b');
+    showHint('💥 Ultra bang! Stano chŕli dym a leží na zemi (30 s).', 4);
+  } else if (aim.blocked) {
+    // Ranica sa zabila do steny
+    _aimHitV.set(aim.hx, aim.hy, aim.hz);
+    spawnImpactBlast(_aimHitV);
+  }
+}
+
+/* ---- Tlačidlo 💥 STREL (mobil + desktop) ---- */
+const shootBtnEl = document.getElementById('shootBtn');
+let shootBtnCache = '';
+function updateShootBtn(force = false) {
+  let txt, cd;
+  if (gun.cd > 0) { txt = '💥 ' + gun.cd.toFixed(1); cd = true; }
+  else { txt = '💥 STREL'; cd = false; }
+  if (force || txt !== shootBtnCache) {
+    shootBtnCache = txt;
+    shootBtnEl.textContent = txt;
+    shootBtnEl.classList.toggle('cd', cd);
+  }
+}
+
+/* ---- Per-frame update brokovnice: recoil, flash, dym, iskry, pumpa ---- */
+function updateGunFx(dt) {
+  if (gun.cd > 0) {
+    gun.cd = Math.max(0, gun.cd - dt);
+    updateShootBtn();
+  } else if (shootBtnCache !== '💥 STREL') {
+    updateShootBtn(true);
+  }
+
+  // Recoil späť do pokojovej polohy
+  if (gun.kick > 0) gun.kick = Math.max(0, gun.kick - dt * 3.4);
+  recoilPitch *= Math.exp(-dt * 7.5);
+  recoilRoll *= Math.exp(-dt * 7.5);
+  gunGroup.position.z = -0.46 + gun.kick * 0.12;
+  gunGroup.rotation.x = 0.03 + gun.kick * 0.20;
+
+  // ULTRA BANG decay – svetlo, plamene, expozícia, DOM záblesk
+  if (gun.flashT > 0) {
+    gun.flashT = Math.max(0, gun.flashT - dt * 6.0);
+    const k = gun.flashT * gun.flashT;
+    gunParts.flashLight.intensity = (quality === 'low' ? 60 : 110) * k;
+    gunParts.flashSpr.material.opacity = k;
+    gunParts.coreSpr.material.opacity = Math.min(1, gun.flashT * 1.6);
+    renderer.toneMappingExposure = 1.15 + 0.5 * k;
+    if (gun.domFlash > 0) {
+      gun.domFlash = Math.max(0, gun.domFlash - dt * 4.2);
+      bangFlashEl.style.opacity = (gun.domFlash * 0.85).toFixed(3);
+    }
+  } else if (bangFlashEl.style.opacity !== '0') {
+    bangFlashEl.style.opacity = '0';
+    renderer.toneMappingExposure = 1.15;
+  }
+
+  // Prebíjanie (pump slide) + zvuk
+  if (gun.pumpAt > 0) {
+    gun.pumpAt -= dt;
+    if (gun.pumpAt <= 0) { gun.pumpT = 0; sfx.pump(); }
+  }
+  if (gun.pumpT >= 0) {
+    gun.pumpT += dt;
+    const k = Math.min(1, gun.pumpT / 0.5);
+    gunParts.pump.position.z = -0.34 - Math.sin(k * Math.PI) * 0.11;
+    if (k >= 1) { gun.pumpT = -1; gunParts.pump.position.z = -0.34; }
+  }
+
+  // Dym – drift, stúpanie, rozpínanie, blednutie
+  for (const p of smokePool) {
+    if (!p.active) continue;
+    p.t += dt;
+    if (p.t >= p.life) { p.active = false; p.spr.visible = false; continue; }
+    p.spr.position.addScaledVector(p.vel, dt);
+    p.vel.multiplyScalar(Math.max(0, 1 - 1.7 * dt));
+    p.vel.y += 0.35 * dt;
+    const k = 1 - p.t / p.life;
+    p.spr.material.opacity = k * 0.52;
+    const s = p.s0 + (1 - k) * 1.15;
+    p.spr.scale.set(s, s, 1);
+  }
+  // Iskry – gravitácia, rýchle blednutie
+  for (const p of sparkPool) {
+    if (!p.active) continue;
+    p.t += dt;
+    if (p.t >= p.life) { p.active = false; p.spr.visible = false; continue; }
+    p.spr.position.addScaledVector(p.vel, dt);
+    p.vel.y -= 7.5 * dt;
+    const k = 1 - p.t / p.life;
+    p.spr.material.opacity = k;
+    const s = 0.09 + k * 0.1;
+    p.spr.scale.set(s, s, 1);
+  }
+}
+
+function resetGun() {
+  gun.cd = 0; gun.kick = 0; gun.flashT = 0; gun.domFlash = 0;
+  gun.pumpAt = -1; gun.pumpT = -1;
+  recoilPitch = 0; recoilRoll = 0;
+  if (gunParts.flashLight) gunParts.flashLight.intensity = 0;
+  if (gunParts.flashSpr) { gunParts.flashSpr.material.opacity = 0; gunParts.flashSpr.scale.set(0.001, 0.001, 1); }
+  if (gunParts.coreSpr) { gunParts.coreSpr.material.opacity = 0; gunParts.coreSpr.scale.set(0.001, 0.001, 1); }
+  if (gunParts.pump) gunParts.pump.position.z = -0.34;
+  for (const p of smokePool) { p.active = false; p.spr.visible = false; }
+  for (const p of sparkPool) { p.active = false; p.spr.visible = false; }
+  renderer.toneMappingExposure = 1.15;
+  bangFlashEl.style.opacity = '0';
+  stunBadgeEl.style.display = 'none';
+  updateShootBtn(true);
+}
 
 /* =========================================================
    TEXTÚRY & SPRITE POMOCNÍCI
@@ -995,6 +1465,63 @@ const sfx = {
   chime: () => { tone(880, 0.15, 'sine', 0.05); setTimeout(() => tone(1320, 0.2, 'sine', 0.05), 140); },
   zap: () => { tone(70, 0.18, 'square', 0.09, 40); tone(1300, 0.06, 'square', 0.06, 300); },
   crunch: () => { tone(140, 0.1, 'square', 0.06, 90); setTimeout(() => tone(110, 0.12, 'square', 0.06, 70), 110); },
+  /* ---- BROKOVNICA – ultra bang zvuky ---- */
+  bang: () => {
+    if (!actx) return;
+    const t0 = actx.currentTime;
+    const buf = gunNoise();
+    // 1) sub-bass thump – tlmič do brucha
+    {
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(150, t0);
+      o.frequency.exponentialRampToValueAtTime(26, t0 + 0.3);
+      g.gain.setValueAtTime(0.65, t0);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.38);
+      o.connect(g).connect(actx.destination);
+      o.start(t0); o.stop(t0 + 0.42);
+    }
+    if (buf) {
+      // 2) hlavný tresk – šum cez lowpass s rýchlym dozvukom
+      {
+        const s = actx.createBufferSource(); s.buffer = buf;
+        const f = actx.createBiquadFilter(); f.type = 'lowpass';
+        f.frequency.setValueAtTime(9500, t0);
+        f.frequency.exponentialRampToValueAtTime(220, t0 + 0.42);
+        const g = actx.createGain();
+        g.gain.setValueAtTime(0.85, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.46);
+        s.connect(f).connect(g).connect(actx.destination);
+        s.start(t0); s.stop(t0 + 0.5);
+      }
+      // 3) vysoký crack – praskanie vzduchu
+      {
+        const s = actx.createBufferSource(); s.buffer = buf;
+        const f = actx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2400;
+        const g = actx.createGain();
+        g.gain.setValueAtTime(0.5, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.09);
+        s.connect(f).connect(g).connect(actx.destination);
+        s.start(t0); s.stop(t0 + 0.12);
+      }
+      // 4) ozvena v podzemnej chodbe
+      {
+        const s = actx.createBufferSource(); s.buffer = buf;
+        const f = actx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 700;
+        const g = actx.createGain();
+        g.gain.setValueAtTime(0.0001, t0 + 0.16);
+        g.gain.exponentialRampToValueAtTime(0.22, t0 + 0.2);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
+        s.connect(f).connect(g).connect(actx.destination);
+        s.start(t0 + 0.16); s.stop(t0 + 0.6);
+      }
+    }
+  },
+  pump: () => { tone(340, 0.05, 'square', 0.09, 150); setTimeout(() => tone(460, 0.06, 'square', 0.1, 180), 150); },
+  refuse: () => { tone(1900, 0.03, 'square', 0.05, 800); setTimeout(() => tone(1100, 0.04, 'square', 0.035, 500), 70); },
+  hit: () => { tone(90, 0.22, 'sawtooth', 0.13, 38); tone(55, 0.3, 'square', 0.08, 30); },
+  wake: () => { tone(85, 0.5, 'sawtooth', 0.1, 52); setTimeout(() => tone(46, 0.6, 'square', 0.07, 28), 180); },
   pigSqueal: () => { tone(950, 0.12, 'sawtooth', 0.06, 1500); setTimeout(() => tone(1500, 0.14, 'sawtooth', 0.05, 700), 120); },
   savePig: () => { tone(660, 0.14, 'triangle', 0.06); setTimeout(() => tone(990, 0.18, 'triangle', 0.06), 130); },
   decoy: () => { tone(440, 0.09, 'square', 0.05); setTimeout(() => tone(440, 0.09, 'square', 0.05), 140); setTimeout(() => tone(660, 0.12, 'square', 0.05), 280); },
@@ -3205,6 +3732,21 @@ function updateFxTimers(dt) {
   if (fx.speedT > 0) fx.speedT -= dt;
   if (fx.stealthT > 0) fx.stealthT -= dt;
   updateInvUI();
+
+  // 💥 Omráčenie – badge so zostávajúcim časom + prebudenie po 30 s
+  const stunned = fx.stunT > 0;
+  if (fx.stunPrev && !stunned && state.mode === 'playing') {
+    announce('😡 STANO SA PREBÚDZA!', '#ff3b4d');
+    sfx.wake();
+  }
+  fx.stunPrev = stunned;
+  if (stunned) {
+    const s = Math.ceil(fx.stunT);
+    if (s !== fx._stunSec) { fx._stunSec = s; stunBadgeEl.textContent = '💤 OMRÁČENÝ · ' + s + ' s'; }
+    stunBadgeEl.style.display = 'block';
+  } else {
+    stunBadgeEl.style.display = 'none';
+  }
 }
 
 /* =========================================================
@@ -3300,6 +3842,8 @@ const hintEl = document.getElementById('hint');
 const dangerEl = document.getElementById('danger');
 const dangerTextEl = document.getElementById('dangerText');
 const jammerBadgeEl = document.getElementById('jammerBadge');
+const bangFlashEl = document.getElementById('bangFlash');
+const stunBadgeEl = document.getElementById('stunBadge');
 const torchBtnEl = document.getElementById('torchBtn');
 const lockTipEl = document.getElementById('lockTip');
 const traceEl = document.getElementById('trace');
@@ -3511,6 +4055,7 @@ function toggleTorch() {
   if (led) led.material.color.setHex(state.torchOn ? 0x38d9c0 : 0xe6192e);
 }
 torchBtnEl.addEventListener('click', (e) => { e.stopPropagation(); toggleTorch(); });
+shootBtnEl.addEventListener('click', (e) => { e.stopPropagation(); fireShotgun(); });
 pingBtnEl.addEventListener('click', (e) => { e.stopPropagation(); sendPacket(); });
 
 // Pointer Lock pre PC first-person rozhliadanie
@@ -3535,6 +4080,12 @@ dom.addEventListener('pointerdown', (e) => {
   initAudio();
   if (state.mode !== 'playing' || sdrPanel.open) return;
   const isTouch = e.pointerType !== 'mouse' && e.pointerType !== 'pen';
+
+  // 💥 Brokovnica – ľavý klik myšou (keď je myš uzamknutá) = výstrel
+  if (!isTouch && e.button === 0 && document.pointerLockElement === dom) {
+    fireShotgun();
+    return;
+  }
 
   if (!isTouch && dom.requestPointerLock && document.pointerLockElement !== dom) {
     try { dom.requestPointerLock(); } catch (_) {}
@@ -3598,6 +4149,7 @@ window.addEventListener('keydown', (e) => {
   if (k === 'f' && state.mode === 'playing') toggleTorch();
   if (k === 'p' && state.mode === 'playing') sendPacket();
   if (k === 'e' && state.mode === 'playing') interactAction();
+  if ((k === ' ' || k === 'enter') && state.mode === 'playing') fireShotgun(); // 💥 brokovnica
   const digit = parseInt(k, 10);
   if (digit >= 1 && digit <= 8 && state.mode === 'playing') useItem(ITEM_DEFS[digit - 1].id);
   if (digit === 9 && state.mode === 'playing') useItem('zdroj12v');
@@ -3671,7 +4223,7 @@ function updatePlayer(dt) {
   const bobY = Math.sin(player.bobT) * (moving ? (wantsSprint ? 0.085 : 0.05) : 0.014);
   const bobX = Math.cos(player.bobT * 0.5) * (moving ? 0.035 : 0.006);
 
-  camEuler.set(camPitch, camYaw, bobX * -0.45);
+  camEuler.set(camPitch + recoilPitch, camYaw, bobX * -0.45 + recoilRoll);
   camera.quaternion.setFromEuler(camEuler);
   camera.position.set(
     player.pos.x + Math.cos(camYaw) * bobX,
@@ -3745,7 +4297,9 @@ function updateStano(dt) {
     }
   }
 
-  if (fx.lure) {
+  if (fx.stunT > 0) {
+    stano.chasing = false;            // 💥 omráčený brokovnicou – leží a nefíra
+  } else if (fx.lure) {
     stano.chasing = false;            // letí pre návnadu
   } else if (fx.stealthT > 0) {
     stano.chasing = false;            // 🎓 PhD – nevidí ťa
@@ -3807,6 +4361,15 @@ function updateStano(dt) {
   if (stano.repathT <= 0) {
     stano.repathT = stano.chasing ? 0.2 : 0.45;
     stano.nextStep = bfsNextStep(scx, scz, stano.target[0], stano.target[1]);
+  }
+
+  // Po omráčení zmodrá svetlo, po prebudení späť krvavočervené
+  if ((fx.stunT > 0) !== stano._stunVis) {
+    stano._stunVis = fx.stunT > 0;
+    if (stano.parts.light) {
+      if (stano._stunVis) { stano.parts.light.color.setHex(0x2f6cff); stano.parts.light.intensity = 0.55; }
+      else { stano.parts.light.color.setHex(0xff1122); stano.parts.light.intensity = 3.5; }
+    }
   }
 
   if (fx.stunT > 0) {
@@ -3876,8 +4439,8 @@ function updateStano(dt) {
   // Preblikovanie baterky + rušenie BT/WiFi podľa vzdialenosti Stana a stavu RAM
   updateFlashlightEffects(distP);
 
-  // Kontakt so Stanom
-  if (distP < STANO_TOUCH) {
+  // Kontakt so Stanom (omráčený brokovnicou ťa neškrtne)
+  if (distP < STANO_TOUCH && fx.stunT <= 0) {
     state.ram -= RAM_DRAIN * dt;
     if (Math.random() < dt * 9) sfx.hurt();
     if (state.ram <= 0) {
@@ -4069,6 +4632,9 @@ function resetGame() {
   torchBtnEl.textContent = '🔦 ZAP';
   torchBtnEl.classList.remove('off');
   fxSet(0, false, false);
+  bangFlashEl.style.opacity = '0';
+  renderer.toneMappingExposure = 1.15;
+  stunBadgeEl.style.display = 'none';
   tracerCleanup();
   tracer.cd = 0;
   updatePingBtn(true);
@@ -4079,18 +4645,22 @@ function resetGame() {
   fx.speedT = 0;
   fx.stealthT = 0;
   fx.stunT = 0;
+  fx.stunPrev = false;
+  fx._stunSec = -1;
   clearFxWorld();
+  resetGun();
   updateInvUI(true);
 
   updateHUD();
   syncNeedUI();
-  showHint('🎯 ' + DIFF_LABELS[diffSetting] + ' · [E] = istič / SDR · 📡 P = traceroute', 5);
+  showHint('🎯 ' + DIFF_LABELS[diffSetting] + ' · 💥 Klik/Medzerník = brokovnica · [E] = istič / SDR · 📡 P = traceroute', 5);
 }
 
 function startGame() {
   initAudio();
   musicStart();
   document.body.classList.remove('menu-mode');
+  if (gunGroup) gunGroup.visible = true; // 💥 brokovnica v ruke od štartu
   // Koniec menu showcase – svetlá a Twilight sa skryjú, začína hra
   if (menuShow.spot) { scene.remove(menuShow.spot); scene.remove(menuShow.spot.target); menuShow.spot = null; }
   if (menuShow.rim) { scene.remove(menuShow.rim); menuShow.rim = null; }
@@ -4138,6 +4708,9 @@ function loseGame() {
   document.getElementById('overFlavor').textContent = FLAVORS_OVER[(Math.random() * FLAVORS_OVER.length) | 0];
   document.getElementById('over').classList.remove('hidden');
   fxSet(0, false, false);
+  bangFlashEl.style.opacity = '0';
+  renderer.toneMappingExposure = 1.15;
+  stunBadgeEl.style.display = 'none';
   tracerCleanup();
   trans.active = false;
 }
@@ -4153,6 +4726,9 @@ function winGame() {
   document.getElementById('winRam').textContent = Math.round(state.ram);
   document.getElementById('win').classList.remove('hidden');
   fxSet(0, false, false);
+  bangFlashEl.style.opacity = '0';
+  renderer.toneMappingExposure = 1.15;
+  stunBadgeEl.style.display = 'none';
   tracerCleanup();
   trans.active = false;
   twilight.mesh.visible = false;
@@ -4206,6 +4782,7 @@ function animate(now) {
     updateTransmission(dt);
     updateWorldFx(dt);
     updatePoofs(dt);
+    updateGunFx(dt);
     updateFxTimers(dt);
     updatePrompt();
     updateHUD();
@@ -4264,6 +4841,8 @@ function bootWorld() {
   buildTwilight();
   buildTracerVisuals();
   buildPoofPool();
+  buildGunPools();
+  buildShotgunViewModel(); // 💥 brokovnica (potrebuje GLOW_TEX, preto až v bootWorlde)
   buildItemLightPool();
   generateMaze();
   planObjectives();
