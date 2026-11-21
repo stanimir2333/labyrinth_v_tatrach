@@ -4907,41 +4907,62 @@ Promise.all([TEX_READY, FONTS_READY]).then(bootWorld).catch(() => bootWorld());
    Cieľ: 1 000.000 kHz · režim AM → 📡 VYSLAŤ PACKET → Čína.
    Kým je terminál otvorený, hra je pauznutá (Stano, Twilight,
    RAM aj herný čas stoja), takže si na ladenie máš pokoj.
-   Každá frekvencia niečo hrá – stanice sú syntetizované cez
-   Web Audio podľa typu (morse, časová stanica, FT8, SSTV,
-   fax, číselná stanica, NBFM, DRM, uplink nosič).
+   Všetko je plne syntetizované OFFLINE cez Web Audio – žiadne
+   pripojenie na reálny KiwiSDR (sieť nie je dostupná), takže
+   éter funguje vždy. Typy staníc: morse, časová stanica, FT8,
+   SSTV, fax, číselná stanica, AM reč/hudba, SSB QSO, volmet,
+   buzzer UVB-76, pip, OTH radar, burst, CB squelch, NBFM,
+   DRM, uplink nosič.
    ========================================================= */
 const SDR_TARGET_KHZ = 1000;
 const SDR_MAX_KHZ = 30000;
 
-/* Stanice v éteri (level of detail – každá znie inak) */
+/* Stanice v éteri (level of detail – každá znie inak)
+   side: -1 = LSB, 1 = USB (len pre SSB stanice) */
 const SDR_STATIONS = [
-  { f:162,   name:'LW 162',     type:'morse',   pat:'L',   bw:0.4,  str:0.38, col:'#b06cff' },
-  { f:518,   name:'NAVTEX',     type:'data',               bw:0.6,  str:0.45, col:'#ffb347' },
-  { f:981,   name:'MW MUZIKA',  type:'music',              bw:9,    str:0.55, col:'#ffd23a' },
-  { f:1449,  name:'MW ČÍSELNA', type:'numbers',            bw:9,    str:0.42, col:'#ff3bbd' },
-  { f:2500,  name:'WWV USA',    type:'time',               bw:2.5,  str:0.50, col:'#54f0d8' },
-  { f:3330,  name:'CHU CAN',    type:'time',               bw:2.5,  str:0.44, col:'#54f0d8' },
-  { f:3573,  name:'FT8 80m',    type:'data',               bw:2.8,  str:0.50, col:'#4d8cff' },
-  { f:3855,  name:'FAX METEO',  type:'fax',                bw:3,    str:0.45, col:'#ff5263' },
-  { f:4996,  name:'RWM RUS',    type:'morse',   pat:'RWM', bw:0.6,  str:0.45, col:'#b06cff' },
-  { f:5348,  name:'STANAG',     type:'data',               bw:3,    str:0.40, col:'#ff5263' },
-  { f:6220,  name:'HM01',       type:'numbers',            bw:5,    str:0.52, col:'#ff3bbd' },
-  { f:7074,  name:'FT8 40m',    type:'data',               bw:2.8,  str:0.48, col:'#4d8cff' },
-  { f:7850,  name:'CHU CAN',    type:'time',               bw:2.5,  str:0.44, col:'#54f0d8' },
-  { f:7880,  name:'FAX DE',     type:'fax',                bw:3,    str:0.40, col:'#ff5263' },
-  { f:9450,  name:'DRM',        type:'drm',                bw:10,   str:0.45, col:'#e6192e' },
-  { f:10027, name:'HFDL',       type:'data',               bw:3,    str:0.40, col:'#ff5263' },
-  { f:14074, name:'FT8 20m',    type:'data',               bw:2.8,  str:0.58, col:'#4d8cff' },
-  { f:14230, name:'SSTV',       type:'sstv',               bw:3.5,  str:0.50, col:'#3bbdff' },
-  { f:14670, name:'CHU CAN',    type:'time',               bw:2.5,  str:0.42, col:'#54f0d8' },
-  { f:15000, name:'WWV USA',    type:'time',               bw:2.5,  str:0.50, col:'#54f0d8' },
-  { f:18110, name:'RTTY',       type:'data',               bw:1.4,  str:0.36, col:'#ffb347' },
-  { f:21074, name:'FT8 15m',    type:'data',               bw:2.8,  str:0.42, col:'#4d8cff' },
-  { f:24960, name:'RTTY',       type:'data',               bw:1.4,  str:0.32, col:'#ffb347' },
-  { f:27070, name:'CB 27 MHz',  type:'fm',                 bw:10,   str:0.55, col:'#6bff9d' },
-  { f:28200, name:'BEACON 10m', type:'morse',   pat:'V',   bw:0.5,  str:0.40, col:'#b06cff' },
+  { f:162,   name:'LW 162',        type:'morse',  pat:'L',          bw:0.4,  str:0.38, col:'#b06cff' },
+  { f:500,   name:'QRG 500',       type:'morse',  pat:'CQ DE KIWI', bw:0.3,  str:0.30, col:'#b06cff' },
+  { f:518,   name:'NAVTEX',        type:'data',                     bw:0.6,  str:0.45, col:'#ffb347' },
+  { f:765,   name:'MW ROZHLAS',    type:'amtalk',                   bw:9,    str:0.48, col:'#ffb347' },
+  { f:981,   name:'MW MUZIKA',     type:'music',                    bw:9,    str:0.55, col:'#ffd23a' },
+  { f:1134,  name:'MW WELLE DE',   type:'amtalk',                   bw:9,    str:0.42, col:'#ffb347' },
+  { f:1449,  name:'MW ČÍSELNA',    type:'numbers',                  bw:9,    str:0.42, col:'#ff3bbd' },
+  { f:2187,  name:'MARINE MF',     type:'burst',                    bw:0.9,  str:0.36, col:'#ff5263' },
+  { f:2500,  name:'WWV USA',       type:'time',                     bw:2.5,  str:0.50, col:'#54f0d8' },
+  { f:3330,  name:'CHU CAN',       type:'time',                     bw:2.5,  str:0.44, col:'#54f0d8' },
+  { f:3573,  name:'FT8 80m',       type:'data',                     bw:2.8,  str:0.50, col:'#4d8cff' },
+  { f:3855,  name:'FAX METEO',     type:'fax',                      bw:3,    str:0.45, col:'#ff5263' },
+  { f:4625,  name:'BUZZER UVB-76', type:'buzzer',                   bw:1.2,  str:0.62, col:'#ff3bbd' },
+  { f:4996,  name:'RWM RUS',       type:'morse',  pat:'RWM',        bw:0.6,  str:0.45, col:'#b06cff' },
+  { f:5348,  name:'STANAG',        type:'burst',                    bw:3,    str:0.42, col:'#ff5263' },
+  { f:5448,  name:'THE PIP',       type:'pip',                      bw:0.9,  str:0.50, col:'#ff3bbd' },
+  { f:6220,  name:'HM01',          type:'numbers',                  bw:5,    str:0.52, col:'#ff3bbd' },
+  { f:7074,  name:'FT8 40m',       type:'data',                     bw:2.8,  str:0.48, col:'#4d8cff' },
+  { f:7137,  name:'HAM 40m LSB',   type:'ssb',    side:-1,          bw:2.8,  str:0.52, col:'#6bff9d' },
+  { f:7560,  name:'WOODPECKER',    type:'radar',                    bw:9,    str:0.42, col:'#e6192e' },
+  { f:7850,  name:'CHU CAN',       type:'time',                     bw:2.5,  str:0.44, col:'#54f0d8' },
+  { f:7880,  name:'FAX DE',        type:'fax',                      bw:3,    str:0.40, col:'#ff5263' },
+  { f:8983,  name:'ATLANTICO HF',  type:'ssb',    side:1,           bw:2.8,  str:0.42, col:'#6bff9d' },
+  { f:9450,  name:'DRM',           type:'drm',                      bw:10,   str:0.45, col:'#e6192e' },
+  { f:10027, name:'HFDL',          type:'data',                     bw:3,    str:0.40, col:'#ff5263' },
+  { f:11185, name:'VOLMET AIR',    type:'volmet',                   bw:2.8,  str:0.44, col:'#6bff9d' },
+  { f:12160, name:'WRNO WORLD',    type:'amtalk',                   bw:9,    str:0.52, col:'#ffd23a' },
+  { f:14074, name:'FT8 20m',       type:'data',                     bw:2.8,  str:0.58, col:'#4d8cff' },
+  { f:14230, name:'SSTV',          type:'sstv',                     bw:3.5,  str:0.50, col:'#3bbdff' },
+  { f:14255, name:'HAM 20m USB',   type:'ssb',    side:1,           bw:2.8,  str:0.55, col:'#6bff9d' },
+  { f:14670, name:'CHU CAN',       type:'time',                     bw:2.5,  str:0.42, col:'#54f0d8' },
+  { f:15000, name:'WWV USA',       type:'time',                     bw:2.5,  str:0.50, col:'#54f0d8' },
+  { f:16040, name:'WOODPECKER 2',  type:'radar',                    bw:8,    str:0.34, col:'#e6192e' },
+  { f:18110, name:'RTTY',          type:'data',                     bw:1.4,  str:0.36, col:'#ffb347' },
+  { f:21074, name:'FT8 15m',       type:'data',                     bw:2.8,  str:0.42, col:'#4d8cff' },
+  { f:21285, name:'HAM 15m USB',   type:'ssb',    side:1,           bw:2.8,  str:0.46, col:'#6bff9d' },
+  { f:24960, name:'RTTY',          type:'data',                     bw:1.4,  str:0.32, col:'#ffb347' },
+  { f:27070, name:'CB 27 MHz',     type:'fm',                       bw:10,   str:0.55, col:'#6bff9d' },
+  { f:28200, name:'BEACON 10m',    type:'morse',  pat:'V',          bw:0.5,  str:0.40, col:'#b06cff' },
+  { f:30100, name:'BEACON 30m',    type:'morse',  pat:'K',          bw:0.4,  str:0.30, col:'#b06cff' },
 ];
+/* Melódia pre AM hudobnú stopu (do-re-mi hore-dole) */
+const SDR_TUNE = [392, 440, 494, 523, 587, 659, 784, 659, 587, 523, 494, 440];
 /* Náš uplink nosič – existuje len keď je istič hore (má napájanie) */
 const SDR_UPLINK = { f:SDR_TARGET_KHZ, name:'📡 UPLINK → CN', type:'uplink', bw:2.4, str:0.95, col:'#7ce8d4', up:true };
 
@@ -4959,6 +4980,8 @@ const sdrPanel = {
   nextFsk:0, fskF:1200, burstOn:true, sstvI:0, melI:0, melT:0,
   numT:0, faxP:0, pingT:0, pingNow:false,
   morse:{ i:0, until:0, on:false, pat:null, name:'' },
+  vox:{ name:'', until:0, on:false, f0:130, slide:1, form:600 },  // stav syntetizovaného hlasu
+  amt:null, cb:null,                                              // segmenty AM reči / CB squelch
 };
 
 /* ---- DOM prvky terminálu ---- */
@@ -4996,6 +5019,20 @@ function sdrMorseUnits(str){
   return seq.length ? seq : [{ on:true, u:1 }];
 }
 
+/* ---- Generátor slabík pre syntetizovaný hlas (SSB QSO, AM reč, volmet, CB)
+        rozdelí reč na znelé/neznelé slabiky s kolísavou výškou a formantou ---- */
+function sdrVoiceNext(vx, now, pMin, pMax, voicedP){
+  if (now < vx.until) return;
+  const voiced = Math.random() < voicedP;
+  vx.on = voiced;
+  vx.until = now + (voiced ? 90 + Math.random() * 190 : 140 + Math.random() * 420);
+  if (voiced) {
+    vx.f0 = pMin + Math.random() * (pMax - pMin);
+    vx.slide = 0.85 + Math.random() * 0.35;
+    vx.form = 380 + Math.random() * 720;
+  }
+}
+
 /* ---- Paleta waterfallu (tmavá modrá → cyan → zelená → žltá → červená) ---- */
 const SDR_PAL = (() => {
   const stops = [[0,4,8,26],[0.20,16,40,120],[0.38,18,96,200],[0.52,0,180,224],[0.66,34,214,140],[0.78,242,227,76],[0.88,255,138,43],[1,255,64,64]];
@@ -5011,19 +5048,66 @@ const SDR_PAL = (() => {
 })();
 function sdrPal(v){ return SDR_PAL[Math.max(0, Math.min(255, Math.round(v * 255)))]; }
 
-/* ---- RF model: šumové pozadie + signál staníc na danej frekvencii ---- */
+/* ---- RF model: šumové pozadie + signál staníc na danej frekvencii.
+        Každý typ má vlastný tvar spektra ako na reálnom KiwiSDR waterfallu:
+        AM = ihla nosnej + symetrické bočné pásma, SSB = jednostranný banán,
+        radar = letiaci pás, buzzer/pip = pulzy, burst = občasné dáta. ---- */
 function sdrStationList(){ return power.on ? SDR_STATIONS.concat([SDR_UPLINK]) : SDR_STATIONS; }
 function sdrNoiseFloor(f){
   return 0.10 + 0.15 * Math.exp(-f / 8000) + 0.03 * Math.sin(f / 1700);
+}
+function sdrFlick(st, now){
+  return 0.72 + 0.28 * Math.sin(now / 1000 * (0.7 + (st.f % 7) / 7) + st.f);
+}
+/* Amplitúda stanice st v odchylke d kHz od jej frekvencie v čase now */
+function sdrShapeAmp(st, d, now){
+  const fl = sdrFlick(st, now);
+  const g = (x, w) => Math.exp(-(x * x) / (2 * w * w));
+  switch (st.type) {
+    case 'music': case 'amtalk': case 'numbers':
+      // AM: výrazná ihla nosnej + pás bočných pásiem (klasika KiwiSDR)
+      return st.str * fl * (0.85 * g(d, 0.28) + 0.5 * g(d, st.bw * 0.6));
+    case 'ssb': case 'volmet': {
+      // SSB banán: väčšia masa na jednej strane, slabo aj na druhej
+      const s = st.side || 1;
+      return st.str * fl * (0.8 * g(d - s * st.bw * 0.45, st.bw * 0.5)
+                          + 0.5 * g(d - s * st.bw * 0.95, st.bw * 0.45)
+                          + 0.12 * g(d, 0.2));
+    }
+    case 'radar': {
+      // OTH radar: široký pás letí po pásme a pulzuje ~10 Hz
+      const cf = st.f + Math.sin(now / 2800 + st.f) * st.bw * 1.6;
+      const x = d - (cf - st.f);
+      const gate = Math.sin(now / 1000 * Math.PI * 2 * 10) > 0 ? 1 : 0.22;
+      return st.str * fl * gate * g(x, st.bw * 0.9);
+    }
+    case 'buzzer': {
+      // UVB-76: úzka nosná, každých ~2,45 s široký buzz
+      const ph = now % 2450;
+      return st.str * fl * (g(d, 0.22) + (ph < 350 ? 0.5 * g(d, 1.1) : 0));
+    }
+    case 'pip': {
+      // The Pip: nosná + krátke pípnutie každých 5 s
+      const ph = now % 5000;
+      return st.str * fl * (g(d, 0.25) + (ph < 130 ? 0.8 * g(d, 0.45) : 0));
+    }
+    case 'burst': {
+      // Vojenský burst: ticho + nosná, občas rýchly dátový balík
+      const ph = now % 6200;
+      return st.str * fl * (0.25 * g(d, 0.25)
+                          + (ph < 950 ? (0.35 + 0.65 * Math.random()) * g(d, st.bw * 0.7) : 0));
+    }
+    default:
+      return st.str * fl * g(d, st.bw * 0.55 + 0.08);
+  }
 }
 function sdrSignalAt(f){
   let sig = 0, best = null;
   const list = sdrStationList();
   for (const st of list) {
     const d = Math.abs(f - st.f);
-    if (d > st.bw * 1.8) continue;
-    const s2 = 2 * Math.pow(st.bw * 0.55 + 0.08, 2);
-    const v = st.str * Math.exp(-(d * d) / s2);
+    if (d > st.bw * 2.8) continue;
+    const v = sdrShapeAmp(st, f - st.f, performance.now());
     if (v > sig) { sig = v; best = st; }
   }
   return { sig: Math.min(1, sig), best };
@@ -5033,20 +5117,17 @@ function sdrRowAmps(w, f0, df, now){
   const list = sdrStationList();
   for (const st of list) {
     if (st.f + st.bw * 3 < f0 || st.f - st.bw * 3 > f0 + w * df) continue;
-    const flick = 0.72 + 0.28 * Math.sin(now / 1000 * (0.7 + (st.f % 7) / 7) + st.f);
-    const s2 = 2 * Math.pow(st.bw * 0.55 + 0.08, 2);
     const x1 = Math.max(0, Math.floor((st.f - st.bw * 3 - f0) / df));
     const x2 = Math.min(w - 1, Math.ceil((st.f + st.bw * 3 - f0) / df));
-    for (let x = x1; x <= x2; x++) {
-      const d = f0 + x * df - st.f;
-      amps[x] += st.str * flick * Math.exp(-(d * d) / s2);
-    }
+    for (let x = x1; x <= x2; x++) amps[x] += sdrShapeAmp(st, f0 + x * df - st.f, now);
   }
   return amps;
 }
 
-/* ---- Web Audio engine terminálu ---- */
-const sdrA = { on:false, master:null, noiseF:null, noiseG:null, tone:null, toneG:null, hum:null, humG:null, stepT:null };
+/* ---- Web Audio engine terminálu ----
+   tone = čistý tón (morse, dátum, FT8...), hum = nosná, vox = hlasová formanta
+   (tone → voxF → voxG je paralelná formantová vetva pre syntetizovanú reč) */
+const sdrA = { on:false, master:null, noiseF:null, noiseG:null, tone:null, toneG:null, hum:null, humG:null, voxF:null, voxG:null, stepT:null };
 function sdrAudioInit(){
   if (sdrA.master || !actx) return;
   const a = actx;
@@ -5061,11 +5142,16 @@ function sdrAudioInit(){
   const tone = a.createOscillator(); tone.type = 'sine'; tone.frequency.value = 600;
   const tg = a.createGain(); tg.gain.value = 0.0001;
   tone.connect(tg).connect(master); tone.start();
+  // hlasová vetva: píla → formantová pásmová priepust → gain (umelá reč)
+  const vF = a.createBiquadFilter(); vF.type = 'bandpass'; vF.frequency.value = 620; vF.Q.value = 3.4;
+  const vg = a.createGain(); vg.gain.value = 0.0001;
+  tone.connect(vF); vF.connect(vg); vg.connect(master);
   const hum = a.createOscillator(); hum.type = 'sine'; hum.frequency.value = 440;
   const hg = a.createGain(); hg.gain.value = 0.0001;
   hum.connect(hg).connect(master); hum.start();
   sdrA.master = master; sdrA.noiseF = bp; sdrA.noiseG = ng;
   sdrA.tone = tone; sdrA.toneG = tg; sdrA.hum = hum; sdrA.humG = hg;
+  sdrA.voxF = vF; sdrA.voxG = vg;
 }
 function sdrAudioStart(){
   sdrAudioInit(); if (!actx) return;
@@ -5080,10 +5166,11 @@ function sdrAudioStop(){
     const t = actx.currentTime;
     sdrA.noiseG.gain.setTargetAtTime(0.0001, t, 0.03);
     sdrA.toneG.gain.setTargetAtTime(0.0001, t, 0.03);
+    sdrA.voxG.gain.setTargetAtTime(0.0001, t, 0.03);
     sdrA.humG.gain.setTargetAtTime(0.0001, t, 0.03);
   }
 }
-/* Srdce rádia: podľa naladenej frekvencie, módu a typu stanice moduluje šum / tón / nosný hum */
+/* Srdce rádia: podľa naladenej frekvencie, módu a typu stanice moduluje šum / tón / nosný hum / hlasovú formantu */
 function sdrAudioStep(){
   if (!sdrA.on || !actx || !sdrA.master) return;
   const now = performance.now();
@@ -5095,14 +5182,16 @@ function sdrAudioStep(){
   const garbleV = (mode === 'LSB' || mode === 'USB') ? 0.75 : 1;
 
   let ng = 0.035 + 0.14 * (1 - sig);
+  let sqMul = 1;                                        // squelch (CB) – zavretý potláča šum
   if (mode === 'IQ') ng *= 1.8;
   if (mode === 'DRM') ng *= 1.5;
   if (sdrPanel.jam > 0.15 && Math.random() < 0.1) ng += sdrPanel.jam * 0.12; // Stano ruší aj éter
-  sdrA.noiseG.gain.setTargetAtTime(Math.min(0.3, ng), t, 0.05);
   sdrA.tone.type = 'sine';
   if (!best || best.type !== 'drm') sdrA.noiseF.frequency.setTargetAtTime(750 + (1 - sig) * 320, t, 0.1);
 
   let toneOn = false, toneF = 600, toneV = 0, humF = 440, humV = 0;
+  let voxOn = false, voxForm = 620, voxV = 0;           // hlasová formantová vetva
+  const vx = sdrPanel.vox;
   if (!best) {
     if (Math.random() < 0.05) { toneOn = true; toneF = 300 + Math.random() * 1400; toneV = 0.012; } // duchovia v šume
   } else switch (best.type) {
@@ -5153,12 +5242,35 @@ function sdrAudioStep(){
     case 'music': {
       if (now >= sdrPanel.melT) {
         sdrPanel.melT = now + 260 + (Math.random() < 0.18 ? 420 : 0);
-        sdrPanel.melI = (sdrPanel.melI + 1) % 8;
-        sdrPanel.fskF = [392, 440, 494, 523, 587, 659, 587, 523][sdrPanel.melI];
+        sdrPanel.melI = (sdrPanel.melI + 1) % SDR_TUNE.length;
+        sdrPanel.fskF = SDR_TUNE[sdrPanel.melI];
       }
+      const vib = 1 + 0.008 * Math.sin(now / 90);       // jemné vibrato ako starý rozhlás
       sdrA.tone.type = 'triangle';
-      toneOn = true; toneF = sdrPanel.fskF * garble; toneV = 0.05 * garbleV;
-      humF = 196; humV = 0.02 * garbleV;
+      toneOn = true; toneF = sdrPanel.fskF * vib * garble; toneV = 0.05 * garbleV;
+      humF = sdrPanel.fskF / 2; humV = 0.02 * garbleV;  // basová stopa pod melódiou
+      break;
+    }
+    case 'amtalk': {
+      // AM rozhlas: strieda sa reč (syntetizované slabiky) a hudobná storna
+      if (!sdrPanel.amt || sdrPanel.amt.name !== best.name) sdrPanel.amt = { name: best.name, seg: 'talk', until: 0 };
+      const A = sdrPanel.amt;
+      if (now >= A.until) {
+        A.seg = Math.random() < 0.62 ? 'talk' : 'music';
+        A.until = now + (A.seg === 'talk' ? 2800 + Math.random() * 3600 : 3400 + Math.random() * 2800);
+        sdrPanel.melI = 0;
+      }
+      if (A.seg === 'talk') {
+        sdrVoiceNext(vx, now, 95, 155, 0.68);
+        sdrA.tone.type = 'sawtooth';
+        voxOn = vx.on; voxForm = vx.form; voxV = 0.10 * garbleV;
+        humF = 300; humV = 0.016 * garbleV;
+      } else {
+        if (now >= sdrPanel.melT) { sdrPanel.melT = now + 250; sdrPanel.melI = (sdrPanel.melI + 1) % SDR_TUNE.length; sdrPanel.fskF = SDR_TUNE[sdrPanel.melI]; }
+        sdrA.tone.type = 'triangle';
+        toneOn = true; toneF = sdrPanel.fskF * garble; toneV = 0.045 * garbleV;
+        humF = sdrPanel.fskF / 2; humV = 0.017;
+      }
       break;
     }
     case 'numbers': {
@@ -5168,8 +5280,85 @@ function sdrAudioStep(){
       break;
     }
     case 'fm': {
-      if (now >= sdrPanel.numT) { sdrPanel.numT = now + 500 + Math.random() * 700; sdrPanel.fskF = 350 + Math.random() * 500; sdrPanel.burstOn = Math.random() < 0.75; }
-      toneOn = sdrPanel.burstOn; toneF = sdrPanel.fskF * garble; toneV = 0.05;
+      // CB/PMR kukátko: striedajúci sa garblený hlas + zavretá squelch (šum padne)
+      if (!sdrPanel.cb || sdrPanel.cb.name !== best.name) sdrPanel.cb = { name: best.name, rx: false, until: 0 };
+      const C = sdrPanel.cb;
+      if (now >= C.until) {
+        C.rx = Math.random() < 0.55;
+        C.until = now + (C.rx ? 1300 + Math.random() * 2400 : 800 + Math.random() * 1900);
+      }
+      toneOn = false;
+      if (C.rx) {
+        sdrVoiceNext(vx, now, 110, 230, 0.72);
+        sdrA.tone.type = 'sawtooth';
+        voxOn = vx.on; voxForm = vx.form * 1.22; voxV = 0.09;
+      } else sqMul = 0.4;
+      break;
+    }
+    case 'ssb': {
+      // SSB QSO: kačacia reč cez formantovú vetvu; správnym sidebandom zrozumiteľnejšia
+      if (vx.name !== best.name) { vx.name = best.name; vx.until = 0; }
+      sdrVoiceNext(vx, now, 115, 195, 0.72);
+      const s = best.side || 1;
+      const right = (mode === 'USB' && s === 1) || (mode === 'LSB' && s === -1);
+      sdrA.tone.type = 'sawtooth';
+      toneV = 0.0001;
+      voxOn = vx.on; voxForm = vx.form * (right ? 1 : 1.45); voxV = right ? 0.11 : 0.095;
+      humF = right ? 90 : 68; humV = right ? 0.013 : 0.02 * garbleV;
+      break;
+    }
+    case 'volmet': {
+      // letecký volmet: mechanický monotónny hlas číta počasie v cykle
+      if (vx.name !== best.name) { vx.name = best.name; vx.until = 0; }
+      const cyc = now % 4200;
+      if (cyc < 2700) {
+        sdrVoiceNext(vx, now, 148, 172, 0.82);
+        voxOn = vx.on; voxForm = 430 + (Math.floor(cyc / 680) % 2) * 250; voxV = 0.095;
+      }
+      sdrA.tone.type = 'sawtooth';
+      humF = 90; humV = 0.012;
+      break;
+    }
+    case 'buzzer': {
+      // UVB-76 „Buzzer“: buzz ~1000 Hz každých ~2,45 s, nosná v pozadí, občas hlasová správa
+      const ph = now % 2450;
+      if (ph < 320) { sdrA.tone.type = 'sawtooth'; toneOn = true; toneF = 1000; toneV = 0.08; }
+      humF = 90; humV = isAM ? 0.02 : 0.012;
+      const msgC = now % 47000;
+      if (msgC > 2200 && msgC < 5400) {
+        sdrVoiceNext(vx, now, 105, 160, 0.7);
+        voxOn = vx.on; voxForm = vx.form; voxV = 0.085;
+      }
+      break;
+    }
+    case 'pip': {
+      // The Pip: krátke pípnutie každých 5 s nad slabou nosnou
+      const ph = now % 5000;
+      if (ph < 115) { toneOn = true; toneF = 1400; toneV = 0.075; }
+      humF = 90; humV = 0.014;
+      break;
+    }
+    case 'radar': {
+      // Ruský „Woodpecker“ OTH radar: ~10 pulzov/s, tón aj šum prelietavajú pásmom
+      const gate = Math.sin(now / 1000 * Math.PI * 2 * 10) > 0;
+      const sw = (now / 2600) % 1;
+      sdrA.tone.type = 'square';
+      toneOn = gate; toneF = 300 + sw * 950; toneV = 0.05;
+      sdrA.noiseF.frequency.setTargetAtTime(420 + sw * 2300, t, 0.06);
+      humV = 0;
+      break;
+    }
+    case 'burst': {
+      // Vojenská burst-spojenie: ticho s nosnou, každých ~6 s rýchly dátový balík
+      const ph = now % 6200;
+      if (ph < 950) {
+        if (now >= sdrPanel.nextFsk) {
+          sdrPanel.nextFsk = now + 26 + Math.random() * 22;
+          sdrPanel.fskF = [900, 1100, 1300, 1500, 1700, 1900, 2100, 2300][(Math.random() * 8) | 0];
+        }
+        toneOn = true; toneF = sdrPanel.fskF; toneV = 0.065 * garbleV;
+      }
+      humF = 110; humV = 0.012;
       break;
     }
     case 'drm': {
@@ -5191,13 +5380,17 @@ function sdrAudioStep(){
   }
 
   /* Vplyv módu na príjem */
-  if (mode === 'CW' && best && best.type !== 'morse') { toneOn = true; toneF = 600; toneV = 0.03 + sig * 0.03; humV = 0; }
-  if (mode === 'DRM' && (!best || best.type !== 'drm')) { toneOn = false; humV = 0; }
-  if (mode === 'IQ') { toneOn = false; humV = 0; }
+  if (mode === 'CW' && best && best.type !== 'morse') { toneOn = true; toneF = 600; toneV = 0.03 + sig * 0.03; humV = 0; voxOn = false; }
+  if (mode === 'DRM' && (!best || best.type !== 'drm')) { toneOn = false; humV = 0; voxOn = false; }
+  if (mode === 'IQ') { toneOn = false; humV = 0; voxOn = false; }
   if (mode === 'NBFM' && best && best.type !== 'fm') { toneV *= 0.8; ng *= 0.7; }
 
+  ng *= sqMul;
+  sdrA.noiseG.gain.setTargetAtTime(Math.min(0.3, ng), t, 0.05);
   sdrA.tone.frequency.setTargetAtTime(toneF, t, 0.02);
   sdrA.toneG.gain.setTargetAtTime(toneOn ? toneV : 0.0001, t, 0.025);
+  sdrA.voxF.frequency.setTargetAtTime(voxForm, t, 0.035);
+  sdrA.voxG.gain.setTargetAtTime(voxOn ? voxV : 0.0001, t, 0.03);
   sdrA.hum.frequency.setTargetAtTime(humF, t, 0.03);
   sdrA.humG.gain.setTargetAtTime(humV, t, 0.05);
 }
