@@ -383,12 +383,44 @@
   #sdrStatus.ok{ color:#8dffc9; border-color:rgba(70,230,120,.45); }
   #sdrStatus.err{ color:#ff8a95; border-color:rgba(230,25,46,.45); }
   #sdrStatus b{ color:#fff; }
+  /* ---------- ALZA OBCHODNÍK + ALZABOX (hra pauznutá) ---------- */
+  #alzaPanel{
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(440px,94vw); max-height:88vh; z-index:27; display:none;
+    background:rgba(12,5,7,0.96); border:1px solid rgba(230,19,46,.55); border-radius:12px;
+    box-shadow:0 0 60px rgba(0,0,0,.92), 0 0 26px rgba(230,19,46,.18), inset 0 0 46px rgba(230,19,46,.04);
+    padding:10px 12px 12px; font-family:"Courier New",Courier,monospace; color:#ffb9c2;
+    pointer-events:auto; overflow:auto;
+  }
+  #alzaPanel.open{ display:flex; flex-direction:column; gap:8px; animation:sdrIn .2s ease; }
+  #alzaHead{ display:flex; align-items:center; gap:10px; }
+  #alzaTitle{ font-weight:700; letter-spacing:.1em; font-size:12.5px; color:#ff5c73; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #alzaCoal{ margin-left:auto; font-size:11px; color:#ffd9a8; letter-spacing:.08em; white-space:nowrap; }
+  #alzaClose{ pointer-events:auto; cursor:pointer; background:rgba(230,25,46,.16); color:#ff8a95; border:1px solid rgba(230,25,46,.5); border-radius:7px; font-size:12px; padding:6px 11px; font-weight:700; font-family:inherit; white-space:nowrap; }
+  #alzaRows{ display:flex; flex-direction:column; gap:6px; }
+  .alzaRow{ display:flex; align-items:center; gap:10px; background:rgba(26,8,11,.8); border:1px solid rgba(230,19,46,.28); border-radius:8px; padding:7px 10px; }
+  .alzaRow .e{ font-size:20px; width:26px; text-align:center; flex:0 0 auto; }
+  .alzaRow .nm{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; line-height:1.25; }
+  .alzaRow .nm b{ font-size:12.5px; color:#ffe2e6; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .alzaRow .nm small{ font-size:10px; color:#c98d97; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .alzaRow .pr{ font-size:12px; color:#ffd9a8; font-weight:700; white-space:nowrap; }
+  .alzaRow button.buy{ pointer-events:auto; cursor:pointer; background:linear-gradient(135deg,#8f1020,#e6132e); border:1px solid rgba(255,120,140,.6); color:#fff; border-radius:7px; padding:7px 10px; font-size:11.5px; font-weight:700; font-family:inherit; white-space:nowrap; }
+  .alzaRow button.buy:hover{ filter:brightness(1.2); }
+  .alzaRow button.buy.dim{ filter:grayscale(.75) brightness(.55); cursor:not-allowed; }
+  #alzaOrders{ font-size:11.5px; line-height:1.5; color:#ffd9a8; background:rgba(26,8,11,.7); border:1px solid rgba(230,19,46,.3); border-radius:7px; padding:7px 10px; }
+  #alzaOrders b{ color:#fff; }
+  #alzaOrders .ok{ color:#8dffc9; }
+  #alzaOrders i{ color:#c98d97; }
+  #alzaStatus{ font-size:11.5px; line-height:1.5; color:#ffb9c2; background:rgba(10,4,5,.7); border:1px solid rgba(230,19,46,.22); border-radius:7px; padding:7px 10px; }
+  #alzaStatus b{ color:#fff; }
   @media (max-width:520px){
     #sdrWF{ height:18vh; }
     #sdrFreq{ min-width:150px; }
     #sdrIn{ width:88px; }
     #sdrTitle{ font-size:10.5px; }
     #sdrTx{ width:100%; margin-left:0; }
+    #alzaTitle{ font-size:10.5px; }
+    .alzaRow button.buy{ padding:8px 9px; }
   }
 
   /* ---------- KRVAVÝ FONT (Nosifer – vložený, funguje aj offline) ---------- */
@@ -402,19 +434,6 @@
     src:url(data:font/woff2;base64,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) format('woff2');
     unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
   }
-  /* ---------- ŠTATISTIKY KOLA (výhra / prehra) + RÝCHLE NASTAVENIA ---------- */
-  .stats{
-    display:grid; grid-template-columns:1fr auto; gap:4px 18px;
-    max-width:420px; width:100%; text-align:left;
-    background:rgba(4,6,10,.72); border:1px solid rgba(230,25,46,.28); border-radius:10px;
-    padding:12px 16px; margin:0 0 18px; font-size:12.5px;
-  }
-  .stats .k{ color:#8fa3ab; }
-  .stats .v{ color:#ffd9a8; font-weight:700; text-align:right; white-space:nowrap; }
-  #win .stats{ border-color:rgba(56,217,192,.3); }
-  #win .stats .v{ color:#a9ffd0; }
-  #win, #over{ overflow-y:auto; }
-  #menu input[type="checkbox"], #menu input[type="range"]{ pointer-events:auto; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -453,7 +472,7 @@
 
   <canvas id="minimap" width="128" height="128"></canvas>
   <div id="inv"></div>
-  <div id="hint">Nájdi 8 spomienok · 💥 Klik / medzerník = brokovnica (omráči Stana na 30 s) · [E] istič / SDR · 1–8 inventár · 📡 P traceroute</div>
+  <div id="hint">Nájdi 8 spomienok · 💥 Klik / medzerník = brokovnica (omráči Stana na 30 s) · [E] istič / SDR / 🛒 Alza · 1–8 inventár · 📡 P traceroute</div>
 </div>
 
 <div id="joy"><div id="joyknob"></div></div>
@@ -497,19 +516,32 @@
   <div id="sdrStatus"></div>
 </div>
 
+<!-- ---------- ALZA OBCHODNÍK (hra pauznutá) ---------- -->
+<div id="alzaPanel">
+  <div id="alzaHead">
+    <span id="alzaTitle">🛒 Alza · predajňa labyrint</span>
+    <span id="alzaCoal">⚫ uhlie: 0</span>
+    <button id="alzaClose" title="Zavrieť (ESC / E)">✕ ESC</button>
+  </div>
+  <div id="alzaRows"></div>
+  <div id="alzaOrders"></div>
+  <div id="alzaStatus"></div>
+</div>
+
 <!-- ---------- START ---------- -->
 <div id="menu" class="screen">
   <h1 class="title">Labyrint v Tatrách</h1>
   <div class="subtitle">Pozor na Stana · Survival Horor</div>
 
   <div class="card">
-    Si uväznený v <b>podzemnom Tátovom labyrinte</b> bez napájania. Stano ruší Bluetooth
+    Si uväznený v <b>Tátovom labyrinte pod holým nočným nebom</b> bez napájania. Stano ruší Bluetooth
     aj WiFi a loví ťa po chodbách. Zozbieraj všetkých <b><span id="memGoal">8</span> <span id="memGoalWord">spomienok</span></b>, oprav <b>istič</b>
     a dáta pošli cez <b>SDR do Číny</b> — <b>nalad sa na 1 MHz AM</b> a vyšli packet, kým ti nedôjde <b>RAM</b>.
     <ul>
       <li>🥤 Kofola · 🔧 WD-40 · 📦 Packet Tracer · 🍝 Lasagne</li>
       <li>🔌 Cyky J · 🎓 PhD · 🧑 Peter · 🐖 Prasiatko</li>
-      <li>🔋 12V zdroj · ⚫ Uhlie (náhradné diely)</li>
+      <li>🔋 12V zdroj · ⚫ Uhlie (náhradné diely + mena labyrintu)</li>
+      <li>🛒 Obchodník z Alzy · 📦 AlzaBox vyzdvihnutie zásielok</li>
     </ul>
     <div style="margin-top:10px">
       <span class="k">WASD</span> / <span class="k">šípky</span> chôdza ·
@@ -517,7 +549,7 @@
       <span class="k">F</span> baterka ·
       <span class="k">P</span> traceroute ·
       <span class="k">Myš</span> (klik uzamkne) / <span class="k">dotyk</span> rozhliadanie ·
-      <span class="k">E</span> / <span class="k">⚡</span> akcia (istič, SDR) ·
+      <span class="k">E</span> / <span class="k">⚡</span> akcia (istič, SDR, obchodník, AlzaBox) ·
       <span class="k">Klik</span> / <span class="k">Medzerník</span> / <span class="k">💥 STREL</span> brokovnica
     </div>
     <div style="margin-top:9px; color:#8fb5ae">
@@ -537,16 +569,17 @@
       letí do Číny a vyhrávaš. Ostatné frekvencie tiež niečo hrá – časové stanice, FT8, SSTV, fax,
       číselné stanice, morse majáky… počuj ich všetky. Počas prenosu ťa Stano <b>počuje po celý labyrint</b>.
     </div>
+    <div style="margin-top:9px; color:#ff9aa8">
+      🛒 <b>Obchodník z Alzy</b> – v chodbách stojí stánok s červeným markízom. Za <b>uhlie ⚫</b>
+      (oficiálna mena labyrintu) ti objedná výstroj: Kofolu, WD-40, Lasagne, Cyky J,
+      Packet Tracer aj 12V zdroj. Zásielku doručí do <b>AlzaBoxu</b> (📦 červený automat s obrazovkou,
+      červený marker na radare) – vyzdvihni si ju tam [E], <b>PIN 67</b>.
+      Keď SDR vysiela packet do Číny, okolo antény lietajú <b>obálky</b>. 🇨🇳
+    </div>
     <div style="margin-top:9px; color:#ffb7cf">
       🦇 <b>Fursona</b> – keď ťa Stano zaháňa, prevleje sa do svojej fursony
       <b>Twilight</b>: oranzový netopier s ružovými krídlami a fialovými vankúšikmi.
-      Je rýchlejší. Počuješ krídla – každý zámah krídel znie hlasitejšie, keď je bližšie,
-      a zľava alebo sprava podľa toho, z ktorej strany prichádza.
-    </div>
-    <div style="margin-top:9px; color:#a8d8ff">
-      ❄️ <b>Podzemie</b> – v mrazivom vzduchu sa vznášajú častice pár a námrazy,
-      v dlhých chodbách sa ozýva <b>ozvena krokov</b>. Servisné <b>šachty</b> a tabule
-      ťa orientujú a blikajúca žiarovka pri ističi ti povie, kde dúfaš na prúd.
+      Je rýchlejší. Počuješ krídla.
     </div>
     <div style="margin-top:9px; color:#ffcf9e">
       💥 <b>Brokovnica</b> – máš ju hneď od štartu (nekonečné náboje). Jedna ranica s
@@ -583,20 +616,6 @@
       </select>
       <span style="color:#5e8a84; font-size:11px">detekované: <b id="qualityDetected" style="color:#7ce8d4">–</b></span>
     </div>
-    <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(150,180,255,.2); display:flex; align-items:center; gap:12px; flex-wrap:wrap">
-      <span style="color:#9fb4ff; font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700">Zvuk</span>
-      <label style="display:flex; align-items:center; gap:6px; color:#c7d6ff; font-size:12px; cursor:pointer">
-        <input type="checkbox" id="musicChk" checked style="accent-color:#38d9c0"> 🎵 Hudba
-      </label>
-      <label style="display:flex; align-items:center; gap:6px; color:#c7d6ff; font-size:12px; cursor:pointer">
-        <input type="checkbox" id="sfxChk" checked style="accent-color:#38d9c0"> 🔊 Zvukové efekty
-      </label>
-    </div>
-    <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap">
-      <span style="color:#9fb4ff; font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700">Myš</span>
-      <input type="range" id="sensRange" min="30" max="220" step="5" value="100" style="flex:1; min-width:150px; accent-color:#38d9c0; touch-action:auto">
-      <span id="sensVal" style="color:#8ce8d4; font-size:12px; min-width:44px; text-align:right">100%</span>
-    </div>
   </div>
 
   <button class="btn" id="startBtn">Vstúpiť do tmy</button>
@@ -608,7 +627,6 @@
   <h1 class="title">Si cooked</h1>
   <div class="subtitle">Stano ti zjedol RAM</div>
   <div class="bigstat">Vzpomienky: <b><span id="overGot">0</span></b> / <span id="overNeed">8</span></div>
-  <div class="stats" id="overStats"></div>
   <button class="btn" id="retryBtn">Skúsiť znova</button>
   <div class="flavor" id="overFlavor">Do polnoci objednáš, ráno v AlzaBoxe máš!</div>
 </div>
@@ -618,7 +636,6 @@
   <h1 class="title">Dáta odoslané do Číny</h1>
   <div class="subtitle">SDR uplink dokončený · Tátov labyrint prekonaný</div>
   <div class="bigstat">Čas: <b><span id="winTime">0</span></b> s &nbsp;·&nbsp; RAM: <b><span id="winRam">0</span></b>%</div>
-  <div class="stats" id="winStats"></div>
   <button class="btn" id="againBtn">Hrať znova</button>
   <div class="flavor">Uhlie zostalo v prírode, lebo železo zarábalo viacej — a tvoje dáta letia do Číny. 🐖🥚🇨🇳</div>
 </div>
@@ -700,56 +717,6 @@ const DIFF_LABELS = {
   hard: 'Hard · 8 spomienok · Twilight ťa loví',
 };
 
-/* =========================================================
-   RÝCHLE NASTAVENIA (menu) – zvuk + citlivosť myši
-   Uložené v localStorage, zmena sa prejaví okamžite.
-   ========================================================= */
-const AUDIO_KEY = 'laby_audio';
-const audioPrefs = (() => {
-  const p = { music: true, sfx: true };
-  try { const v = JSON.parse(localStorage.getItem(AUDIO_KEY) || 'null'); if (v) { p.music = !!v.music; p.sfx = v.sfx !== false; } } catch (e) {}
-  return p;
-})();
-function saveAudioPrefs() { try { localStorage.setItem(AUDIO_KEY, JSON.stringify(audioPrefs)); } catch (e) {} }
-
-const SENS_KEY = 'laby_sens';
-let mouseSens = (() => {
-  try { const v = parseFloat(localStorage.getItem(SENS_KEY)); if (isFinite(v) && v >= 0.3 && v <= 2.2) return v; } catch (e) {}
-  return 1.0;
-})();
-function saveMouseSens() { try { localStorage.setItem(SENS_KEY, String(mouseSens)); } catch (e) {} }
-
-/* Aplikácia nastavení zvuku na bežiace audio uzly (hudba + podzemný dron) */
-function applyAudioPrefs() {
-  if (bgMusic) bgMusic.muted = !audioPrefs.music;
-  if (horrorAudio.droneGain && actx) {
-    horrorAudio.droneGain.gain.setTargetAtTime(audioPrefs.sfx ? 0.045 : 0.0001, actx.currentTime, 0.15);
-  }
-}
-
-/* =========================================================
-   ŠTATISTIKY KOLA – zbierajú sa počas hry, zobrazia sa na
-   obrazovke výhry aj prehry (brokovnica, Twilight, traceroute…)
-   ========================================================= */
-function freshStats() {
-  return {
-    shots: 0,        // výstrely z brokovnice (skutočný bang)
-    refusals: 0,     // pokusy strieľať na Twilighta (brokovnica kľaká)
-    stuns: 0,        // omráčený Stano brokovnicou
-    twHits: 0,       // kontakt s Twilightom (zjedol RAM)
-    stanoHits: 0,    // kontakt so Stanom
-    scares: 0,       // jump-scare – Stano ťa zbadal na blízko
-    traces: 0,       // vyslané tracerouty
-    tracesLost: 0,   // packet stratený v rušení
-    eggs: 0,         // dekódované SDR easter eggy
-    used: 0,         // spotrebované predmety z inventára
-    dist: 0,         // prejdená vzdialenosť (m)
-    powerFixed: false,
-  };
-}
-let stats = freshStats();
-function resetStats() { stats = freshStats(); }
-
 const ITEM_DEFS = [
   { id: 'kofola', emoji: '🥤', name: 'Kofola' },
   { id: 'wd40',   emoji: '🔧', name: 'WD-40' },
@@ -782,6 +749,9 @@ const FLAVORS_HINT = [
   'Železo zarába viac ako uhlie. RAM zarába najviac.',
   'Istič je hrdzavý – WD-40 alebo 12V zdroj ho skrotí.',
   'SDR uplink posiela dáta priamo do Číny. Potrebuje napájanie.',
+  'Alza obchodník: „Uhlie je nová mena. Železo zarábalo viacej – uhlie ti kúpi výstroj."',
+  'Do polnoci objednáš, ráno v AlzaBoxe máš! (PIN 67)',
+  'Keď SDR vysiela do Číny, pozri sa na anténu – letia okolo obálky.',
   'Stanova fursona? Twilight. Oranzový netopier s ružovými krídlami.',
   'V prírode je 400 ton uhlia. Tu nájdeš pár kusov – zbieraj.',
   'Počuješ krídla? To nie je vietor. To je Twilight.',
@@ -855,7 +825,8 @@ const FOG_COLOR = 0x10141c;
 scene.background = new THREE.Color(FOG_COLOR);
 scene.fog = new THREE.Fog(FOG_COLOR, 16, 60);
 
-const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.08, 90);
+// Ďaleký záber – aby sa zmestilo nebo (skybox), hviezdy, mesiac aj Tatry
+const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.08, 640);
 scene.add(camera);
 
 /* ---- Osvetlenie ---- */
@@ -1234,7 +1205,6 @@ function fireShotgun() {
     gun.cd = 0.55;
     gun.kick = 0.3;
     sfx.refuse();
-    stats.refusals++;
     gunParts.muzzle.getWorldPosition(_gunV1);
     spawnGunSmoke(_gunV1, new THREE.Vector3((Math.random() - 0.5) * 0.4, 0.5, (Math.random() - 0.5) * 0.4), 0.6, 0.12);
     showHint(REFUSALS[(refuseIdx++) % REFUSALS.length], 3.2);
@@ -1249,7 +1219,6 @@ function fireShotgun() {
   recoilPitch = 0.045 + Math.random() * 0.012;
   recoilRoll = (Math.random() - 0.5) * 0.024;
   sfx.bang();
-  stats.shots++;
   spawnMuzzleBlast();
   updateShootBtn(true);
 
@@ -1257,7 +1226,6 @@ function fireShotgun() {
     // ZÁSAH! Stano omráčený na 30 sekúnd
     fx.stunT = 30;
     sfx.hit();
-    stats.stuns++;
     _aimHitV.set(stano.pos.x, 1.45, stano.pos.z);
     spawnImpactBlast(_aimHitV);
     announce('💥 STANO OMRÁČENÝ · 30 SEKÚND', '#ff8a2b');
@@ -1434,7 +1402,6 @@ let _musVolT = 0;
 
 function musicStart() {
   if (bgMusic) {
-    bgMusic.muted = !audioPrefs.music;
     if (bgMusic.paused) bgMusic.play().catch(() => {});
     return;
   }
@@ -1443,7 +1410,6 @@ function musicStart() {
     bgMusic.loop = true;
     bgMusic.preload = 'auto';
     bgMusic.volume = MUSIC_QUIET;
-    bgMusic.muted = !audioPrefs.music;
     bgMusicVol = MUSIC_QUIET;
     bgMusic.play().catch(() => {});
   } catch (e) { bgMusic = null; }
@@ -1451,7 +1417,6 @@ function musicStart() {
 
 function musicSetProximity(distM, dt) {
   if (!bgMusic) return;
-  bgMusic.muted = !audioPrefs.music;
   const target = (distM != null && distM <= MUSIC_NEAR_M) ? MUSIC_FULL : MUSIC_QUIET;
   // rychlo nahlas (nebezpecenstvo), pomaly zasa utlm
   const k = target > bgMusicVol ? 9.0 : 1.4;
@@ -1512,7 +1477,7 @@ function startHorrorAmbience() {
 }
 
 function tone(freq, dur, type = 'sine', vol = 0.07, slideTo = null) {
-  if (!actx || !audioPrefs.sfx) return;
+  if (!actx) return;
   const t0 = actx.currentTime;
   const o = actx.createOscillator();
   const g = actx.createGain();
@@ -1629,46 +1594,7 @@ const sfx = {
     setTimeout(() => tone(630, 0.3, 'sine', 0.04), 560);
   },
   creak: () => { tone(220, 0.3, 'sawtooth', 0.05, 120); setTimeout(() => tone(180, 0.22, 'sawtooth', 0.04, 90), 120); },
-  beepTrap: () => tone(1900, 0.045, 'square', 0.022),
-  /* ---- Šuchot krídel Twilighta ----
-     Hlasitosť rastie so blízkosťou (spoľahlivý audio signál namiesto minimapy),
-     stereo pan podľa smeru – vieš, z ktorej strany prichádza. */
-  wing: (d = 5, pan = 0) => {
-    if (!actx) return;
-    const buf = gunNoise();
-    if (!buf) return;
-    const t0 = actx.currentTime;
-    const s = actx.createBufferSource();
-    s.buffer = buf;
-    s.playbackRate.value = 0.85 + Math.random() * 0.3;
-    const f = actx.createBiquadFilter();
-    f.type = 'bandpass';
-    f.frequency.value = 420 + Math.random() * 380;
-    f.Q.value = 1.05;
-    const g = actx.createGain();
-    const v = 0.3 * Math.pow(Math.max(0, 1 - d / 26), 1.4);
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0003, v), t0 + 0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
-    let tail = g;
-    if (actx.createStereoPanner) {
-      const p = actx.createStereoPanner();
-      p.pan.value = Math.max(-1, Math.min(1, pan));
-      g.connect(p);
-      tail = p;
-    }
-    s.connect(f).connect(g);
-    tail.connect(actx.destination);
-    s.start(t0);
-    s.stop(t0 + 0.34);
-  },
 };
-
-/* Zátka na všetky zvukové efekty – nastavenie 🔊 v menu (okamžite) */
-const _sfxRaw = Object.assign({}, sfx);
-for (const k of Object.keys(_sfxRaw)) {
-  sfx[k] = (...args) => { if (!audioPrefs.sfx) return; return _sfxRaw[k](...args); };
-}
 
 /* =========================================================
    GENEROVANIE BLUDISKA
@@ -1953,6 +1879,205 @@ function clearWorld() {
   items = [];
 }
 
+/* =========================================================
+   NEBO (SKYBOX) + TATRY NAD LABYRINTOM
+   Strecha je preč – labyrint stojí pod holým nočným nebom:
+   gradient oblohy, mliečna cesta, hviezdy, mesiac a husté
+   panoráma Tatierskych hrebeňov so snehovými štítmi.
+   Statická dekorácia MIMO worldObjects → prežije reštart hry
+   (clearWorld) aj reštrukturalizáciu bludiska.
+   ========================================================= */
+let skyGroup = null;
+
+function _seededRand(seed) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+/* Jagged hrebeň okolo celého obzoru (360°) – pás trojuholníkov
+   s vrcholovou farbou podľa výšky: skala dole, sneh na štítoch. */
+function buildRidge(o) {
+  const rnd = _seededRand(o.seed);
+  const SEG = o.segments;
+  const tops = new Float32Array(SEG);
+  const n1 = 2.3 + rnd() * 1.6, n2 = 5.1 + rnd() * 3.0;
+  const p1 = rnd() * Math.PI * 2, p2 = rnd() * Math.PI * 2;
+
+  // Zvlnený podklad hrebeňa
+  for (let i = 0; i < SEG; i++) {
+    const a = (i / SEG) * Math.PI * 2;
+    const roll = 0.5 + 0.5 * Math.sin(a * n1 + p1) * Math.sin(a * n2 + p2);
+    tops[i] = o.hMin + (o.hMax - o.hMin) * (0.18 + 0.82 * roll * roll);
+  }
+  // Alpské zuby – ostré štíty striedané priepastnými sedlami
+  let i = (rnd() * 3) | 0;
+  while (i < SEG) {
+    const span = 2 + ((rnd() * 4) | 0);
+    const ph = o.hMin + (o.hMax - o.hMin) * (0.35 + 0.65 * Math.pow(rnd(), 1.4));
+    for (let k = 0; k < span; k++) {
+      const t = (k + 1) / (span + 1);
+      const idx = (i + k) % SEG;
+      tops[idx] = Math.max(tops[idx], o.hMin + (ph - o.hMin) * Math.pow(Math.sin(t * Math.PI), 1.35));
+    }
+    i += span + 1 + ((rnd() * 3) | 0);
+  }
+
+  const posArr = new Float32Array(SEG * 6);
+  const colArr = new Float32Array(SEG * 6);
+  const base = new THREE.Color(o.base), rock = new THREE.Color(o.rock), snow = new THREE.Color(o.snow);
+  const c = new THREE.Color();
+  for (let s = 0; s < SEG; s++) {
+    const a = (s / SEG) * Math.PI * 2;
+    const ca = Math.cos(a), sa = Math.sin(a);
+    const h = tops[s] * (0.88 + rnd() * 0.24);
+    const rB = o.radius * (0.985 + rnd() * 0.03);
+    const rT = o.radius * (0.955 + rnd() * 0.02);
+
+    posArr.set([ca * rB, o.sink, sa * rB], s * 6);
+    posArr.set([ca * rT, h, sa * rT], s * 6 + 3);
+
+    const t = THREE.MathUtils.clamp((h - o.hMin) / Math.max(0.001, o.hMax - o.hMin), 0, 1);
+    const sl = o.snowLine + (rnd() - 0.5) * 0.1;
+    if (t < sl) c.copy(base).lerp(rock, Math.min(1, t / Math.max(0.001, sl)));
+    else c.copy(rock).lerp(snow, Math.min(1, (t - sl) / Math.max(0.05, 1 - sl)));
+    colArr.set([base.r, base.g, base.b], s * 6);
+    colArr.set([c.r, c.g, c.b], s * 6 + 3);
+  }
+
+  const idx = [];
+  for (let s = 0; s < SEG; s++) {
+    const n = ((s + 1) % SEG) * 2, b0 = s * 2, t0 = s * 2 + 1;
+    idx.push(b0, n, t0, t0, n, n + 1);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colArr, 3));
+  geo.setIndex(idx);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+    vertexColors: true, fog: false, side: THREE.DoubleSide, toneMapped: false,
+  }));
+  mesh.frustumCulled = false;
+  return mesh;
+}
+
+function buildSkyAndTatry() {
+  if (skyGroup) return; // stavia sa len raz – počiatočný bootWorld
+  skyGroup = new THREE.Group();
+  const rnd = _seededRand(670413);
+
+  /* --- Nočné nebo: guľa s vertikálnym gradientom.
+     Horizont je presne v farbe hmly, takže opar labyrintu
+     plyno prechádza do oblohy. --- */
+  const R = 520;
+  const skyGeo = new THREE.SphereGeometry(R, 48, 24);
+  const sp = skyGeo.attributes.position;
+  const scol = new Float32Array(sp.count * 3);
+  const cZen = new THREE.Color(0x02040a);   // zenit – čiernomodrá tma
+  const cMid = new THREE.Color(0x0a1120);   // stredná výška
+  const cHor = new THREE.Color(FOG_COLOR);  // horizont – plynie do hmly
+  const c = new THREE.Color();
+  for (let i = 0; i < sp.count; i++) {
+    const t = THREE.MathUtils.clamp(sp.getY(i) / R, -0.25, 1);
+    if (t > 0.42) c.copy(cMid).lerp(cZen, (t - 0.42) / 0.58);
+    else c.copy(cHor).lerp(cMid, Math.max(0, t) / 0.42);
+    scol[i * 3] = c.r; scol[i * 3 + 1] = c.g; scol[i * 3 + 2] = c.b;
+  }
+  skyGeo.setAttribute('color', new THREE.BufferAttribute(scol, 3));
+  const dome = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({
+    vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false,
+  }));
+  dome.renderOrder = -100;
+  dome.frustumCulled = false;
+  skyGroup.add(dome);
+
+  /* --- Hviezdy + mliečna cesta (počet podľa kvality GPU) --- */
+  const starBudget = quality === 'low' ? 420 : (quality === 'med' ? 780 : 1200);
+  const bandQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.9, 0.5, 0.35));
+  function addStars(count, size, opacity, hex, bandFrac) {
+    const pos = new Float32Array(count * 3);
+    const d = new THREE.Vector3();
+    let placed = 0, guard = 0;
+    while (placed < count && guard++ < count * 40) {
+      if (rnd() < bandFrac) {
+        const a = rnd() * Math.PI * 2;
+        d.set(Math.cos(a), (rnd() + rnd() - 1) * 0.22, Math.sin(a)).normalize().applyQuaternion(bandQ);
+      } else {
+        d.set(rnd() * 2 - 1, rnd(), rnd() * 2 - 1);
+        if (d.lengthSq() > 1) continue;
+        d.normalize();
+      }
+      if (d.y < 0.045) continue; // len nad horizontom
+      pos[placed * 3] = d.x * 500;
+      pos[placed * 3 + 1] = d.y * 500;
+      pos[placed * 3 + 2] = d.z * 500;
+      placed++;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pts = new THREE.Points(g, new THREE.PointsMaterial({
+      size, sizeAttenuation: false, transparent: true, opacity,
+      color: new THREE.Color(hex), fog: false, depthWrite: false, toneMapped: false,
+    }));
+    pts.frustumCulled = false;
+    skyGroup.add(pts);
+  }
+  addStars(Math.round(starBudget * 0.85), 1.7, 0.68, 0xcfd8ea, 0.45);
+  addStars(Math.round(starBudget * 0.15), 2.8, 0.95, 0xffffff, 0.2);
+
+  /* --- Mesiac: svetlý disk s mäkkou žiarou a krátermi --- */
+  const moonCv = document.createElement('canvas');
+  moonCv.width = moonCv.height = 256;
+  const mx = moonCv.getContext('2d');
+  const halo = mx.createRadialGradient(128, 128, 8, 128, 128, 128);
+  halo.addColorStop(0, 'rgba(240,246,255,0.98)');
+  halo.addColorStop(0.16, 'rgba(226,235,252,0.9)');
+  halo.addColorStop(0.3, 'rgba(190,206,238,0.26)');
+  halo.addColorStop(0.62, 'rgba(150,172,214,0.07)');
+  halo.addColorStop(1, 'rgba(140,162,206,0)');
+  mx.fillStyle = halo;
+  mx.fillRect(0, 0, 256, 256);
+  mx.fillStyle = 'rgba(186,198,222,0.55)';
+  for (let i = 0; i < 26; i++) {
+    const a = rnd() * Math.PI * 2, r = rnd() * 36;
+    mx.beginPath();
+    mx.arc(128 + Math.cos(a) * r, 128 + Math.sin(a) * r, 2 + rnd() * 7, 0, Math.PI * 2);
+    mx.fill();
+  }
+  const moonTex = new THREE.CanvasTexture(moonCv);
+  moonTex.colorSpace = THREE.SRGBColorSpace;
+  const moon = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: moonTex, fog: false, transparent: true, depthWrite: false, toneMapped: false,
+  }));
+  moon.position.set(0.55, 0.62, -0.56).normalize().multiplyScalar(470);
+  moon.scale.set(95, 95, 1);
+  moon.renderOrder = -95;
+  moon.frustumCulled = false;
+  skyGroup.add(moon);
+
+  /* --- Tmavý terén pod Tatrami (aby za múrmi nebol prázdny void) --- */
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(480, 72),
+    new THREE.MeshBasicMaterial({ color: 0x060910, fog: false, toneMapped: false })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.35;
+  ground.frustumCulled = false;
+  skyGroup.add(ground);
+
+  /* --- TATRY – hustý panoramatický val okolo labyrintu:
+     podhorie s lesom tesne za múrmi + 3 hrebene štítov,
+     čím ďalej, tým svetlejšie (atmosférická hĺbka). --- */
+  skyGroup.add(buildRidge({ seed: 911,   segments: 110, radius: 52,  hMin: 4,  hMax: 13,  sink: -8,  snowLine: 1.2,  base: 0x05070c, rock: 0x0a0f17, snow: 0x0a0f17 }));
+  skyGroup.add(buildRidge({ seed: 4467,  segments: 128, radius: 90,  hMin: 14, hMax: 44,  sink: -10, snowLine: 0.72, base: 0x0b0f16, rock: 0x161e2c, snow: 0x9fb2cf }));
+  skyGroup.add(buildRidge({ seed: 2077,  segments: 112, radius: 155, hMin: 30, hMax: 84,  sink: -14, snowLine: 0.55, base: 0x0d1219, rock: 0x1d2838, snow: 0xb7c7e0 }));
+  skyGroup.add(buildRidge({ seed: 31337, segments: 96,  radius: 265, hMin: 55, hMax: 150, sink: -20, snowLine: 0.42, base: 0x0e1420, rock: 0x28344a, snow: 0xd0dcf2 }));
+
+  scene.add(skyGroup);
+}
+
 function buildWorld() {
   const worldSize = COLS * CELL;
 
@@ -1967,17 +2092,8 @@ function buildWorld() {
   scene.add(floor);
   worldObjects.push(floor);
 
-  // Nízky klaustrofobický strop – drevený šindeľ (fototextúra)
-  const ceilMat = new THREE.MeshStandardMaterial({
-    map: imgTex('ceil', worldSize / 2.0, worldSize / 2.0),
-    roughness: 0.85,
-    metalness: 0.04,
-  });
-  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(worldSize, worldSize), ceilMat);
-  ceil.rotation.x = Math.PI / 2;
-  ceil.position.y = WALL_H;
-  scene.add(ceil);
-  worldObjects.push(ceil);
+  // Strecha odstránená – labyrint je otvorený, nad stenami je nočné
+  // nebo (skybox), hviezdy, mesiac a panoráma Tatier (buildSkyAndTatry).
 
   // Steny – hlavné instancované + špeciálne steny s hororovými nápismi
   // repeat (1,1): celá fotka na každý segment – bez zrkadlovej symetrie
@@ -2036,13 +2152,13 @@ function buildWorld() {
   // Krv (kečupová textúra) na stenách a zemi
   addBloodDecals();
 
-  // Nové objekty sveta: istič, SDR uplink, lampy, plagát fursony
+  // Nové objekty sveta: istič, SDR uplink, lampy, plagát fursony, Alza obchodník + AlzaBox
   buildBreaker(objectives.breakerCell);
   buildSDR(objectives.sdrCell);
+  buildAlzaMerchant(objectives.merchantCell);
+  buildAlzaBox(objectives.alzaboxCell);
   buildLamps();
   buildPosters();
-  buildSigns();   // podzemné tabule – orientačné body
-  buildShafts();  // servisné / únikové šachty v podlahe
 }
 
 /* =========================================================
@@ -2395,6 +2511,7 @@ function buildItems() {
     const d0 = Math.abs(c[0] - start[0]) + Math.abs(c[1] - start[1]);
     if (d0 < 6) continue;
     if (nearObjective(c, objectives.breakerCell) || nearObjective(c, objectives.sdrCell)) continue;
+    if (nearObjective(c, objectives.merchantCell) || nearObjective(c, objectives.alzaboxCell)) continue;
     let ok = true;
     for (const p of chosen) {
       if (Math.abs(p[0] - c[0]) + Math.abs(p[1] - c[1]) < 6) { ok = false; break; }
@@ -2422,6 +2539,7 @@ function buildItems() {
     if (Math.abs(c[0] - start[0]) + Math.abs(c[1] - start[1]) < 4) continue;
     if (chosen.some(p => Math.abs(p[0] - c[0]) + Math.abs(p[1] - c[1]) < 3)) continue;
     if (extraCells.some(p => Math.abs(p[0] - c[0]) + Math.abs(p[1] - c[1]) < 3)) continue;
+    if (nearObjective(c, objectives.merchantCell) || nearObjective(c, objectives.alzaboxCell)) continue;
     extraCells.push(c);
   }
   extraCells.forEach((c, i) => {
@@ -2436,6 +2554,7 @@ function buildItems() {
     if (d < 3 || d > 9) continue;
     if (chosen.some(p => p[0] === c[0] && p[1] === c[1])) continue;
     if (extraCells.some(p => p[0] === c[0] && p[1] === c[1])) continue;
+    if (nearObjective(c, objectives.merchantCell) || nearObjective(c, objectives.alzaboxCell)) continue;
     zdrojCell = c;
     break;
   }
@@ -2453,7 +2572,7 @@ const EXTRA_ITEM_DEFS = [
 ];
 const ALL_ITEM_DEFS = ITEM_DEFS.concat(EXTRA_ITEM_DEFS);
 
-const objectives = { breakerCell: null, sdrCell: null };
+const objectives = { breakerCell: null, sdrCell: null, merchantCell: null, alzaboxCell: null };
 
 const power = {
   on: false,
@@ -2505,6 +2624,21 @@ function planObjectives() {
     }
   }
   objectives.sdrCell = best;
+
+  // Obchodník z Alzy – stredne ďaleko od štartu, bokom od ističa aj SDR
+  const farFrom = (c, list, min) => list.every(o => !o || Math.abs(c[0] - o[0]) + Math.abs(c[1] - o[1]) >= min);
+  const merchCands = open.filter(c => dStart(c) >= 8 && dStart(c) <= 18
+    && farFrom(c, [objectives.breakerCell, objectives.sdrCell], 6));
+  const merchFallback = open.filter(c => farFrom(c, [objectives.breakerCell, objectives.sdrCell], 1));
+  objectives.merchantCell = merchCands.length ? merchCands[(Math.random() * merchCands.length) | 0]
+                                              : merchFallback[(Math.random() * merchFallback.length) | 0];
+
+  // AlzaBox – bližšie k štartu (hráč naň narazí skoro), mimo obchodníka aj cieľov
+  const boxCands = open.filter(c => dStart(c) >= 4 && dStart(c) <= 12
+    && farFrom(c, [objectives.breakerCell, objectives.sdrCell, objectives.merchantCell], 5));
+  const boxFallback = open.filter(c => farFrom(c, [objectives.breakerCell, objectives.sdrCell, objectives.merchantCell], 1));
+  objectives.alzaboxCell = boxCands.length ? boxCands[(Math.random() * boxCands.length) | 0]
+                                           : boxFallback[(Math.random() * boxFallback.length) | 0];
 }
 
 /* ---- Čínska vlajka (canvas textúra) ---- */
@@ -2613,21 +2747,6 @@ function buildBreaker(cell) {
   led.position.set(0, 1.2, 0.15);
   g.add(led);
 
-  // Blikajúca žiarovka na drôte pri ističi – orientačný bod (svieti po oprave)
-  const bulbWire = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.008, 0.008, 0.9, 5),
-    new THREE.MeshStandardMaterial({ color: 0x0c0e10 })
-  );
-  bulbWire.position.set(0.35, 3.05, 0.15);
-  g.add(bulbWire);
-  const bulbMat = new THREE.MeshBasicMaterial({ color: 0x2b2620 });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 8), bulbMat);
-  bulb.position.set(0.35, 2.56, 0.15);
-  g.add(bulb);
-  const bulbLight = new THREE.PointLight(0xffd9a3, 0, 7.5, 2);
-  bulbLight.position.set(0.35, 2.4, 0.3);
-  g.add(bulbLight);
-
   const label = makeLabelSprite('⚡ ISTIČ', '#ffd23a');
   label.position.set(0, 2.3, 0.12);
   g.add(label);
@@ -2636,7 +2755,6 @@ function buildBreaker(cell) {
   worldObjects.push(g);
   power.breaker = {
     group: g, lever: leverPivot, leverTarget: 0.95, ledMat,
-    bulbMat, bulbLight,
     pos: new THREE.Vector3(f.x, 0, f.z), cell,
   };
 }
@@ -2731,6 +2849,476 @@ function buildSDR(cell) {
   power.sdr = { group: g, antenna, leds, beacon, flag, pos: wp.clone(), cell };
 }
 
+/* =========================================================
+   ALZA: OBCHODNÍK Z ALZY + ALZABOX (vyzdvihnutie zásielok)
+   ========================================================= */
+const alza = {
+  merchant: null,   // { group, pos, cell }
+  box: null,        // { group, pos, cell, screenMat, beacon }
+  orders: [],       // { id, t, pin }
+};
+
+/* Otočenie tvárou k voľnému susedovi (preferuje smer k štartu), aby bol vidno predok */
+function alzaFaceYaw(cell) {
+  const dirs = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+  const open = dirs.filter(([dx, dz]) => grid[cell[1] + dz] && grid[cell[1] + dz][cell[0] + dx] === 0);
+  if (!open.length) return Math.atan2(1 - cell[0], 1 - cell[1]);
+  open.sort((a, b) =>
+    (Math.abs((cell[0] + a[0]) - 1) + Math.abs((cell[1] + a[1]) - 1))
+    - (Math.abs((cell[0] + b[0]) - 1) + Math.abs((cell[1] + b[1]) - 1)));
+  return Math.atan2(open[0][0], open[0][1]);
+}
+
+function makeAlzaLogoTexture(w = 256, h = 96) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  g.fillStyle = '#e6132e';
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = '#ffffff';
+  g.font = 'bold ' + Math.round(h * 0.62) + 'px "Arial Black","Segoe UI",sans-serif';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('Alza', w / 2, h / 2 + 3);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function buildAlzaMerchant(cell) {
+  if (!cell) return;
+  const g = new THREE.Group();
+  const wp = cellToWorld(cell[0], cell[1]);
+  g.position.set(wp.x, 0, wp.z);
+  // stánok sa otočí tvárou do chodby (najradšej smerom k štartu)
+  g.rotation.y = alzaFaceYaw(cell);
+
+  const redMat    = new THREE.MeshStandardMaterial({ color: 0xe6132e, roughness: 0.45, metalness: 0.15 });
+  const whiteMat  = new THREE.MeshStandardMaterial({ color: 0xf2f2f2, roughness: 0.6 });
+  const darkMat   = new THREE.MeshStandardMaterial({ color: 0x1d2126, roughness: 0.5, metalness: 0.5 });
+  const skinMat   = new THREE.MeshStandardMaterial({ color: 0xe8b98c, roughness: 0.7 });
+  const cardboard = new THREE.MeshStandardMaterial({ color: 0xb98a4e, roughness: 0.85 });
+  const tapeMat   = new THREE.MeshStandardMaterial({ color: 0xd9c9a8, roughness: 0.8 });
+
+  // Pult + biela doska
+  const table = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.82, 0.7), darkMat);
+  table.position.y = 0.41;
+  g.add(table);
+  const top = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.06, 0.8), whiteMat);
+  top.position.y = 0.85;
+  g.add(top);
+
+  // Stĺpiky + červený markíz s bielou hranou
+  for (const sx of [-0.74, 0.74]) {
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.35, 6), darkMat);
+    pole.position.set(sx, 1.175, -0.3);
+    g.add(pole);
+  }
+  const awning = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.07, 1.0), redMat);
+  awning.position.set(0, 2.32, -0.02);
+  awning.rotation.x = -0.14;
+  g.add(awning);
+  const awningTrim = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.06, 0.1), whiteMat);
+  awningTrim.position.set(0, 2.26, 0.49);
+  g.add(awningTrim);
+
+  // Logo Alza na markíze
+  const logo = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.6, 0.22),
+    new THREE.MeshBasicMaterial({ map: makeAlzaLogoTexture() })
+  );
+  logo.position.set(0, 2.06, 0.5);
+  g.add(logo);
+
+  // Obchodník – postava za pultom (červené polo, šiltovka, tablet v ruke)
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.19, 0.42, 4, 10), redMat);
+  body.position.set(-0.35, 1.32, -0.12);
+  g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.135, 14, 12), skinMat);
+  head.position.set(-0.35, 1.78, -0.12);
+  g.add(head);
+  const capTop = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.06, 12), redMat);
+  capTop.position.set(-0.35, 1.9, -0.12);
+  g.add(capTop);
+  const capPeak = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.02, 0.12), redMat);
+  capPeak.position.set(-0.35, 1.87, 0.02);
+  g.add(capPeak);
+  const armL = new THREE.Mesh(new THREE.CapsuleGeometry(0.055, 0.34, 4, 8), redMat);
+  armL.position.set(-0.52, 1.36, 0.04);
+  armL.rotation.x = 0.9;
+  g.add(armL);
+  const tablet = new THREE.Mesh(
+    new THREE.BoxGeometry(0.2, 0.28, 0.02),
+    new THREE.MeshStandardMaterial({ color: 0x0a0d10, roughness: 0.3, metalness: 0.6, emissive: 0x0a2a30, emissiveIntensity: 0.7 })
+  );
+  tablet.position.set(-0.35, 1.24, 0.14);
+  tablet.rotation.x = -0.5;
+  g.add(tablet);
+
+  // Balíky – na pulte aj na zemi
+  const mkParcel = (s, x, y, z, ry) => {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(s, s * 0.8, s * 0.9), cardboard);
+    b.position.set(x, y + s * 0.4, z);
+    b.rotation.y = ry;
+    const tape = new THREE.Mesh(new THREE.BoxGeometry(s * 1.02, s * 0.82, s * 0.12), tapeMat);
+    tape.position.set(0, 0, 0);
+    b.add(tape);
+    g.add(b);
+    return b;
+  };
+  mkParcel(0.26, -0.1, 0.88, -0.05, 0.3);
+  mkParcel(0.3, 0.62, 0.0, 0.14, -0.2);
+  mkParcel(0.22, 0.72, 0.3, 0.12, 0.5);
+  mkParcel(0.26, -0.72, 0.0, -0.42, 0.15);
+
+  // Emoji ikona + štítok
+  const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeEmojiTexture('🛒'), transparent: true, depthWrite: false }));
+  spr.scale.set(0.5, 0.5, 1);
+  spr.position.y = 2.72;
+  g.add(spr);
+  const label = makeLabelSprite('OBCHODNÍK Z ALZY', '#ff5c73');
+  label.position.y = 3.18;
+  g.add(label);
+
+  // Jemná červená žiara
+  const glow = makeGlow(0xff4d6d, 1.5);
+  glow.position.y = 1.5;
+  g.add(glow);
+
+  scene.add(g);
+  worldObjects.push(g);
+  alza.merchant = { group: g, pos: wp.clone(), cell };
+}
+
+function makeAlzaBoxFaceTexture() {
+  const w = 256, h = 480;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  // červený rám
+  g.fillStyle = '#c21329';
+  g.fillRect(0, 0, w, h);
+  // mriežka 6 dverí (2 stĺpce × 3 rady) so zreteľnými tmavými hranami
+  const cw = 104, ch = 128, gapX = 12, gapY = 14, x0 = 12, y0 = 12;
+  for (let r = 0; r < 3; r++) {
+    for (let c2 = 0; c2 < 2; c2++) {
+      const x = x0 + c2 * (cw + gapX), y = y0 + r * (ch + gapY);
+      g.fillStyle = '#5a101d';                       // tmavá drážka
+      g.fillRect(x - 4, y - 4, cw + 8, ch + 8);
+      g.fillStyle = '#c7cbd2';                       // dvierka
+      g.fillRect(x, y, cw, ch);
+      g.fillStyle = '#9aa0aa';                       // spodný tieň dvierok
+      g.fillRect(x, y + ch - 10, cw, 10);
+      g.fillStyle = '#3a3f47';                       // kľučka
+      g.fillRect(x + cw - 26, y + 16, 14, 9);
+      g.strokeStyle = 'rgba(20,8,10,.35)';
+      g.lineWidth = 2;
+      g.strokeRect(x + 0.5, y + 0.5, cw - 1, ch - 1);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function buildAlzaBox(cell) {
+  if (!cell) return;
+  const g = new THREE.Group();
+  const wp = cellToWorld(cell[0], cell[1]);
+  g.position.set(wp.x, 0, wp.z);
+  // automat sa otočí tvárou do chodby (najradšej smerom k štartu)
+  g.rotation.y = alzaFaceYaw(cell);
+
+  const redMat    = new THREE.MeshStandardMaterial({ color: 0xe6132e, roughness: 0.45, metalness: 0.2 });
+  const frameMat  = new THREE.MeshStandardMaterial({ color: 0x8f1020, roughness: 0.5, metalness: 0.3 });
+  const darkMat   = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.4, metalness: 0.5 });
+  const screenMat = new THREE.MeshStandardMaterial({ color: 0x06282e, emissive: 0x16c2a8, emissiveIntensity: 0.7, roughness: 0.25 });
+
+  // Podstavec + korpus
+  const base = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.1, 0.52), darkMat);
+  base.position.y = 0.05;
+  g.add(base);
+  const bodyK = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.72, 0.44), redMat);
+  bodyK.position.y = 0.96;
+  g.add(bodyK);
+
+  // Predný panel s nakreslenou mriežkou dverí (odolný voči prepaľovaniu baterkou)
+  const face = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.89, 1.62),
+    new THREE.MeshStandardMaterial({ map: makeAlzaBoxFaceTexture(), roughness: 0.65, metalness: 0.1 })
+  );
+  face.position.set(0, 0.93, 0.225);
+  g.add(face);
+
+  // Hlava s obrazovkou, klávesnicou a logo
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.52, 0.47), frameMat);
+  head.position.y = 2.08;
+  g.add(head);
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.48, 0.28), screenMat);
+  screen.position.set(0, 2.16, 0.245);
+  g.add(screen);
+  const keypad = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.09, 0.02), darkMat);
+  keypad.position.set(0, 1.79, 0.235);
+  g.add(keypad);
+  const logo = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.4, 0.15),
+    new THREE.MeshBasicMaterial({ map: makeAlzaLogoTexture() })
+  );
+  logo.position.set(0, 1.92, 0.245);
+  g.add(logo);
+
+  // Emoji ikona + štítok + maják pri pripravenej zásielke
+  const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeEmojiTexture('📦'), transparent: true, depthWrite: false }));
+  spr.scale.set(0.42, 0.42, 1);
+  spr.position.y = 2.62;
+  g.add(spr);
+  const label = makeLabelSprite('ALZABOX · PIN 67', '#ff5c73');
+  label.position.y = 3.02;
+  g.add(label);
+  const beacon = makeGlow(0xff4d6d, 2.0);
+  beacon.position.y = 2.1;
+  beacon.visible = false;
+  g.add(beacon);
+
+  scene.add(g);
+  worldObjects.push(g);
+  alza.box = { group: g, pos: wp.clone(), cell, screenMat, beacon };
+}
+
+/* =========================================================
+   OBÁLKY – vizuál pri SDR vysielaní packetu do Číny
+   (počas startTransmission krúžia a stúpajú okolo antény)
+   ========================================================= */
+const envelopePool = [];
+let envSpawnT = 0;
+
+function makeEnvelopeTexture() {
+  const w = 160, h = 108;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  // biely podklad
+  g.fillStyle = '#f7f4ec';
+  g.fillRect(0, 0, w, h);
+  // letecká bordera – červené a modré šikmé pásiky navrchu aj dole
+  for (let x = -14; x < w + 14; x += 24) {
+    g.fillStyle = '#d3142c';
+    g.beginPath();
+    g.moveTo(x, 0); g.lineTo(x + 12, 0); g.lineTo(x + 24, 11); g.lineTo(x + 12, 11);
+    g.closePath(); g.fill();
+    g.beginPath();
+    g.moveTo(x, h); g.lineTo(x + 12, h); g.lineTo(x + 24, h - 11); g.lineTo(x + 12, h - 11);
+    g.closePath(); g.fill();
+    g.fillStyle = '#1b4a9c';
+    g.beginPath();
+    g.moveTo(x + 12, 0); g.lineTo(x + 24, 0); g.lineTo(x + 36, 11); g.lineTo(x + 24, 11);
+    g.closePath(); g.fill();
+    g.beginPath();
+    g.moveTo(x + 12, h); g.lineTo(x + 24, h); g.lineTo(x + 36, h - 11); g.lineTo(x + 24, h - 11);
+    g.closePath(); g.fill();
+  }
+  // zatváracia klapa
+  g.strokeStyle = '#b9b2a4';
+  g.lineWidth = 3;
+  g.beginPath();
+  g.moveTo(3, 11); g.lineTo(w / 2, h * 0.58); g.lineTo(w - 3, 11);
+  g.stroke();
+  // známka Čína
+  g.fillStyle = '#d3142c';
+  g.fillRect(w - 36, 16, 24, 28);
+  g.fillStyle = '#ffd23a';
+  g.beginPath();
+  g.arc(w - 28, 24, 3.2, 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = '#ffffff';
+  g.font = 'bold 12px sans-serif';
+  g.textAlign = 'center';
+  g.fillText('CN', w - 24, 39);
+  // adresné riadky
+  g.strokeStyle = '#8f887a';
+  g.lineWidth = 2;
+  for (let i = 0; i < 3; i++) {
+    g.beginPath();
+    g.moveTo(14, h * 0.62 + i * 11);
+    g.lineTo(w * 0.62, h * 0.62 + i * 11);
+    g.stroke();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+let ENV_TEX = null;
+function buildEnvelopePool() {
+  const tex = ENV_TEX = makeEnvelopeTexture();
+  const geo = new THREE.PlaneGeometry(0.27, 0.19);
+  for (let i = 0; i < 16; i++) {
+    const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false });
+    const m = new THREE.Mesh(geo, mat);
+    m.visible = false;
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: GLOW_TEX, color: 0xffe9ea, transparent: true, opacity: 0,
+      depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    glow.scale.set(0.55, 0.55, 1);
+    m.add(glow);
+    scene.add(m);
+    envelopePool.push({ m, glow, active: false, t: 0, life: 1, r: 0.6, y0: 0.8, y1: 3.2, ang: 0, av: 2, spin: 0, rise: true });
+  }
+  buildTraceEnvelopePool(); // obálky Packet Traceru zdieľajú textúru s anténovými
+}
+
+function spawnEnvelope() {
+  const s = power.sdr;
+  if (!s) return;
+  const e = envelopePool.find(x => !x.active);
+  if (!e) return;
+  e.active = true;
+  e.t = 0;
+  e.life = 1.7 + Math.random() * 0.9;
+  e.r = 0.45 + Math.random() * 0.7;
+  e.ang = Math.random() * Math.PI * 2;
+  e.av = (1.6 + Math.random() * 1.6) * (Math.random() < 0.5 ? 1 : -1);
+  e.spin = (Math.random() - 0.5) * 3;
+  e.rise = Math.random() < 0.65;
+  e.y0 = e.rise ? 0.5 + Math.random() * 0.5 : 0.8 + Math.random() * 2.2;
+  e.y1 = e.y0 + (e.rise ? 2.3 + Math.random() * 0.8 : 0);
+  e.m.position.set(s.pos.x, e.y0, s.pos.z);
+  e.m.visible = true;
+}
+
+function burstEnvelopes(n) {
+  for (let i = 0; i < n; i++) setTimeout(spawnEnvelope, i * 110);
+}
+
+function hideEnvelopes() {
+  for (const e of envelopePool) { e.active = false; e.m.visible = false; e.m.material.opacity = 0; e.glow.material.opacity = 0; }
+}
+
+function updateEnvelopes(dt) {
+  for (const e of envelopePool) {
+    if (!e.active) continue;
+    e.t += dt;
+    const p = e.t / e.life;
+    if (p >= 1) { e.active = false; e.m.visible = false; continue; }
+    e.ang += e.av * dt;
+    const s = power.sdr;
+    if (!s) { e.active = false; e.m.visible = false; continue; }
+    const x = s.pos.x + Math.cos(e.ang) * e.r;
+    const z = s.pos.z + Math.sin(e.ang) * e.r;
+    const y = e.y0 + (e.y1 - e.y0) * Math.min(1, p * 1.15);
+    e.m.position.set(x, y, z);
+    e.m.rotation.y = e.ang + Math.PI / 2;
+    e.m.rotation.z = e.spin * p;
+    const fade = p < 0.12 ? p / 0.12 : (p > 0.75 ? (1 - p) / 0.25 : 1);
+    e.m.material.opacity = fade * 0.95;
+    e.glow.material.opacity = fade * 0.4;
+  }
+  if (trans.active) {
+    envSpawnT -= dt;
+    if (envSpawnT <= 0) { spawnEnvelope(); envSpawnT = 0.13 + Math.random() * 0.09; }
+  }
+}
+
+/* =========================================================
+   OBÁLKY Z HRÁČA – vizuál Packet Traceru (inšpirované Cisco PT)
+   Kým letí packet (traceroute), každých 0.5 s vyletí z hráča
+   obálka a letí po trase v smere packetu – vidíš, kam idú.
+   ========================================================= */
+const traceEnvPool = [];
+let traceEnvSpawnT = 0;
+const TRACE_ENV_SPEED = 6.4; // obálky sú mierne pomalšie ako packet (8.5), takže ho nasledujú
+
+function buildTraceEnvelopePool() {
+  const geo = new THREE.PlaneGeometry(0.27, 0.19);
+  for (let i = 0; i < 32; i++) {
+    const mat = new THREE.MeshBasicMaterial({ map: ENV_TEX, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false });
+    const m = new THREE.Mesh(geo, mat);
+    m.visible = false;
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: GLOW_TEX, color: 0x9ffff0, transparent: true, opacity: 0,
+      depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    glow.scale.set(0.5, 0.5, 1);
+    m.add(glow);
+    scene.add(m);
+    traceEnvPool.push({ m, glow, active: false, prog: 0, y: 1.3, ph: 0, sp: TRACE_ENV_SPEED, fade: -1 });
+  }
+}
+
+function spawnTraceEnvelope() {
+  const e = traceEnvPool.find(x => !x.active);
+  if (!e) return;
+  e.active = true;
+  e.prog = 0;                                  // štartuje pri hráčovi (trasa začína jeho bunkou)
+  e.y = 1.15 + Math.random() * 0.45;
+  e.ph = Math.random() * Math.PI * 2;
+  e.sp = TRACE_ENV_SPEED + (Math.random() - 0.5) * 1.4;
+  e.fade = -1;
+  e.m.visible = true;
+  e.m.material.opacity = 0;
+}
+
+function hideTraceEnvelopes() {
+  for (const e of traceEnvPool) { e.active = false; e.m.visible = false; e.m.material.opacity = 0; e.glow.material.opacity = 0; }
+}
+
+// bod + smer na traceroute trase (prog v bunkách; pts sú [cx, cz])
+const _envPt = { x: 0, z: 0, dx: 1, dz: 0 };
+function routePointAt(prog) {
+  const pts = tracer.pts;
+  const last = pts.length - 1;
+  const i = Math.max(0, Math.min(prog | 0, last - 1));
+  const t = Math.max(0, Math.min(1, prog - i));
+  const a = pts[i], b = pts[i + 1];
+  _envPt.x = a[0] + (b[0] - a[0]) * t;
+  _envPt.z = a[1] + (b[1] - a[1]) * t;
+  _envPt.dx = b[0] - a[0];
+  _envPt.dz = b[1] - a[1];
+  return _envPt;
+}
+
+function killTraceEnv(e) {
+  e.active = false; e.m.visible = false; e.m.material.opacity = 0; e.glow.material.opacity = 0;
+}
+
+function updateTraceEnvelopes(dt) {
+  const hasRoute = !!(tracer.active && tracer.pts && tracer.pts.length > 1);
+  if (hasRoute) {
+    traceEnvSpawnT -= dt;
+    if (traceEnvSpawnT <= 0) { spawnTraceEnvelope(); traceEnvSpawnT = 0.5; } // každých 0.5 s nová obálka z hráča
+  } else {
+    traceEnvSpawnT = 0;                              // ďalší packet začína obálkou hneď
+  }
+  const now = performance.now();
+  for (const e of traceEnvPool) {
+    if (!e.active) continue;
+    if (!hasRoute && e.fade < 0) e.fade = 0;         // packet dorazil / stratil sa → obálky dohasiajú
+    if (e.fade >= 0) {                                // fáza dohasievania na mieste
+      e.m.material.opacity -= dt * 2.2;
+      e.glow.material.opacity = Math.max(0, e.glow.material.opacity - dt * 0.9);
+      if (e.m.material.opacity <= 0) killTraceEnv(e);
+      continue;
+    }
+    e.prog += e.sp * dt;
+    const end = tracer.pts.length - 1;
+    if (e.prog >= end) { killTraceEnv(e); continue; } // obálka doručená pri Stanovi
+    const p = routePointAt(e.prog);
+    const wx = (p.x - COLS / 2 + 0.5) * CELL;
+    const wz = (p.z - ROWS / 2 + 0.5) * CELL;
+    const bob = Math.sin(now * 0.004 + e.ph) * 0.08;
+    // mierne bočne od stredu chodby + kolísanie výšky, aby reťaz obálok žila
+    e.m.position.set(wx + p.dz * 0.14, e.y + bob, wz - p.dx * 0.14);
+    e.m.rotation.y = Math.atan2(-p.dx, -p.dz);       // čelom k hráčovi – vidí adresnú stranu obálky
+    e.m.rotation.z = Math.sin(now * 0.003 + e.ph) * 0.18;
+    let op = 1;
+    if (e.prog < 0.4) op = e.prog / 0.4;              // jemný nástup z hráča
+    if (e.prog > end - 0.8) op = Math.min(op, Math.max(0, (end - e.prog) / 0.8));
+    e.m.material.opacity = op * 0.95;
+    e.glow.material.opacity = op * 0.35;
+  }
+}
+
 /* ---- Stropné lampy – rozsvietia sa po oprave ističa ---- */
 function buildLamps() {
   power.lamps = [];
@@ -2797,130 +3385,6 @@ function buildPosters() {
   g.add(lbl);
   scene.add(g);
   worldObjects.push(g);
-}
-
-/* =========================================================
-   PODZEMNÉ TABULE A SERVISNÉ ŠACHTY – orientačné body
-   Tabule (plechové značky) visia na stenách, šachty sú v podlahe.
-   Čisto landmark – nemenia pathfinding ani mechaniky.
-   ========================================================= */
-function makeSignTexture(l1, l2, accent = '#8ce8d4') {
-  const w = 256, h = 170;
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const g = c.getContext('2d');
-  g.fillStyle = '#2e343a';
-  g.fillRect(0, 0, w, h);
-  // škrabance a poškodenie plechu
-  g.fillStyle = 'rgba(0,0,0,.25)';
-  for (let i = 0; i < 40; i++) {
-    g.fillRect(Math.random() * w, Math.random() * h, 2 + Math.random() * 10, 1 + Math.random() * 3);
-  }
-  g.strokeStyle = accent;
-  g.lineWidth = 6;
-  g.strokeRect(6, 6, w - 12, h - 12);
-  g.textAlign = 'center';
-  g.fillStyle = '#e8f2ee';
-  g.font = 'bold 25px "Courier New", monospace';
-  g.fillText(l1, w / 2, 64, w - 30);
-  g.fillStyle = accent;
-  g.font = 'bold 21px "Courier New", monospace';
-  g.fillText(l2, w / 2, 106, w - 26);
-  // šipka dole
-  g.beginPath();
-  g.moveTo(w / 2 - 13, 126);
-  g.lineTo(w / 2 + 13, 126);
-  g.lineTo(w / 2, 152);
-  g.closePath();
-  g.fill();
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-
-function buildSigns() {
-  const open = [];
-  for (let y = 1; y < ROWS - 1; y++)
-    for (let x = 1; x < COLS - 1; x++)
-      if (grid[y][x] === 0) open.push([x, y]);
-  for (let i = open.length - 1; i > 0; i--) {
-    const j = (Math.random() * (i + 1)) | 0;
-    [open[i], open[j]] = [open[j], open[i]];
-  }
-  const SIGNS = [
-    ['SERVISNÁ ŠACHTA 9', 'ÚNIK → SEKTOR B-3', '#8ce8d4'],
-    ['POZOR', 'TU KRÁČA STANO', '#ff8a95'],
-    ['TATRIANSKY PODZEM', '875 m n. m. · SEKTOR 67', '#ffd23a'],
-    ['ÚNIKOVÁ TRASA', 'SDR VYSIELAČ → CN', '#7ce8d4'],
-    ['KÁBLOVÁ TRASA', 'CYKY J 3x2.5', '#ffb347'],
-    ['NEVSTUPUJ', 'NETVOR RUŠÍ BT/WIFI', '#ff5263'],
-    ['VÝSTUP', '71 schodov hore', '#6bff9d'],
-    ['HESLO 67', 'NIKOMU NEZDIELAJ', '#ff8a2b'],
-  ];
-  const used = [];
-  for (const c of open) {
-    if (used.length >= SIGNS.length) break;
-    if (Math.abs(c[0] - 1) + Math.abs(c[1] - 1) < 4) continue;
-    if (used.some(o => Math.abs(o[0] - c[0]) + Math.abs(o[1] - c[1]) < 6)) continue;
-    used.push(c);
-    const f = wallFaceOf(c[0], c[1]);
-    const [l1, l2, col] = SIGNS[used.length - 1];
-    const g = new THREE.Group();
-    g.position.set(f.x, 0, f.z);
-    g.rotation.y = f.rotY;
-    const mat = new THREE.MeshStandardMaterial({
-      map: makeSignTexture(l1, l2, col), roughness: 0.7, metalness: 0.15,
-    });
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.48), mat);
-    plane.position.set(0, 1.62, 0.04);
-    plane.rotation.z = (Math.random() - 0.5) * 0.08;
-    g.add(plane);
-    scene.add(g);
-    worldObjects.push(g);
-  }
-}
-
-function buildShafts() {
-  const open = [];
-  for (let y = 1; y < ROWS - 1; y++)
-    for (let x = 1; x < COLS - 1; x++)
-      if (grid[y][x] === 0) open.push([x, y]);
-  const picked = [];
-  const LABELS = ['ŠACHTA · SERVIS', 'ÚNIKOVÁ ŠACHTA', 'ŠACHTA 9 → EXIT'];
-  let gi = 0;
-  for (const c of open) {
-    if (picked.length >= 3) break;
-    if (Math.abs(c[0] - 1) + Math.abs(c[1] - 1) < 5) continue;
-    if (picked.some(o => Math.abs(o[0] - c[0]) + Math.abs(o[1] - c[1]) < 7)) continue;
-    picked.push(c);
-    const wp = cellToWorld(c[0], c[1]);
-    const g = new THREE.Group();
-    g.position.set(wp.x + (Math.random() - 0.5) * 0.5, 0.006, wp.z + (Math.random() - 0.5) * 0.5);
-    const rimMat = new THREE.MeshStandardMaterial({ color: 0x3d444c, metalness: 0.7, roughness: 0.5 });
-    const hole = new THREE.Mesh(
-      new THREE.CircleGeometry(0.55, 20),
-      new THREE.MeshBasicMaterial({ color: 0x020204 })
-    );
-    hole.rotation.x = -Math.PI / 2;
-    g.add(hole);
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.05, 8, 24), rimMat);
-    rim.rotation.x = -Math.PI / 2;
-    rim.position.y = 0.012;
-    g.add(rim);
-    for (let i = 0; i < 5; i++) {
-      const bar = new THREE.Mesh(new THREE.BoxGeometry(1.04, 0.022, 0.05), rimMat);
-      bar.position.y = 0.02;
-      bar.position.z = -0.42 + i * 0.21;
-      g.add(bar);
-    }
-    const lbl = makeLabelSprite(LABELS[gi % LABELS.length], '#ffcf7a');
-    lbl.position.y = 1.05;
-    lbl.scale.multiplyScalar(0.7);
-    g.add(lbl);
-    gi++;
-    scene.add(g);
-    worldObjects.push(g);
-  }
 }
 
 /* =========================================================
@@ -3202,14 +3666,13 @@ function buildPoofPool() {
   }
 }
 
-function spawnPoof(pos, baseColor, scaleMul = 1, maxCount = 0) {
+function spawnPoof(pos, baseColor) {
   const cols = [baseColor, 0xffd9a6, 0xffffff, 0xf97f28];
   let spawned = 0;
-  const limit = maxCount > 0 ? Math.min(maxCount, Q.poofs) : Q.poofs;
   for (const p of poofPool) {
     if (p.active) continue;
     p.spr.material.color.setHex(cols[spawned % 4]);
-    const s = (0.25 + Math.random() * 0.35) * scaleMul;
+    const s = 0.25 + Math.random() * 0.35;
     p.spr.scale.set(s, s, 1);
     p.spr.position.set(
       pos.x + (Math.random() - 0.5) * 0.8,
@@ -3221,7 +3684,7 @@ function spawnPoof(pos, baseColor, scaleMul = 1, maxCount = 0) {
     p.t = 0;
     p.life = 0.55 + Math.random() * 0.35;
     p.active = true;
-    if (++spawned >= limit) break;
+    if (++spawned >= Q.poofs) break;
   }
 }
 
@@ -3235,53 +3698,6 @@ function updatePoofs(dt) {
     const k = 1 - p.t / p.life;
     p.spr.material.opacity = k * 0.9;
     const s = 0.3 + k * 0.5;
-    p.spr.scale.set(s, s, 1);
-  }
-}
-
-/* =========================================================
-   MRAZOVÉ / PARNOVÉ ČASTICE – podzemná atmosféra
-   Polka častíc pomaly padá (námraza), polka stúpa (pará z podložia).
-   Sprity sú pooled a recyklované okolo hráča – nulový dopad na logiku.
-   ========================================================= */
-const frostPool = [];
-let stealthAura = null;   // fialová aura PhD neviditeľnosti (pridá sa ku kamere v bootWorlde)
-function buildFrost() {
-  const n = quality === 'low' ? 22 : (quality === 'med' ? 40 : 64);
-  for (let i = 0; i < n; i++) {
-    const spr = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: GLOW_TEX, color: 0x9fc3e8, transparent: true, opacity: 0,
-      depthWrite: false, blending: THREE.NormalBlending,
-    }));
-    spr.visible = false;
-    scene.add(spr);
-    frostPool.push({
-      spr, t: Math.random() * 8, ph: Math.random() * Math.PI * 2,
-      spd: 0, rise: i % 2 === 0,
-    });
-  }
-}
-function updateFrost(dt) {
-  const t = performance.now() * 0.001;
-  for (const p of frostPool) {
-    p.t += dt;
-    if (p.t > 8 || p.spr.position.y < 0.04 || p.spr.position.y > WALL_H) {
-      // respawn okolo hráča – častice necháme diskrétne pribúdať
-      p.t = Math.random() * 1.5;
-      p.spr.position.set(
-        player.pos.x + (Math.random() - 0.5) * 14,
-        p.rise ? 0.15 + Math.random() * 0.6 : 0.8 + Math.random() * 2.4,
-        player.pos.z + (Math.random() - 0.5) * 14
-      );
-      p.spd = 0.1 + Math.random() * 0.2;
-    }
-    p.spr.position.y += (p.rise ? p.spd : -p.spd) * dt;
-    p.spr.position.x += Math.sin(t * 0.7 + p.ph) * dt * 0.14;
-    p.spr.position.z += Math.cos(t * 0.6 + p.ph) * dt * 0.12;
-    const k = Math.min(1, p.t / 2.2);
-    p.spr.material.opacity = 0.105 * k * (0.6 + 0.4 * Math.sin(t * 0.9 + p.ph));
-    p.spr.visible = p.spr.material.opacity > 0.012;
-    const s = 0.3 + 0.5 * k;
     p.spr.scale.set(s, s, 1);
   }
 }
@@ -3335,22 +3751,6 @@ function updateTwilight(dt) {
   p.wingR.rotation.y = 0.55 + Math.sin(tw.flap) * 0.1;
   p.wingL.rotation.y = -0.55 - Math.sin(tw.flap) * 0.1;
 
-  // Šuchot krídel – každý zámah = zvukový signál. Hlasitosť podľa vzdialenosti,
-  // stereo pan podľa smeru (negatívny = vľavo, pozitívny = vpravo).
-  if (state.mode === 'playing' && tw.transformed) {
-    const cyc = Math.floor(tw.flap / Math.PI);
-    if (cyc !== tw._wingCyc) {
-      tw._wingCyc = cyc;
-      const wdx = stano.pos.x - camera.position.x, wdz = stano.pos.z - camera.position.z;
-      const wd = Math.hypot(wdx, wdz);
-      if (wd < 26) {
-        const rx = Math.cos(camYaw), rz = -Math.sin(camYaw);
-        const pan = wd > 0.001 ? (wdx * rx + wdz * rz) / wd : 0;
-        sfx.wing(wd, pan * 0.85);
-      }
-    }
-  }
-
   // Chvost – vlnenie
   p.tail.rotation.y = Math.sin(t * 1.8) * 0.3;
   p.tail.rotation.x = 0.55 + Math.sin(t * 2.3) * 0.08;
@@ -3390,7 +3790,6 @@ function updateTwilight(dt) {
 /* ---- NAPÁJANIE – oprava ističa (WD-40 alebo 12V zdroj) ---- */
 function fixPower(how) {
   power.on = true;
-  stats.powerFixed = true;
   const b = power.breaker;
   b.leverTarget = -0.95;
   b.ledMat.color.setHex(0x36ff70);
@@ -3421,7 +3820,7 @@ function fixPower(how) {
 }
 
 function interactAction() {
-  if (state.mode !== 'playing') return;
+  if (state.mode !== 'playing' || sdrPanel.open || alzaShop.open) return;
   const b = power.breaker, s = power.sdr;
   const db = b ? Math.hypot(b.pos.x - player.pos.x, b.pos.z - player.pos.z) : 99;
   const ds = s ? Math.hypot(s.pos.x - player.pos.x, s.pos.z - player.pos.z) : 99;
@@ -3436,8 +3835,18 @@ function interactAction() {
     openSDRPanel(); // SDR terminál: ladenie frekvencie – packet odletí až z 1 000.000 kHz AM
     return;
   }
+  const ab = alza.box;
+  if (ab && Math.hypot(ab.pos.x - player.pos.x, ab.pos.z - player.pos.z) < 2.2) {
+    alzaPickup(); // vyzdvihnutie zásielok z AlzaBoxu (PIN 67)
+    return;
+  }
+  const am = alza.merchant;
+  if (am && Math.hypot(am.pos.x - player.pos.x, am.pos.z - player.pos.z) < 2.3) {
+    openAlzaShop(); // Alza obchodník: objednávky za uhlie
+    return;
+  }
   sfx.click();
-  showHint('Pri ističi alebo SDR vysielači stlač [E] / ⚡', 2.4);
+  showHint('Pri ističi, SDR vysielači, obchodníku z Alzy alebo AlzaBoxe stlač [E] / ⚡', 2.4);
 }
 
 /* ---- SDR PRENOS DÁT DO ČÍNY ---- */
@@ -3447,6 +3856,7 @@ function startTransmission() {
   trans.tickT = 0;
   traceEl.style.display = 'block';
   sfx.send();
+  burstEnvelopes(6); // obálky hneď odštartujú okolo antény
   announce('📡 ODOSIELAM DÁTA DO ČÍNY 🇨🇳', '#7ce8d4');
   showHint('📡 Nesmieli ťa chytiť! Stano počul uplink…', 4);
 }
@@ -3471,6 +3881,179 @@ function updateTransmission(dt) {
     trans.active = false;
     traceEl.style.display = 'none';
     winGame();
+  }
+}
+
+/* =========================================================
+   ALZA SHOP – objednávky za uhlie, dodanie do AlzaBoxu
+   ========================================================= */
+const ALZA_DELIVERY_S = 18;   // dodacia lehota (s aktívnej hry)
+const ALZA_MAX_ORDERS = 3;
+const ALZA_CATALOG = [
+  { id: 'kofola',   price: 1, desc: '+25% RAM' },
+  { id: 'wd40',     price: 1, desc: '+45% rýchlosť (8 s)' },
+  { id: 'lasagne',  price: 1, desc: 'návnada pre Stana' },
+  { id: 'cyky',     price: 1, desc: 'káblová past' },
+  { id: 'packet',   price: 2, desc: 'traceroute · odhalí Stana' },
+  { id: 'zdroj12v', price: 2, desc: 'oprava ističa' },
+];
+const alzaShop = { open: false };
+const alzaEl       = document.getElementById('alzaPanel');
+const alzaRowsEl   = document.getElementById('alzaRows');
+const alzaCoalEl   = document.getElementById('alzaCoal');
+const alzaStatusEl = document.getElementById('alzaStatus');
+const alzaOrdersEl = document.getElementById('alzaOrders');
+document.getElementById('alzaClose').addEventListener('click', (e) => { e.stopPropagation(); closeAlzaShop(); });
+
+function coalCount() { return inventory.uhlie || 0; }
+function alzaReadyCount() { return alza.orders.filter(o => o.t <= 0).length; }
+
+function buildAlzaShopUI() {
+  alzaRowsEl.innerHTML = '';
+  ALZA_CATALOG.forEach(item => {
+    const d = ALL_ITEM_DEFS.find(x => x.id === item.id);
+    const row = document.createElement('div');
+    row.className = 'alzaRow';
+    row.innerHTML =
+      '<span class="e">' + d.emoji + '</span>' +
+      '<span class="nm"><b>' + d.name + '</b><small>' + item.desc + '</small></span>' +
+      '<span class="pr">' + item.price + ' ⚫</span>' +
+      '<button class="buy" data-id="' + item.id + '">OBJEDNAŤ</button>';
+    row.querySelector('.buy').addEventListener('click', (e) => { e.stopPropagation(); alzaBuy(item.id); });
+    alzaRowsEl.appendChild(row);
+  });
+}
+
+function openAlzaShop() {
+  if (alzaShop.open || sdrPanel.open || state.mode !== 'playing') return;
+  alzaShop.open = true;
+  alzaEl.classList.add('open');
+  exitPointerLockSafe();
+  keys.clear(); input.move.x = 0; input.move.y = 0;
+  hintTimer = 0; hintEl.style.opacity = '0.35';
+  promptTipEl.style.display = 'none';
+  buildAlzaShopUI();
+  alzaStatusMsg('tutor');
+  alzaSyncUI();
+  sfx.chime();
+}
+
+function closeAlzaShop(silent) {
+  if (!alzaShop.open) return;
+  alzaShop.open = false;
+  alzaEl.classList.remove('open');
+  keys.clear();
+  if (!silent && state.mode === 'playing' && !isMobile && dom.requestPointerLock) {
+    try { dom.requestPointerLock(); } catch (_) {}
+  }
+}
+
+function alzaPanelKey(e, k) {
+  if (k === 'escape' || k === 'e') { e.preventDefault(); closeAlzaShop(); }
+}
+
+let alzaStatusCache = '';
+function alzaStatusMsg(kind, price, name) {
+  let html = '';
+  if (kind === 'tutor') html = 'Alza obchodník: „Uhlie je oficiálna mena labyrintu. Železo zarábalo viacej – a uhlie ti kúpi výstroj."';
+  else if (kind === 'noCoal') html = '<b>Nedostatok uhlia!</b> Táto položka stojí ' + price + ' ⚫ · uhlie nájdeš rozsypané v chodbách.';
+  else if (kind === 'full') html = 'Čakajú už 3 zásielky. Najprv si ich vyzdvihni z AlzaBoxu (PIN 67).';
+  else if (kind === 'ordered') html = '<b>' + name + '</b> je objednané! Do polnoci objednáš, ráno v AlzaBoxe máš. PIN 67 ✓';
+  if (html !== alzaStatusCache) { alzaStatusCache = html; alzaStatusEl.innerHTML = html; }
+}
+
+function alzaSyncUI() {
+  alzaCoalEl.textContent = '⚫ uhlie: ' + coalCount();
+  if (!alza.orders.length) {
+    alzaOrdersEl.innerHTML = '<i>Žiadne aktívne objednávky. „Do polnoci objednáš, ráno v AlzaBoxe máš!"</i>';
+  } else {
+    alzaOrdersEl.innerHTML = '📦 objednávky: ' + alza.orders.map(o =>
+      '<b>' + itemLabel(o.id) + '</b> · ' + (o.t <= 0 ? '<span class="ok">pripravená v AlzaBoxe</span>' : Math.ceil(o.t) + ' s')
+    ).join(' &nbsp;·&nbsp; ');
+  }
+  const full = alza.orders.length >= ALZA_MAX_ORDERS;
+  alzaRowsEl.querySelectorAll('.buy').forEach(btn => {
+    const price = (ALZA_CATALOG.find(x => x.id === btn.dataset.id) || {}).price || 1;
+    btn.classList.toggle('dim', coalCount() < price || full);
+  });
+}
+
+function alzaBuy(id) {
+  if (state.mode !== 'playing') return;
+  const item = ALZA_CATALOG.find(x => x.id === id);
+  if (!item) return;
+  if (alza.orders.length >= ALZA_MAX_ORDERS) { sfx.unreach(); alzaStatusMsg('full'); return; }
+  if (coalCount() < item.price) { sfx.unreach(); alzaStatusMsg('noCoal', item.price); return; }
+  inventory.uhlie -= item.price;
+  alza.orders.push({ id, t: ALZA_DELIVERY_S, pin: 67 });
+  updateInvUI(true);
+  sfx.send();
+  alzaStatusMsg('ordered', null, itemLabel(id));
+  showHint('🛒 Objednané: ' + itemLabel(id) + ' · dodanie do AlzaBoxu za ' + ALZA_DELIVERY_S + ' s (PIN 67)', 3.5);
+  announce('🛒 ALZA: objednávka prijatá · PIN 67', '#ff5c73');
+  alzaSyncUI();
+}
+
+function alzaTickOrders(dt) {
+  if (!alza.orders.length) return;
+  let readyNow = false;
+  for (const o of alza.orders) {
+    if (o.t > 0) {
+      o.t -= dt;
+      if (o.t <= 0) readyNow = true;
+    }
+  }
+  if (readyNow) {
+    announce('📦 ALZABOX: zásielka pripravená! (PIN 67)', '#ff5c73');
+    sfx.reply();
+    showHint('📦 Zásielka čaká v AlzaBoxe · červený marker na radare', 4);
+    if (alzaShop.open) alzaSyncUI();
+  }
+}
+
+function alzaPickup() {
+  const ready = alza.orders.filter(o => o.t <= 0);
+  if (!ready.length) {
+    sfx.click();
+    showHint('📦 AlzaBox je prázdny · objednaj si výstroj u obchodníka z Alzy', 3);
+    return;
+  }
+  const got = [];
+  let ram = 0;
+  for (const o of ready) {
+    inventory[o.id] = (inventory[o.id] || 0) + 1;
+    ram += RAM_GAIN_EXTRA;
+    got.push(itemLabel(o.id));
+  }
+  alza.orders = alza.orders.filter(o => o.t > 0);
+  state.ram = Math.min(100, state.ram + ram);
+  sfx.pick();
+  sfx.chime();
+  updateInvUI(true);
+  updateHUD();
+  showHint('📦 Vyzdvihnuté z AlzaBoxu (PIN 67 ✓): ' + got.join(', ') + ' (+' + ram + '% RAM)', 4);
+  announce('📦 ALZABOX: zásielka vyzdvihnutá', '#ff5c73');
+  if (alzaShop.open) alzaSyncUI();
+}
+
+function updateAlzaFx(dt) {
+  // obálky krúžiace okolo SDR počas prenosu do Číny
+  updateEnvelopes(dt);
+  // obálky letiace z hráča po traceroute trase (Packet Tracer)
+  updateTraceEnvelopes(dt);
+  // blikanie AlzaBoxu keď čaká zásielka
+  const b = alza.box;
+  if (!b) return;
+  const ready = alzaReadyCount() > 0 && state.mode === 'playing';
+  b.beacon.visible = ready;
+  const t = performance.now() * 0.001;
+  if (ready) {
+    const pu = 1.4 + Math.sin(t * 3.4) * 0.6;
+    b.beacon.scale.set(pu, pu, 1);
+    b.beacon.material.opacity = 0.5 + Math.sin(t * 3.4) * 0.22;
+    b.screenMat.emissiveIntensity = 1.4 + Math.sin(t * 4) * 0.6;
+  } else {
+    b.screenMat.emissiveIntensity = 0.7;
   }
 }
 
@@ -3503,6 +4086,8 @@ function updatePrompt() {
   let txt = '';
   const db = power.breaker ? Math.hypot(power.breaker.pos.x - player.pos.x, power.breaker.pos.z - player.pos.z) : 99;
   const ds = power.sdr ? Math.hypot(power.sdr.pos.x - player.pos.x, power.sdr.pos.z - player.pos.z) : 99;
+  const dx = alza.box ? Math.hypot(alza.box.pos.x - player.pos.x, alza.box.pos.z - player.pos.z) : 99;
+  const dm = alza.merchant ? Math.hypot(alza.merchant.pos.x - player.pos.x, alza.merchant.pos.z - player.pos.z) : 99;
   if (!power.on && db < 2.3) {
     txt = (inventory.wd40 > 0 || inventory.zdroj12v > 0)
       ? '⚡ [E] opraviť istič' + (inventory.zdroj12v > 0 ? ' · pripojíš 🔋 12V' : ' · nastriekaš 🔧 WD-40')
@@ -3511,6 +4096,13 @@ function updatePrompt() {
     if (!power.on) txt = '📡 SDR bez napájania · oprav istič';
     else if (state.collected >= D().memories) txt = '🇨🇳 [E] SDR terminál · nalad 1.000 MHz AM a vyslať packet';
     else txt = '📡 SDR aktívny · spomienky ' + state.collected + '/' + D().memories;
+  } else if (dx < 2.2) {
+    const ready = alzaReadyCount();
+    txt = ready
+      ? '📦 [E] AlzaBox · vyzdvihnúť zásielku' + (ready > 1 ? ' (' + ready + '×)' : '') + ' · PIN 67'
+      : '📦 AlzaBox · prázdny · objednaj si výstroj u obchodníka z Alzy';
+  } else if (dm < 2.3) {
+    txt = '🛒 [E] Obchodník z Alzy · objednať výstroj (mena: ⚫ uhlie, máš ' + coalCount() + ')';
   }
   if (txt !== promptCache) {
     promptCache = txt;
@@ -3551,65 +4143,6 @@ function updateWorldFx(dt) {
   if (b) {
     b.lever.rotation.x += (b.leverTarget - b.lever.rotation.x) * Math.min(1, dt * 10);
     if (!power.on) b.ledMat.color.setHex(Math.sin(t * 4) > 0 ? 0xff2020 : 0x550a0a);
-    // Blikajúca žiarovka pri ističi – po oprave svieti (s občasnými trhutiami),
-    // pred opravou je mŕtva a len občas zablúdi (orientačný bod v podzemí)
-    if (b.bulbMat) {
-      if (power.on) {
-        let bf = 0.88 + Math.sin(t * 9.7) * 0.12;
-        if (Math.random() < 0.018) bf *= 0.12;
-        if (b.bulbLight) b.bulbLight.intensity = 2.1 * bf;
-        b.bulbMat.color.setHex(Math.random() < 0.014 ? 0x8a7a4a : 0xfff2cf);
-      } else {
-        if (b.bulbLight) b.bulbLight.intensity = 0;
-        if (Math.random() < 0.004) b.bulbMat.color.setHex(0xa08a50);
-        else if (b.bulbMat.color.getHex() !== 0x2b2620 && Math.random() < 0.3) b.bulbMat.color.setHex(0x2b2620);
-      }
-    }
-  }
-
-  // 🍝/🧑 návnada v priestore: pulzujúca žiara, naparovanie, Peter občas zavolá
-  if (fx.lure && state.mode === 'playing') {
-    const L = fx.lure;
-    if (L.glow) {
-      const pu = 1.1 + Math.sin(t * 3.1) * 0.25;
-      L.glow.scale.set(pu, pu, 1);
-      L.glow.material.opacity = 0.6 + Math.sin(t * 3.1) * 0.25;
-    }
-    if (L.spr) L.spr.material.rotation += dt * 0.8;
-    L._steamT -= dt;
-    if (L._steamT <= 0) {
-      L._steamT = 0.5;
-      spawnPoof(L.pos, L.kind === 'lasagne' ? 0xffd9a0 : 0x9fc4ff, 0.4, 3);
-    }
-    if (L.kind === 'peter') {
-      L._callT -= dt;
-      if (L._callT <= 0) {
-        L._callT = 2.6 + Math.random() * 1.4;
-        if (L.pos.distanceTo(player.pos) < 16) sfx.decoy();
-      }
-    }
-  }
-
-  // 🔌 káblové pasce: pulzujúci prsteň + blikajúca markerovka + tiché pípanie
-  for (let i = 0; i < fx.traps.length; i++) {
-    const tp = fx.traps[i];
-    if (tp.ring) tp.ring.material.opacity = 0.3 + Math.sin(t * 4.2 + i * 1.3) * 0.2;
-    if (tp.blink) {
-      const on = Math.sin(t * 4.2 + i * 1.3) > 0;
-      tp.blink.visible = on;
-      if (on && Math.random() < dt * 1.6 && tp.pos.distanceTo(player.pos) < 9) sfx.beepTrap();
-    }
-  }
-
-  // 🎓 PhD neviditeľnosť – fialová aura okolo hráča
-  if (stealthAura) {
-    const on = fx.stealthT > 0 && state.mode === 'playing';
-    stealthAura.visible = on;
-    if (on) {
-      const pu = 1.5 + Math.sin(t * 5.2) * 0.3;
-      stealthAura.scale.set(pu, pu, 1);
-      stealthAura.material.opacity = 0.26 + Math.sin(t * 5.2) * 0.1;
-    }
   }
 }
 
@@ -3892,7 +4425,6 @@ function sendPacket() {
   // Stano v tej istej bunke – okamžitá odozva
   if (pcx === scx && pcz === scz) {
     tracer.cd = TRACE_CD;
-    stats.traces++;
     updatePingBtn(true);
     const r = revealStanoNow();
     sfx.reply();
@@ -3916,7 +4448,6 @@ function sendPacket() {
   tracer.hops = tracer.pts.length - 1;
   tracer.active = true;
   tracer.cd = TRACE_CD;
-  stats.traces++;
   tracer.routeT = tracer.hops / PACKET_SPEED + 1.5;
   tracer.sprite.visible = true;
   const w0 = cellLUTv(pcx, pcz);
@@ -3999,7 +4530,6 @@ function updateTracer(dt) {
     updatePingBtn(true);
     tracer.lostAt = cc;
     tracer.lostT = 2.8;
-    stats.tracesLost++;
     tracer.routeT = Math.min(tracer.routeT, 2.8);
     sfx.lost();
     traceSet('<span class="t">&gt; traceroute stano.local</span><br>hop ' + tracer.seg + '/' + tracer.hops + ' ··· <span class="err">✖ RUŠENIE BT/WIFI</span><br><span class="err">packet lost @ (' + cc[0] + ',' + cc[1] + ')</span><br><span class="dim">signál sa stratil v šume… posledná poloha ostáva na radare</span>');
@@ -4068,13 +4598,11 @@ function useItem(id) {
     showHint('Nemáš žiadny: ' + itemLabel(id), 1.6);
     return;
   }
-  if (id !== 'packet' && id !== 'zdroj12v') stats.used++;  // štatistika spotrebovaných predmetov
   switch (id) {
     case 'kofola':
       inventory.kofola--;
       state.ram = Math.min(100, state.ram + 25);
       sfx.fizz();
-      spawnPoof(player.pos, 0x86d7ff, 0.45, 4);   // bublinky Kofoly
       showHint('🥤 Kofola · +25% RAM', 2.2);
       break;
     case 'wd40':
@@ -4112,7 +4640,6 @@ function useItem(id) {
       inventory.pig--;
       state.ram = Math.min(100, state.ram + 35);
       sfx.pigSqueal();
-      spawnPoof(player.pos, 0xff9ec4, 0.55, 5);   // ružové trhlinká
       showHint('🐖 Prasiatko rozbité · +35% RAM', 2.4);
       break;
     case 'zdroj12v':
@@ -4123,7 +4650,6 @@ function useItem(id) {
       inventory.uhlie--;
       state.ram = Math.min(100, state.ram + 10);
       sfx.fizz();
-      spawnPoof(player.pos, 0x6a6f78, 0.4, 3);    // sadrový dym
       showHint('⚫ Uhlie · +10% RAM · železo zarábalo viacej', 2.4);
       break;
   }
@@ -4179,11 +4705,10 @@ function dropLure(kind) {
 
   scene.add(group);
   fx.lure = {
-    kind, group, model, spr, glow,
+    kind, group,
     pos: player.pos.clone(),
     cell: worldToCell(player.pos.x, player.pos.z),
     t: kind === 'lasagne' ? 16 : 14,
-    _steamT: 0, _callT: 1.2,
   };
 }
 
@@ -4216,11 +4741,7 @@ function dropTrap() {
   group.add(ring);
 
   scene.add(group);
-  // červená blikajúca markerovka – past je viditeľná aj z ďaleka
-  const blink = makeGlow(0xff4d3a, 0.8);
-  blink.position.y = 0.22;
-  group.add(blink);
-  fx.traps.push({ group, pos: player.pos.clone(), ring, blink });
+  fx.traps.push({ group, pos: player.pos.clone() });
 
   // Maximálne 3 aktívne pasce – najstaršia sa odstráni
   if (fx.traps.length > 3) {
@@ -4380,6 +4901,34 @@ function drawMinimap(distToStano = 99) {
     }
   }
 
+  // Obchodník z Alzy – červený štvorec s bielym bodom v strede
+  if (objectives.merchantCell) {
+    const MX = (objectives.merchantCell[0] + 0.5) * MM_SCALE, MY = (objectives.merchantCell[1] + 0.5) * MM_SCALE;
+    mctx.fillStyle = '#e6132e';
+    mctx.fillRect(MX - MM_SCALE * 0.3, MY - MM_SCALE * 0.3, MM_SCALE * 0.6, MM_SCALE * 0.6);
+    mctx.fillStyle = '#ffffff';
+    mctx.fillRect(MX - MM_SCALE * 0.09, MY - MM_SCALE * 0.09, MM_SCALE * 0.18, MM_SCALE * 0.18);
+  }
+
+  // AlzaBox – červený štvorec s bielym rámom; pulzuje, keď čaká zásielka
+  if (objectives.alzaboxCell) {
+    const AX = (objectives.alzaboxCell[0] + 0.5) * MM_SCALE, AY = (objectives.alzaboxCell[1] + 0.5) * MM_SCALE;
+    const boxReady = alzaReadyCount() > 0;
+    mctx.fillStyle = boxReady ? '#ff4d6d' : 'rgba(230, 19, 46, 0.7)';
+    mctx.fillRect(AX - MM_SCALE * 0.3, AY - MM_SCALE * 0.3, MM_SCALE * 0.6, MM_SCALE * 0.6);
+    mctx.strokeStyle = '#ffffff';
+    mctx.lineWidth = 1;
+    mctx.strokeRect(AX - MM_SCALE * 0.22, AY - MM_SCALE * 0.22, MM_SCALE * 0.44, MM_SCALE * 0.44);
+    if (boxReady) {
+      const pulse = (Math.sin(performance.now() * 0.007) + 1) * 0.5;
+      mctx.strokeStyle = 'rgba(255, 77, 109, ' + (0.9 - pulse * 0.5).toFixed(3) + ')';
+      mctx.lineWidth = 1.5;
+      mctx.beginPath();
+      mctx.arc(AX, AY, MM_SCALE * (0.7 + pulse * 1.0), 0, Math.PI * 2);
+      mctx.stroke();
+    }
+  }
+
   // Packet v letu
   if (tracer.active && tracer.pts) {
     const p = tracerPoint();
@@ -4478,8 +5027,8 @@ document.addEventListener('pointerlockchange', () => {
 
 document.addEventListener('mousemove', (e) => {
   if (document.pointerLockElement === dom && state.mode === 'playing' && !sdrPanel.open) {
-    camYaw -= e.movementX * 0.0024 * mouseSens;
-    camPitch -= e.movementY * 0.0022 * mouseSens;
+    camYaw -= e.movementX * 0.0024;
+    camPitch -= e.movementY * 0.0022;
     camPitch = Math.max(-1.15, Math.min(1.15, camPitch));
   }
 });
@@ -4530,8 +5079,8 @@ dom.addEventListener('pointermove', (e) => {
     const dx = e.clientX - lookLast.x;
     const dy = e.clientY - lookLast.y;
     lookLast = { x: e.clientX, y: e.clientY };
-    camYaw -= dx * 0.0052 * mouseSens;
-    camPitch -= dy * 0.0042 * mouseSens;
+    camYaw -= dx * 0.0052;
+    camPitch -= dy * 0.0042;
     camPitch = Math.max(-1.15, Math.min(1.15, camPitch));
   }
 });
@@ -4553,7 +5102,8 @@ window.addEventListener('keydown', (e) => {
   initAudio();
   const k = e.key.toLowerCase();
   if (sdrPanel.open) { sdrPanelKey(e, k); return; } // SDR terminál má vlastné klávesy, hra je pauznutá
-  if (state.mode === 'playing' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') cheatFeed(k); // cheat kódy (TATRY / KIWI)
+  if (alzaShop.open) { alzaPanelKey(e, k); return; } // Alza obchodník: ESC/E zatvára, hra je pauznutá
+  if (state.mode === 'playing' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') cheatFeed(k); // cheat kódy (TATRY / KIWI / PACKET)
   if (k === 'f' && state.mode === 'playing') toggleTorch();
   if (k === 'p' && state.mode === 'playing') sendPacket();
   if (k === 'e' && state.mode === 'playing') interactAction();
@@ -4575,32 +5125,6 @@ const tmpFwd = new THREE.Vector3();
 const tmpRight = new THREE.Vector3();
 const tmpDir = new THREE.Vector3();
 const camEuler = new THREE.Euler(0, 0, 0, 'YXZ');
-
-/* ---- Ozvena krokov v priestranných chodbách ----
-   Posádka v dlhých chodbách počuje dva opozdené dozvuky svojich krokov,
-   v uzavretých rohoch echo takmer nenájde. Podľa "otvorenosti" okolia
-   tak hráč lepšie vníma vežkosť podzemného priestoru. */
-function corridorOpenness() {
-  const [pcx, pcz] = worldToCell(player.pos.x, player.pos.z);
-  let open = 0, total = 0;
-  for (let dx = -2; dx <= 2; dx++) {
-    for (let dz = -2; dz <= 2; dz++) {
-      const x = pcx + dx, z = pcz + dz;
-      if (x < 0 || z < 0 || x >= COLS || z >= ROWS) continue;
-      total++;
-      if (grid[z][x] === 0) open++;
-    }
-  }
-  return total ? open / total : 0;   // 1 = hala / dlhá chodba, 0 = roh
-}
-function footstepEcho(sprint) {
-  const op = corridorOpenness();
-  if (op < 0.55) return;
-  const base = sprint ? 78 : 64;
-  const v1 = 0.014 + 0.028 * (op - 0.55) / 0.45;
-  setTimeout(() => tone(base * 0.92, 0.07, 'triangle', v1, 34), 170);
-  setTimeout(() => tone(base * 0.84, 0.08, 'triangle', v1 * 0.55, 30), 340);
-}
 
 function updatePlayer(dt) {
   let ix = input.move.x;
@@ -4637,7 +5161,6 @@ function updatePlayer(dt) {
   const dz = tmpDir.z * step;
 
   if (moving) {
-    stats.dist += step;   // štatistika prejdennej vzdialenosti
     if (canMove(player.pos.x + dx, player.pos.z, PLAYER_R)) player.pos.x += dx;
     if (canMove(player.pos.x, player.pos.z + dz, PLAYER_R)) player.pos.z += dz;
 
@@ -4649,7 +5172,6 @@ function updatePlayer(dt) {
     player.stepPhase = Math.floor(player.bobT / Math.PI);
     if (player.stepPhase !== prevPhase) {
       sfx.step(wantsSprint);
-      footstepEcho(wantsSprint);   // ozvena v dlhých chodbách
     }
   } else {
     player.bobT += dt * 1.8;
@@ -4722,12 +5244,10 @@ function updateStano(dt) {
     } else if (dl < 1.4) {
       if (fx.lure.kind === 'lasagne') {
         fx.stunT = 3.5;
-        spawnPoof(stano.pos, 0xffc46b, 0.7, 6);   // drobky a párka z jedla
         sfx.crunch();
         showHint('🍝 Stano žerie lasagne… bež!', 2.6);
       } else {
         fx.stunT = 2;
-        spawnPoof(stano.pos, 0x7fb4ff, 0.5, 5);   // Peter sa rozplynie
         sfx.decoy();
         showHint('🧑 Peter zmizol. Stano je zmätený.', 2.4);
       }
@@ -4746,7 +5266,6 @@ function updateStano(dt) {
     // Jump-scare zvuk keđ Stano hráča prvýkrát zbadá
     if (stano.chasing && !stano.wasChasing) {
       sfx.spotStano();
-      if (distP < 8) stats.scares++;   // jump-scare – zbadal ťa na blízko
     }
   }
 
@@ -4791,7 +5310,6 @@ function updateStano(dt) {
       disposeObject(tp.group);
       scene.remove(tp.group);
       fx.traps.splice(i, 1);
-      spawnPoof(tp.pos, 0x54f0d8, 0.55, 6);   // iskry z skratovaného kábla
       sfx.zap();
       showHint('🔌 Káblová past! Stano je omráčený', 2.6);
     }
@@ -4881,8 +5399,6 @@ function updateStano(dt) {
 
   // Kontakt so Stanom (omráčený brokovnicou ťa neškrtne)
   if (distP < STANO_TOUCH && fx.stunT <= 0) {
-    if (!stano._touching) stats[twilight.transformed ? 'twHits' : 'stanoHits']++;
-    stano._touching = true;
     state.ram -= RAM_DRAIN * dt;
     if (Math.random() < dt * 9) sfx.hurt();
     if (state.ram <= 0) {
@@ -4890,8 +5406,6 @@ function updateStano(dt) {
       loseGame();
     }
     updateHUD();
-  } else {
-    stano._touching = false;
   }
 
   // Tlkot srdca & statický šum podľa blízkosti Stana
@@ -4903,7 +5417,7 @@ function updateStano(dt) {
       sfx.heartbeat();
     }
     if (horrorAudio.staticGain && actx) {
-      horrorAudio.staticGain.gain.setTargetAtTime(audioPrefs.sfx ? prox * prox * 0.065 : 0.0001, actx.currentTime, 0.08);
+      horrorAudio.staticGain.gain.setTargetAtTime(prox * prox * 0.065, actx.currentTime, 0.08);
     }
   } else if (horrorAudio.staticGain && actx) {
     horrorAudio.staticGain.gain.setTargetAtTime(0.0001, actx.currentTime, 0.1);
@@ -5008,6 +5522,11 @@ function resetGame() {
   trans.active = false;
   trans.t = 0;
   traceEl.style.display = 'none';
+  // Alza od nuly – žiadne objednávky, obchodník aj AlzaBox sa prestavia
+  alza.orders = [];
+  closeAlzaShop(true);
+  hideEnvelopes();
+  hideTraceEnvelopes();
   updatePowerChip();
   stano.mesh.visible = true;
   twilight.transformed = false;
@@ -5054,7 +5573,6 @@ function resetGame() {
   stano.nextStep = null;
   stano.chasing = false;
   stano.wasChasing = false;
-  stano._touching = false;
   stano.mesh.position.set(sw.x, 0, sw.z);
 
   // HARD: Stano je od samého štartu premienený na Twilighta a už sa nespäť
@@ -5084,9 +5602,6 @@ function resetGame() {
   tracer.cd = 0;
   updatePingBtn(true);
   bakeMinimapStatic();
-  resetStats();                  // nové kolo = nové štatistiky
-  sdrEggsSeen.clear();
-  if (typeof sdrPanel !== 'undefined') sdrPanel._eggName = null;
 
   // Inventár a efekty od nuly
   for (const k of Object.keys(inventory)) inventory[k] = 0;
@@ -5134,36 +5649,6 @@ function exitPointerLockSafe() {
   lockTipEl.style.display = 'none';
 }
 
-/* =========================================================
-   ŠTATISTIKY KOLA – prehľadná mriežka na obrazovke výhry/prehry
-   ========================================================= */
-function fmtTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = s - m * 60;
-  return m + ':' + (sec < 10 ? '0' : '') + sec.toFixed(1);
-}
-function renderStats(containerId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  const rows = [
-    ['⏱ Čas kola', fmtTime(state.time)],
-    ['📦 Spomienky', state.collected + ' / ' + D().memories],
-    ['⚡ Istič', stats.powerFixed ? 'opravený' : 'ostal hrdzavý'],
-    ['📡 Uplink → Čína', containerId === 'winStats' ? 'dokončený ✓' : 'prerušený'],
-    ['💥 Výstrely z brokovnice', String(stats.shots)],
-    ['🎯 Stano omráčený brokovnicou', stats.stuns + '×'],
-    ['🦇 Narazil si na Twilighta', stats.twHits + '×'],
-    ['🐗 Kontakt so Stanom', stats.stanoHits + '×'],
-    ['😱 Prekvapenie (jump-scare)', stats.scares + '×'],
-    ['📡 Traceroute vyslaný', stats.traces + '×'],
-    ['✖ Packet stratený v rušení', stats.tracesLost + '×'],
-    ['📨 SDR easter eggy', String(stats.eggs)],
-    ['🎒 Použité predmety', String(stats.used)],
-    ['👟 Prejdená vzdialenosť', Math.round(stats.dist) + ' m'],
-  ];
-  el.innerHTML = rows.map(([k, v]) => '<div class="k">' + k + '</div><div class="v">' + v + '</div>').join('');
-}
-
 function loseGame() {
   if (state.mode !== 'playing') return;
 
@@ -5184,7 +5669,6 @@ function loseGame() {
   if (horrorAudio.staticGain && actx) horrorAudio.staticGain.gain.setTargetAtTime(0.0001, actx.currentTime, 0.05);
   document.getElementById('overGot').textContent = state.collected;
   document.getElementById('overFlavor').textContent = FLAVORS_OVER[(Math.random() * FLAVORS_OVER.length) | 0];
-  renderStats('overStats');
   document.getElementById('over').classList.remove('hidden');
   fxSet(0, false, false);
   bangFlashEl.style.opacity = '0';
@@ -5203,7 +5687,6 @@ function winGame() {
   if (horrorAudio.staticGain && actx) horrorAudio.staticGain.gain.setTargetAtTime(0.0001, actx.currentTime, 0.05);
   document.getElementById('winTime').textContent = state.time.toFixed(1);
   document.getElementById('winRam').textContent = Math.round(state.ram);
-  renderStats('winStats');
   document.getElementById('win').classList.remove('hidden');
   fxSet(0, false, false);
   bangFlashEl.style.opacity = '0';
@@ -5249,8 +5732,12 @@ function animate(now) {
   if (dt < 0) dt = 0;
   if (rawDt > 0) perfTick(rawDt);
 
+  // Pomalý drift oblohy – hviezdy a mesiac sa mihnú nad labyrintom
+  if (skyGroup) skyGroup.rotation.y += dt * 0.004;
+
   if (state.mode === 'playing') {
     if (sdrPanel.open) { sdrPanelTick(rawDt); renderer.render(scene, camera); return; } // SDR pauza: Stano, Twilight, RAM aj čas stoja
+    if (alzaShop.open) { renderer.render(scene, camera); return; } // Alza obchodník: hra pauznutá
     state.time += dt;
     updatePlayer(dt);
     const distToStano = updateStano(dt);
@@ -5260,9 +5747,10 @@ function animate(now) {
     updateItemLights(dt);
     updateTracer(dt);
     updateTransmission(dt);
+    alzaTickOrders(dt);
     updateWorldFx(dt);
+    updateAlzaFx(dt);
     updatePoofs(dt);
-    updateFrost(dt);
     updateGunFx(dt);
     updateFxTimers(dt);
     updatePrompt();
@@ -5288,7 +5776,6 @@ function animate(now) {
     updateMenuShowcase(now);
     updateTwilight(dt);
     updateWorldFx(dt);
-    updateFrost(dt);
   }
 
   // Koncové obrazovky (Game Over / Výhra) sú takmer nepriehľadné – render pod nimi zamrzne (úspora GPU)
@@ -5315,44 +5802,6 @@ window.addEventListener('orientationchange', () => setTimeout(onResize, 120));
    INICIALIZÁCIA – počká na fototextúry a krvavý font Nosifer
    ========================================================= */
 let _booted = false;
-/* Napojenie rýchlych nastavení v menu (hudba / zvuky / citlivosť myši).
-   Zmeny sa ukladajú do localStorage a prejavia sa OKAMŽITE aj počas hry. */
-function wireMenuSettings() {
-  const musicChk = document.getElementById('musicChk');
-  const sfxChk = document.getElementById('sfxChk');
-  const sensRange = document.getElementById('sensRange');
-  const sensVal = document.getElementById('sensVal');
-  if (musicChk) {
-    musicChk.checked = audioPrefs.music;
-    musicChk.addEventListener('change', () => {
-      audioPrefs.music = musicChk.checked;
-      saveAudioPrefs();
-      initAudio();
-      applyAudioPrefs();
-      if (audioPrefs.music) musicStart();
-    });
-  }
-  if (sfxChk) {
-    sfxChk.checked = audioPrefs.sfx;
-    sfxChk.addEventListener('change', () => {
-      audioPrefs.sfx = sfxChk.checked;
-      saveAudioPrefs();
-      initAudio();
-      applyAudioPrefs();
-      if (audioPrefs.sfx) sfx.click();
-    });
-  }
-  if (sensRange && sensVal) {
-    sensRange.value = Math.round(mouseSens * 100);
-    sensVal.textContent = Math.round(mouseSens * 100) + '%';
-    sensRange.addEventListener('input', () => {
-      mouseSens = Math.max(0.3, Math.min(2.2, (parseInt(sensRange.value, 10) || 100) / 100));
-      sensVal.textContent = Math.round(mouseSens * 100) + '%';
-      saveMouseSens();
-    });
-  }
-}
-
 function bootWorld() {
   if (_booted) return; // guard proti dvojitému spusteniu (then + catch)
   _booted = true;
@@ -5361,23 +5810,16 @@ function bootWorld() {
   buildTwilight();
   buildTracerVisuals();
   buildPoofPool();
-  buildFrost();
+  buildEnvelopePool();
   buildGunPools();
   buildShotgunViewModel(); // 💥 brokovnica (potrebuje GLOW_TEX, preto až v bootWorlde)
   buildItemLightPool();
+  buildSkyAndTatry(); // nebo + Tatry nad otvoreným labyrintom (raz, mimo worldObjects)
   generateMaze();
   planObjectives();
   buildWorld();
   buildItems();
   buildInventoryUI();
-
-  // 🎓 fialová aura neviditeľnosti (PhD) pripevnená ku kamere
-  stealthAura = makeGlow(0x9b5fc9, 2.0);
-  stealthAura.position.set(0, -0.3, -0.7);
-  stealthAura.visible = false;
-  camera.add(stealthAura);
-
-  wireMenuSettings();
 
   {
     const w = cellToWorld(1, 1);
@@ -5470,19 +5912,6 @@ const SDR_STATIONS = [
   { f:24960, name:'RTTY',       type:'data',               bw:1.4,  str:0.32, col:'#ffb347' },
   { f:27070, name:'CB 27 MHz',  type:'fm',                 bw:10,   str:0.55, col:'#6bff9d' },
   { f:28200, name:'BEACON 10m', type:'morse',   pat:'V',   bw:0.5,  str:0.40, col:'#b06cff' },
-  /* ---- EASTER EGG STANICE – každá má krátku dekódovanú správu (📨) ---- */
-  { f:60,    name:'DCF77 DE',      type:'time',               bw:2,    str:0.42, col:'#54f0d8', msg:'Presný čas z Mainflingu. Aj pod zemou niekto beží.' },
-  { f:67,    name:'HESLO 67',      type:'morse',   pat:'HESLO67', bw:0.5, str:0.5, col:'#ff8a2b', msg:'MORSE: „HESLO 67“ · z nikým nezdielaj.' },
-  { f:420,   name:'PRASIATKO AM',  type:'music',              bw:6,    str:0.44, col:'#ff9ec4', msg:'…oink oink… Ratnovce sú plné vajec a prasiat.' },
-  { f:867,   name:'UHLIE MW',      type:'numbers',            bw:7,    str:0.40, col:'#9aa2ab', msg:'400 ton uhlia v prírode. Železo zarába viac.' },
-  { f:1980,  name:'TA3 TATRY',     type:'music',              bw:8,    str:0.50, col:'#ffd23a', msg:'…a teraz počasie: v Tatrách sneží. Aj pod zemou.' },
-  { f:3600,  name:'ŠACHTA NET',    type:'data',               bw:3,    str:0.42, col:'#6bff9d', msg:'SERVISNÁ ŠACHTA 9 · ÚNIK → SEKTOR B-3 · lapaj po šachte.' },
-  { f:4460,  name:'PETER PMR',     type:'fm',                 bw:8,    str:0.46, col:'#7fb4ff', msg:'Peter… Peter? (používaj úplne náhodne)' },
-  { f:5580,  name:'KOFOLA FM',     type:'music',              bw:6,    str:0.45, col:'#7ce8d4', msg:'Kofola · +25% RAM · servíruje sa studená.' },
-  { f:6700,  name:'TWILIGHT CH',   type:'numbers',            bw:5,    str:0.42, col:'#ff3bbd', msg:'fursona: Twilight · oranzový netopier · ružové krídla · fialové vankúšiky' },
-  { f:8888,  name:'LASAGNE CH',    type:'music',              bw:7,    str:0.46, col:'#ffcf9e', msg:'Vôňa lasagní sa šíri chodbami. Stano ju zavetrí zďaleka.' },
-  { f:11111, name:'T-EMBED BEACON',type:'morse',   pat:'TEM', bw:0.6,  str:0.44, col:'#b06cff', msg:'T-embed is embedded deep inside sthanos.' },
-  { f:16200, name:'KIWI-TATRY-1',  type:'data',               bw:3,    str:0.40, col:'#54f0d8', msg:'Kiwi-Tatry-1 · fw 0.67 · operator: TY · počuj všetko, boj sa menej.' },
 ];
 /* Náš uplink nosič – existuje len keď je istič hore (má napájanie) */
 const SDR_UPLINK = { f:SDR_TARGET_KHZ, name:'📡 UPLINK → CN', type:'uplink', bw:2.4, str:0.95, col:'#7ce8d4', up:true };
@@ -5630,12 +6059,6 @@ function sdrAudioStep(){
   if (!sdrA.on || !actx || !sdrA.master) return;
   const now = performance.now();
   const t = actx.currentTime;
-  if (!audioPrefs.sfx) {   // 🔊 nastavenie: éter úplne potichne
-    sdrA.noiseG.gain.setTargetAtTime(0.0001, t, 0.05);
-    sdrA.toneG.gain.setTargetAtTime(0.0001, t, 0.05);
-    sdrA.humG.gain.setTargetAtTime(0.0001, t, 0.05);
-    return;
-  }
   const { sig, best } = sdrSignalAt(sdrPanel.freq);
   const mode = sdrPanel.mode;
   const isAM = (mode === 'AMN' || mode === 'SAM');
@@ -5646,7 +6069,6 @@ function sdrAudioStep(){
   if (mode === 'IQ') ng *= 1.8;
   if (mode === 'DRM') ng *= 1.5;
   if (sdrPanel.jam > 0.15 && Math.random() < 0.1) ng += sdrPanel.jam * 0.12; // Stano ruší aj éter
-  if (state.ram < 40) ng += (40 - state.ram) / 40 * 0.10;   // nízka RAM = jemný šum/posun signálu
   sdrA.noiseG.gain.setTargetAtTime(Math.min(0.3, ng), t, 0.05);
   sdrA.tone.type = 'sine';
   if (!best || best.type !== 'drm') sdrA.noiseF.frequency.setTargetAtTime(750 + (1 - sig) * 320, t, 0.1);
@@ -5795,39 +6217,8 @@ function sdrUpdateMeter(){
   const { sig } = sdrSignalAt(sdrPanel.freq);
   sdrPanel.lastSig = sig;
   const s = Math.max(1, Math.min(9, 1 + Math.round(sig * 8)));
-  let filled = Math.max(1, Math.round(sig * 10));
-  // rušenie / Stano blízko → S-meter šume (iba kozmetika, nič neruší)
-  if (sdrPanel.jam > 0.2 && Math.random() < sdrPanel.jam * 0.55) {
-    filled = Math.max(0, filled - 1 - ((Math.random() * 3) | 0));
-  }
+  const filled = Math.max(1, Math.round(sig * 10));
   sdrSmEl.textContent = 'S' + s + ' ' + '█'.repeat(filled) + '░'.repeat(10 - filled) + ' ' + sdrPanel.mode;
-}
-
-/* ---- Easter egg frekvencie: krátke dekódované správy (lore / nápovedy) ----
-   Keď je prijímač presne na stanici so správou, status riadok ju zobrazí
-   a prvýkrát v kole sa prehrá dekódovací chime + započíta sa do štatistiky. */
-const sdrEggsSeen = new Set();
-function sdrEggTick(){
-  const { best } = sdrSignalAt(sdrPanel.freq);
-  const lock = best && best.msg && Math.abs(sdrPanel.freq - best.f) <= Math.max(0.6, best.bw * 0.7);
-  if (lock) {
-    if (sdrPanel._eggName !== best.name) {
-      sdrPanel._eggName = best.name;
-      sdrLastStatus = '';                     // nech sa bežný status môže vrátiť po odladení
-      sdrStatusEl.innerHTML = '📨 DEKÓDOVANÉ <b>[' + best.name + ']</b>: ' + best.msg;
-      sdrStatusEl.className = 'ok';
-      if (!sdrEggsSeen.has(best.name)) {
-        sdrEggsSeen.add(best.name);
-        stats.eggs++;
-        sdrClick(1240);
-        setTimeout(() => sdrClick(1660), 110);
-      }
-    }
-  } else if (sdrPanel._eggName) {
-    sdrPanel._eggName = null;
-    sdrLastStatus = '';
-    sdrStatusMsg('auto');
-  }
 }
 
 /* ---- Ladenie a pohľad (zoom/pan ako KiwiSDR) ---- */
@@ -5887,16 +6278,14 @@ function sdrDrawRow(){
   const f0 = sdrPanel.center - sdrPanel.span / 2, df = sdrPanel.span / w;
   const amps = sdrRowAmps(w, f0, df, performance.now());
   const jam = sdrPanel.jam;
-  const ramN = state.ram < 40 ? (40 - state.ram) / 40 : 0;
   for (let x = 0; x < w; x++) {
     let v = sdrNoiseFloor(f0 + x * df) * (0.8 + 0.35 * Math.random());
     v += amps[x];
     if (jam > 0.15 && Math.random() < jam * 0.25) v += jam * 0.25 * Math.random();
-    if (ramN > 0 && Math.random() < ramN * 0.3) v += ramN * 0.22;
     ctx.fillStyle = sdrPal(Math.min(1, v));
     ctx.fillRect(x, 0, 1, 2);
   }
-  const xf = ((sdrPanel.freq + (jam > 0.35 ? (Math.random() - 0.5) * jam * 0.6 : 0)) - f0) / df;
+  const xf = (sdrPanel.freq - f0) / df;
   if (xf >= 0 && xf <= w) { ctx.fillStyle = 'rgba(255,138,43,0.55)'; ctx.fillRect(Math.round(xf), 0, 1, 2); }
 }
 function sdrDrawSpec(){
@@ -6061,9 +6450,6 @@ function sdrPanelKey(e, k){
 }
 /* Tick terminálu – beží namiesto hernej logiky počas pauzy */
 function sdrPanelTick(rawDt){
-  // Živé rušenie: Stano blízko → väčší šum v éteri. Hra je v pauze,
-  // takže šum nikdy nenaruší ovládanie ani plynulosť hernej logiky.
-  sdrPanel.jam = Math.max(0, 1 - Math.hypot(stano.pos.x - player.pos.x, stano.pos.z - player.pos.z) / 10);
   sdrPanel.wfAcc += Math.min(rawDt, 0.12);
   if (sdrPanel.wfAcc >= 0.066) {
     sdrPanel.wfAcc = 0;
@@ -6071,7 +6457,6 @@ function sdrPanelTick(rawDt){
     sdrDrawSpec();
     sdrDrawScale();
     sdrUpdateMeter();
-    sdrEggTick();
   }
 }
 
@@ -6119,11 +6504,12 @@ window.addEventListener('resize', () => { if (sdrPanel.open) sdrResize(); });
 
 /* =========================================================
    CHEAT KÓDY (dev skratky – píš počas hry, bez úhlových zátvoriek)
-   TATRY = teleport k SDR vysielaču + opraví istič + otvorí terminál
-   KIWI  = okamžite nazbiera všetkých 8 spomienok (pre test packetu)
-   V konzole: __LABY.cheat.sdr() / __LABY.cheat.items()
+   TATRY  = teleport k SDR vysielaču + opraví istič + otvorí terminál
+   KIWI   = okamžite nazbiera všetkých 8 spomienok (pre test packetu)
+   PACKET = privedie 📦 Packet Tracer do inventára (na test traceroutu)
+   V konzole: __LABY.cheat.sdr() / __LABY.cheat.items() / __LABY.cheat.packet()
    ========================================================= */
-const CHEAT_CODES = { tatry: cheatTeleportSDR, kiwi: cheatCollectAll };
+const CHEAT_CODES = { tatry: cheatTeleportSDR, kiwi: cheatCollectAll, packet: cheatGivePacket };
 let cheatBuf = '';
 function cheatFeed(k) {
   if (k.length !== 1 || !/[a-z]/.test(k)) { cheatBuf = ''; return; }
@@ -6176,8 +6562,23 @@ function cheatCollectAll() {
   return true;
 }
 
+/* PACKET – privedie 📦 Packet Tracer do inventára, aj keby si ho v labyrinte nenašiel.
+   Hint zobrazíme s malým oneskorením, lebo cheatFeed hneď potom vypíše svoje „🧪 CHEAT“. */
+function cheatGivePacket() {
+  if (state.mode !== 'playing') return false;
+  if ((inventory.packet || 0) >= 1) {
+    setTimeout(() => showHint('📦 Packet Tracer už v inventári máš · [P] = traceroute', 3), 2350);
+    return true;
+  }
+  inventory.packet = 1;
+  updateInvUI(true);
+  updateHUD();
+  setTimeout(() => showHint('📦 Packet Tracer pridaný · [P] alebo 📦 slot 3 = traceroute ku Stanovi', 3.5), 2350);
+  return true;
+}
+
 // Debug handle (testovanie v konzole)
-window.__LABY = { state, stats: () => stats, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, items: () => items, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic, renderer, quality, sdrPanel, cheat: { sdr: () => cheatTeleportSDR(), items: () => cheatCollectAll() }, sdrDebug: { open: () => openSDRPanel(), close: () => sdrPanelClose(true), setFreq: (f) => sdrSetFreq(f, true), tx: () => sdrTxClick(), stations: () => sdrStationList() } };
+window.__LABY = { state, stano, twilight, player, power, trans, objectives, inventory, menuShow, scene, alza, items: () => items, worldObjects: () => worldObjects, camYawRef: () => camYaw, setCamYaw: v => { camYaw = v; camPitch = 0; }, interactAction, fixPower, startTransmission, cellToWorld, worldToCell, music: () => bgMusic, renderer, quality, sdrPanel, traceEnvelopes: () => traceEnvPool, cheat: { sdr: () => cheatTeleportSDR(), items: () => cheatCollectAll(), packet: () => cheatGivePacket() }, sdrDebug: { open: () => openSDRPanel(), close: () => sdrPanelClose(true), setFreq: (f) => sdrSetFreq(f, true), tx: () => sdrTxClick(), stations: () => sdrStationList() } };
 
 /* Výber kvality v menu – uloží sa do localStorage a stránka sa načíta znova */
 const qualitySel = document.getElementById('qualitySel');
